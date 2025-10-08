@@ -1,0 +1,25 @@
+# 核心依赖
+openai>=1.0.0
+python-dotenv>=1.0.0
+colorama>=0.4.6
+
+# 异步和并发支持
+aiofiles>=23.0.0
+httpx>=0.25.0
+
+# 配置管理
+PyYAML>=6.0.0
+
+# 进度显示
+tqdm>=4.65.0
+
+# 系统监控
+psutil>=5.9.0
+
+# 代码分析
+chardet>=5.0.0
+
+# 可选依赖（用于增强功能）
+# python-magic>=0.4.27  # Windows用户可能需要安装python-magic-bin
+# redis>=5.0.0          # 如果需要Redis缓存支持
+# asyncpg>=0.29.0       # 如果需要PostgreSQL支持

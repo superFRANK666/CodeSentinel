@@ -1,0 +1,35 @@
+{
+  "analyzer": {
+    "severity_threshold": "low",
+    "max_file_size": 1024,
+    "concurrent_limit": 5,
+    "cache_enabled": true,
+    "cache_ttl": 3600,
+    "ai_model": "gpt-4o-mini",
+    "api_timeout": 60,
+    "max_retries": 3
+  },
+  "report": {
+    "formats": [
+      "console",
+      "markdown"
+    ],
+    "output_dir": "./reports",
+    "include_code_snippets": true,
+    "include_remediation": true,
+    "max_vulnerabilities": 1000
+  },
+  "security": {
+    "enable_privacy_check": true,
+    "enable_code_sanitization": false,
+    "allowed_file_extensions": [
+      ".py"
+    ],
+    "blocked_patterns": [
+      "*.pyc",
+      "__pycache__",
+      "*.so",
+      "*.dll"
+    ]
+  }
+}
