@@ -1,3 +1,5 @@
+<p align="right">[简体中文](README.zh-CN.md)</p>
+
 # CodeSentinel: AI-Powered Code Security Auditor
 
 CodeSentinel is an advanced, AI-powered security auditing tool for Python. It uses a hybrid approach, combining local static analysis (AST, Taint Analysis) with powerful AI models (like GPT-4o-mini) to provide deep, accurate vulnerability detection. It's a command-line tool designed to help developers identify and fix security issues before they reach production.
