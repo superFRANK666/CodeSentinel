@@ -1,4 +1,4 @@
-<p align="right">[简体中文](README.zh-CN.md)</p>
+<p align="right"><a href="README.zh-CN.md">简体中文</a></p>
 
 # CodeSentinel: AI-Powered Code Security Auditor
 

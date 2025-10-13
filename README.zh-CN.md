@@ -1,4 +1,4 @@
-<p align="right">[English](README.md)</p>
+<p align="right"><a href="README.md">English</a></p>
 
 # CodeSentinel: AI 驱动的代码安全审计器
 
