@@ -1,102 +1,202 @@
 <p align="right"><a href="README.zh-CN.md">简体中文</a></p>
 
-# CodeSentinel: AI-Powered Code Security Auditor
+# CodeSentinel: AI-Powered Multi-Language Code Security Auditor
 
-CodeSentinel is an advanced, AI-powered security auditing tool for Python. It uses a hybrid approach, combining local static analysis (AST, Taint Analysis) with powerful AI models (like GPT-4o-mini) to provide deep, accurate vulnerability detection. It's a command-line tool designed to help developers identify and fix security issues before they reach production.
+<div align="center">
 
-## Key Features
+![CodeSentinel Logo](https://img.shields.io/badge/CodeSentinel-v2.0-blue?style=for-the-badge)
+[![Python](https://img.shields.io/badge/Python-3.10+-green?style=for-the-badge&logo=python)](https://python.org)
+[![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-yellow?style=for-the-badge&logo=javascript)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+[![License](https://img.shields.io/badge/License-MIT-red?style=for-the-badge)](LICENSE)
 
--   **Hybrid Analysis Engine**: Combines the speed of local Abstract Syntax Tree (AST) and Taint Analysis with the deep contextual understanding of AI models.
--   **Multiple Analyzer Modes**: Choose between `local`, `ai`, or `hybrid` analysis modes to fit your needs for speed and accuracy.
--   **Comprehensive Vulnerability Detection**: Identifies a wide range of security vulnerabilities, including:
-    -   SQL Injection
-    -   Command Injection
-    -   Cross-Site Scripting (XSS)
-    -   Insecure Deserialization
-    -   Hardcoded Secrets & Keys
-    -   Weak Cryptography
-    -   Path Traversal
--   **Multi-Format Reporting**: Generates clear and actionable reports in various formats: `console`, `markdown`, `json`, `html`, and `xml`.
--   **Intelligent Caching**: Caches results of unchanged files to significantly speed up subsequent scans.
--   **User-Friendly CLI**: A rich command-line interface with extensive options for a tailored analysis experience.
--   **Plugin Architecture**: Designed with a plugin manager to allow for future extensions of detectors and reporters.
+**Advanced AI-powered security auditing tool for Python and JavaScript**
 
-## Requirements
+CodeSentinel combines local static analysis, AI-powered deep inspection, and industry-standard tools to provide comprehensive vulnerability detection for modern codebases.
 
--   Python 3.10+
--   An OpenAI API key (for `ai` and `hybrid` modes).
+</div>
 
-## Installation
+## ✨ Key Features
 
-1.  **Clone the repository:**
-    ```bash
-    git clone https://github.com/superFRANK666/CodeSentinel.git
-    cd CodeSentinel
-    ```
+### 🌍 Multi-Language Support
+- **Python**: Full AST analysis, taint analysis, and AI-powered inspection
+- **JavaScript**: ESLint integration with security-focused rules
+- **Auto-Detection**: Automatically identifies file types and selects appropriate analyzers
 
-2.  **Create and activate a virtual environment (recommended):**
-    ```bash
-    # For Windows
-    python -m venv venv
-    venv\Scripts\activate
+### 🔍 Advanced Analysis Capabilities
+- **Hybrid Analysis Engine**: Combines AST/Taint analysis speed with AI deep inspection
+- **Multiple Analyzer Modes**: `local`, `ai`, `hybrid`, and `multi_language` modes
+- **Real-time Vulnerability Detection**: Comprehensive security pattern matching
 
-    # For macOS/Linux
-    python3 -m venv venv
-    source venv/bin/activate
-    ```
+### 🛡️ Comprehensive Vulnerability Coverage
+- **Injection Attacks**: SQL, Command, Code Injection
+- **Web Security**: XSS, CSRF, Path Traversal
+- **Crypto Issues**: Weak algorithms, insecure randomness
+- **Data Exposure**: Hardcoded secrets, sensitive data leakage
+- **JavaScript-specific**: eval() usage, prototype pollution, unsafe dynamic code
 
-3.  **Install dependencies:**
-    ```bash
-    pip install -r requirements.txt
-    ```
+### 🚀 Performance & Usability
+- **Intelligent Caching**: Dramatically speeds up subsequent scans
+- **Parallel Processing**: Concurrent analysis of multiple files
+- **Rich Reporting**: Console, Markdown, JSON, HTML, XML formats
+- **Progress Tracking**: Real-time analysis progress indication
 
-4.  **Set up your environment variables:**
-    -   Copy the example `.env.example` file from the `docs` directory to the project root and rename it to `.env`.
-    -   Open the `.env` file and add your OpenAI API key:
-        ```
-        OPENAI_API_KEY=your-openai-api-key-here
-        ```
+### 🔧 Extensibility
+- **Plugin Architecture**: Easy addition of new analyzers and reporters
+- **Configurable Rules**: Customizable security rule sets
+- **CI/CD Integration**: Perfect for automated security pipelines
 
-## Usage
+## 📋 Requirements
 
-CodeSentinel is run from the command line. Here are some common usage examples:
+### Core Dependencies
+- **Python 3.10+**: Core analysis engine
+- **Node.js 16+ & npm**: Required for JavaScript analysis via ESLint
 
-**1. Analyze a single file:**
+### Optional Dependencies
+- **OpenAI API Key**: For AI-powered deep analysis (`ai` and `hybrid` modes)
+
+### System Requirements
+- **RAM**: Minimum 4GB, recommended 8GB+ for large codebases
+- **Storage**: 500MB for installation + space for analysis cache
+- **OS**: Windows 10+, macOS 10.15+, or Linux (Ubuntu 18.04+)
+
+## 🚀 Installation
+
+### 1. Clone Repository
 ```bash
-python main.py path/to/your/file.py
+git clone https://github.com/superFRANK666/CodeSentinel.git
+cd CodeSentinel
 ```
 
-**2. Analyze an entire directory:**
+### 2. Set Up Python Environment
 ```bash
-python main.py src/
+# Create virtual environment
+python -m venv venv
+
+# Activate environment
+# Windows
+venv\Scripts\activate
+# macOS/Linux
+source venv/bin/activate
+
+# Install Python dependencies
+pip install -r requirements.txt
 ```
 
-**3. Generate a specific report format:**
+### 3. Install ESLint (for JavaScript Analysis)
 ```bash
-# Generate a Markdown report
-python main.py src/ --output report.md --format markdown
+# Install ESLint globally
+npm install -g eslint
 
-# Generate an HTML report
-python main.py src/ --output report.html --format html
+# Install security plugin
+npm install -g eslint-plugin-security
+
+# Verify installation
+eslint --version
 ```
 
-**4. Use a specific analyzer:**
+### 4. Configure Environment
 ```bash
-# Use the fast local analyzer only
-python main.py src/ --analyzer local
+# Copy environment template
+cp docs/.env.example .env
 
-# Use the AI analyzer for a deep scan
-python main.py src/ --analyzer ai
+# Edit .env file with your API key
+# OPENAI_API_KEY=your-openai-api-key-here
 ```
 
-**5. Filter by severity and show progress:**
+### 5. Verify Installation
 ```bash
-python main.py src/ --severity high --progress
-```
-
-**6. Get help on all commands:**
-```bash
+# Test Python analysis
 python main.py --help
+
+# Test JavaScript analysis (requires a .js file)
+echo "console.log('test');" > test.js
+python main.py test.js
+rm test.js
+```
+
+## JavaScript Support
+
+CodeSentinel now supports JavaScript code analysis through ESLint integration. The JavaScript analyzer can detect:
+
+- **Code Injection**: Usage of `eval()`, `new Function()`, and other dangerous eval-like constructs
+- **XSS Vulnerabilities**: Unsafe use of `innerHTML`, `document.write()`, and `javascript:` URLs
+- **Path Traversal**: Unsafe file system access patterns
+- **Insecure Randomness**: Usage of predictable random number generators
+- **Object Injection**: Prototype pollution and unsafe object property access
+- **Timing Attacks**: Non-constant-time operations on sensitive data
+
+### ESLint Configuration
+
+The project includes a comprehensive ESLint configuration (`.eslintrc.json`) with security-focused rules and the `eslint-plugin-security` plugin for enhanced vulnerability detection.
+
+## 💡 Usage Examples
+
+### Basic Usage
+```bash
+# Analyze single files
+python main.py script.py                    # Python file
+python main.py app.js                       # JavaScript file
+
+# Analyze directories (auto-detects file types)
+python main.py src/                         # Mixed languages
+python main.py frontend/                    # JavaScript/TypeScript
+python main.py backend/                     # Python
+```
+
+### Advanced Usage
+```bash
+# Use specific analyzers
+python main.py src/ --analyzer local        # Fast local analysis
+python main.py src/ --analyzer ai           # AI-powered analysis
+python main.py src/ --analyzer hybrid       # Combined approach
+python main.py src/ --analyzer multi_language  # Default, auto-detect
+
+# Filter by severity
+python main.py src/ --severity high         # High severity only
+python main.py src/ --severity medium       # Medium and above
+python main.py src/ --severity critical     # Critical only
+
+# Generate reports
+python main.py src/ --output report.md --format markdown
+python main.py src/ --output report.html --format html
+python main.py src/ --output results.json --format json
+```
+
+### File Type Filtering
+```bash
+# Analyze specific file types
+python main.py . --include "*.py"           # Python only
+python main.py . --include "*.js" --include "*.jsx"  # JavaScript + React
+python main.py . --include "*.py" --include "*.js"   # Both languages
+
+# Exclude patterns
+python main.py src/ --exclude "test_*" --exclude "__pycache__"
+python main.js src/ --exclude "*.min.js" --exclude "node_modules"
+```
+
+### Performance Options
+```bash
+# Show progress and verbose output
+python main.py src/ --progress --verbose
+
+# Control concurrency
+python main.py src/ --workers 8             # 8 parallel workers
+
+# Cache management
+python main.py src/ --no-cache              # Disable caching
+python main.py --clear-cache                # Clear existing cache
+```
+
+### Quick Start Examples
+```bash
+# Quick security check of your project
+python main.py . --severity high --progress
+
+# Full comprehensive analysis with AI
+python main.py . --analyzer hybrid --output full_report.html --format html
+
+# CI/CD integration (fail on critical issues)
+python main.py src/ --severity critical --quiet
 ```
 
 ## Project Structure
@@ -122,16 +222,118 @@ CodeSentinel/
 -   **Environment Variables**: The primary way to configure secrets like the OpenAI API key is through the `.env` file in the project root.
 -   **JSON Configuration**: Default behaviors (like analyzer settings, report formats, etc.) are defined in `config/default.json`. You can create a custom `config.json` to override these settings.
 
-## Contributing
+## 🛠️ Configuration
 
-Contributions are welcome! If you'd like to contribute, please follow these steps:
+### Environment Variables
+Create a `.env` file in the project root:
+```bash
+# OpenAI API key (required for AI analysis)
+OPENAI_API_KEY=your-openai-api-key-here
 
-1.  Fork the repository.
-2.  Create a new branch (`git checkout -b feature/your-feature`).
-3.  Make your changes and commit them (`git commit -m 'Add some feature'`).
-4.  Push to the branch (`git push origin feature/your-feature`).
-5.  Open a Pull Request.
+# Optional: Custom OpenAI base URL
+OPENAI_BASE_URL=https://api.openai.com/v1
+```
 
-## License
+### Custom Analysis Rules
+Create a custom `config.json` to override default settings:
+```json
+{
+  "analyzer": {
+    "severity_threshold": "medium",
+    "max_file_size": 2048,
+    "concurrent_limit": 8
+  },
+  "security": {
+    "allowed_file_extensions": [".py", ".js", ".jsx"],
+    "blocked_patterns": ["*.min.js", "node_modules"]
+  }
+}
+```
 
-This project is licensed under the MIT License.
+## 🔧 Troubleshooting
+
+### Common Issues
+
+**ESLint not found**
+```bash
+# Install ESLint globally
+npm install -g eslint eslint-plugin-security
+
+# Or locally in your project
+npm install eslint eslint-plugin-security
+```
+
+**Python module not found**
+```bash
+# Ensure you're in the project directory with activated venv
+cd CodeSentinel
+source venv/bin/activate  # Linux/macOS
+# or
+venv\Scripts\activate     # Windows
+
+# Reinstall dependencies
+pip install -r requirements.txt
+```
+
+**Memory issues with large codebases**
+```bash
+# Reduce concurrent workers
+python main.py src/ --workers 2
+
+# Exclude large directories
+python main.py src/ --exclude "node_modules" --exclude ".git"
+```
+
+**AI analysis not working**
+1. Check your OpenAI API key in `.env` file
+2. Verify API key has sufficient credits
+3. Check internet connection
+4. Try with local analyzer first: `--analyzer local`
+
+### Debug Mode
+Enable verbose logging for troubleshooting:
+```bash
+python main.py src/ --verbose --progress
+```
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+### Development Setup
+```bash
+# Clone and install development dependencies
+git clone https://github.com/superFRANK666/CodeSentinel.git
+cd CodeSentinel
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+pip install -r requirements-dev.txt  # Development dependencies
+
+# Run tests
+python -m pytest tests/
+
+# Run code quality checks
+flake8 src/
+mypy src/
+```
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- [ESLint](https://eslint.org/) - JavaScript analysis engine
+- [OpenAI](https://openai.com/) - AI-powered code analysis
+- The Python security community for inspiration and feedback
+
+---
+
+<div align="center">
+
+**⭐ Star this repository if it helped you!**
+
+[🐛 Report Bug](https://github.com/superFRANK666/CodeSentinel/issues) | [💡 Feature Request](https://github.com/superFRANK666/CodeSentinel/issues/new) | [📖 Documentation](https://github.com/superFRANK666/CodeSentinel/wiki)
+
+</div>

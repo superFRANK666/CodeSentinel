@@ -109,12 +109,14 @@ class SecurityAuditCLI:
             formatter_class=argparse.RawDescriptionHelpFormatter,
             epilog="""
 示例用法:
-  %(prog)s script.py                          # 分析单个文件
-  %(prog)s src/                              # 分析整个目录
+  %(prog)s script.py                          # 分析单个Python文件
+  %(prog)s app.js                             # 分析单个JavaScript文件
+  %(prog)s src/                              # 分析整个目录（支持多语言）
   %(prog)s app.py --output report.md         # 导出Markdown报告
-  %(prog)s *.py --format json --output result.json  # 导出JSON报告
+  %(prog)s *.js --format json --output result.json  # 导出JSON报告
   %(prog)s code/ --config custom.json        # 使用自定义配置
   %(prog)s test.py --analyzer local          # 使用本地分析器
+  %(prog)s src/ --analyzer multi_language    # 使用多语言分析器
   %(prog)s src/ --progress --verbose         # 显示进度和详细信息
             """
         )
@@ -123,7 +125,7 @@ class SecurityAuditCLI:
         parser.add_argument(
             'paths',
             nargs='+',
-            help='要分析的Python文件或目录路径'
+            help='要分析的文件或目录路径（支持Python和JavaScript）'
         )
 
         # 基本选项
@@ -142,9 +144,9 @@ class SecurityAuditCLI:
 
         parser.add_argument(
             '--analyzer',
-            choices=['local', 'ai', 'hybrid'],
-            default='hybrid',
-            help='分析器类型（默认：hybrid）'
+            choices=['local', 'ai', 'hybrid', 'multi_language'],
+            default='multi_language',
+            help='分析器类型（默认：multi_language）'
         )
 
         parser.add_argument(
@@ -178,8 +180,8 @@ class SecurityAuditCLI:
         parser.add_argument(
             '--include',
             nargs='+',
-            default=['*.py'],
-            help='包含的文件模式（如：*.py, *.pyw）'
+            default=['*.py', '*.js', '*.jsx', '*.mjs', '*.cjs'],
+            help='包含的文件模式（如：*.py, *.js, *.jsx等）'
         )
 
         # 缓存选项
@@ -291,7 +293,7 @@ class SecurityAuditCLI:
         """收集需要分析的文件"""
         try:
             if args.verbose:
-                logger.info("📁 正在收集Python文件...")
+                logger.info("📁 正在收集代码文件...")
 
             all_files = []
             exclude_patterns = args.exclude or self.app_config.security.blocked_patterns
@@ -317,7 +319,7 @@ class SecurityAuditCLI:
                                 all_files.append(file_path)
 
             if args.verbose:
-                logger.info(f"📊 找到 {len(all_files)} 个Python文件")
+                logger.info(f"📊 找到 {len(all_files)} 个代码文件")
 
             return all_files
 

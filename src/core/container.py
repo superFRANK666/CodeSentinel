@@ -161,6 +161,12 @@ class DependencyContainer:
             # 没有AI时，将混合分析器重定向到本地分析器
             self.register(ICodeAnalyzer, local_analyzer, "hybrid")
 
+        # 注册多语言分析器（基于混合分析器或本地分析器）
+        from ..application.multi_language_analyzer import MultiLanguageAnalyzer
+        base_analyzer = self.resolve(ICodeAnalyzer, "hybrid")
+        multi_language_analyzer = MultiLanguageAnalyzer(base_analyzer)
+        self.register(ICodeAnalyzer, multi_language_analyzer, "multi_language")
+
     def _can_use_ai_analyzer(self) -> bool:
         """检查是否可以使用AI分析器"""
         import os

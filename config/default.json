@@ -23,7 +23,11 @@
     "enable_privacy_check": true,
     "enable_code_sanitization": false,
     "allowed_file_extensions": [
-      ".py"
+      ".py",
+      ".js",
+      ".jsx",
+      ".mjs",
+      ".cjs"
     ],
     "blocked_patterns": [
       "*.pyc",
