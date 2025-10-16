@@ -122,7 +122,6 @@ class TaintAnalyzer:
             'pickle.loads': [TaintType.USER_INPUT, TaintType.NETWORK, TaintType.FILE_INPUT],
             'pickle.load': [TaintType.USER_INPUT, TaintType.NETWORK, TaintType.FILE_INPUT],
             'yaml.load': [TaintType.USER_INPUT, TaintType.NETWORK, TaintType.FILE_INPUT],
-            'eval': [TaintType.USER_INPUT, TaintType.NETWORK, TaintType.FILE_INPUT],
             'exec': [TaintType.USER_INPUT, TaintType.NETWORK, TaintType.FILE_INPUT],
 
             # 文件操作相关
@@ -224,8 +223,10 @@ class TaintAnalyzer:
                 func_name = self._get_full_name(node.func)
                 if func_name in self.analyzer.user_input_functions:
                     # 处理内联函数调用的情况
-                    taint_type = self.analyzer.user_input_functions[func_name]
                     # 这里可以处理更复杂的情况
+                    taint_type = self.analyzer.user_input_functions[func_name]
+                    # TODO: 实现内联函数调用的污点源处理逻辑
+                    pass
 
             def _get_full_name(self, node: ast.AST) -> str:
                 """获取完整的节点名称"""

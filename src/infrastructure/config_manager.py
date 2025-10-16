@@ -9,7 +9,7 @@ import json
 import os
 from pathlib import Path
 from typing import Dict, Any, Optional
-from ..core.interfaces import IConfigManager, AppConfig, AnalyzerConfig, ReportConfig, SecurityConfig
+from ..core.interfaces import IConfigManager
 
 
 class JsonConfigManager(IConfigManager):
@@ -45,7 +45,7 @@ class JsonConfigManager(IConfigManager):
             self._config_cache = merged_config
             return merged_config
 
-        except Exception as e:
+        except Exception:
             # 如果配置文件加载失败,返回默认配置
             return self._get_default_config()
 

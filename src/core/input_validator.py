@@ -8,7 +8,6 @@
 import re
 import os
 import mimetypes
-import magic
 from pathlib import Path
 from typing import List, Optional, Dict, Any, Tuple
 from dataclasses import dataclass

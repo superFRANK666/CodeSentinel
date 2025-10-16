@@ -5,8 +5,7 @@
 实现轻量级的依赖注入,管理所有核心组件的生命周期
 """
 
-import asyncio
-from typing import Dict, Any, Type, Optional, List
+from typing import Dict, Any, Type, Optional
 from pathlib import Path
 
 from .interfaces import (
@@ -87,7 +86,9 @@ class DependencyContainer:
             self.register(IConfigManager, JsonConfigManager())
 
         # 缓存管理器
-        if not self.is_registered(ICacheManager) and self._config.analyzer.cache_enabled:
+        if (not self.is_registered(ICacheManager) and
+            self._config is not None and
+            self._config.analyzer.cache_enabled):
             from ..infrastructure.cache_manager import FileCacheManager
             cache_manager = FileCacheManager(ttl=self._config.analyzer.cache_ttl)
             self.register(ICacheManager, cache_manager)
@@ -103,7 +104,9 @@ class DependencyContainer:
             self.register(IErrorHandler, FriendlyErrorHandler())
 
         # 代码隐私管理器
-        if not self.is_registered(ICodePrivacyManager) and self._config.security.enable_privacy_check:
+        if (not self.is_registered(ICodePrivacyManager) and
+            self._config is not None and
+            self._config.security.enable_privacy_check):
             from ..infrastructure.privacy_manager import RegexPrivacyManager
             self.register(ICodePrivacyManager, RegexPrivacyManager())
 
@@ -134,9 +137,9 @@ class DependencyContainer:
 
         # 总是注册本地分析器
         from ..application.local_analyzer import LocalCodeAnalyzer
-        local_analyzer = LocalCodeAnalyzer(
-            concurrent_limit=self._config.analyzer.concurrent_limit
-        )
+        concurrent_limit = (self._config.analyzer.concurrent_limit
+                           if self._config is not None else 5)
+        local_analyzer = LocalCodeAnalyzer(concurrent_limit=concurrent_limit)
         self.register(ICodeAnalyzer, local_analyzer, "local")
 
         if ai_enabled:

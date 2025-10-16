@@ -139,14 +139,11 @@ def _convert_eslint_results(eslint_results: List[Dict], file_path: Path) -> List
         if not file_result.get('messages'):
             continue
 
-        file_path_str = file_result.get('filePath', str(file_path))
-
         for message in file_result.get('messages', []):
             # 获取漏洞信息
             rule_id = message.get('ruleId', 'unknown')
             severity = message.get('severity', 1)  # 1=warning, 2=error
             line = message.get('line', 0)
-            column = message.get('column', 0)
             message_text = message.get('message', '')
 
             # 转换严重程度

@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 class HybridCodeAnalyzer(BaseCodeAnalyzer, ICodeAnalyzer):
     """混合分析器 - 结合AI和本地分析的优势"""
 
-    def __init__(self, ai_analyzer: ICodeAnalyzer, local_analyzer: ICodeAnalyzer):
+    def __init__(self, ai_analyzer: ICodeAnalyzer, local_analyzer: ICodeAnalyzer, max_concurrency: int = 5):
         super().__init__()
         self.name = "HybridCodeAnalyzer"
         self.version = "1.0.0"
@@ -29,6 +29,7 @@ class HybridCodeAnalyzer(BaseCodeAnalyzer, ICodeAnalyzer):
         self.local_analyzer = local_analyzer
         self.confidence_threshold = 0.8  # 置信度阈值
         self.analysis_strategy = AnalysisStrategy()  # 初始化策略引擎
+        self.max_concurrency = max_concurrency  # 最大并发数，可配置
 
     async def analyze_file(self, file_path: Path,
                            severity_filter: SeverityLevel = SeverityLevel.LOW) -> AnalysisResult:
@@ -63,7 +64,7 @@ class HybridCodeAnalyzer(BaseCodeAnalyzer, ICodeAnalyzer):
     async def analyze_batch(self, file_paths: List[Path],
                             severity_filter: SeverityLevel = SeverityLevel.LOW) -> List[AnalysisResult]:
         """批量混合分析"""
-        semaphore = asyncio.Semaphore(5)  # 限制并发数
+        semaphore = asyncio.Semaphore(self.max_concurrency)  # 使用可配置的并发数
 
         async def analyze_with_semaphore(file_path: Path) -> AnalysisResult:
             async with semaphore:
@@ -73,12 +74,22 @@ class HybridCodeAnalyzer(BaseCodeAnalyzer, ICodeAnalyzer):
         tasks = [analyze_with_semaphore(fp) for fp in file_paths]
         results = await asyncio.gather(*tasks, return_exceptions=True)
 
-        # 处理异常结果
+        # 处理异常结果 - analyze_file 已经包含了回退逻辑
         processed_results = []
         for i, result in enumerate(results):
             if isinstance(result, Exception):
-                # 回退到本地分析
-                error_result = await self.local_analyzer.analyze_file(file_paths[i], severity_filter)
+                logger.error(f"文件分析完全失败 {file_paths[i]}: {result}")
+                # 创建一个失败的结果对象，而不是重复回退
+                error_result = AnalysisResult(
+                    file_path=file_paths[i],
+                    file_size=0,
+                    analysis_status="failed",
+                    vulnerabilities=[],
+                    security_score=-1,
+                    recommendations=[f"文件分析失败: {result}"],
+                    analysis_time=0.0,
+                    pre_analysis_info={"error": str(result)}
+                )
                 processed_results.append(error_result)
             else:
                 processed_results.append(result)
@@ -86,59 +97,16 @@ class HybridCodeAnalyzer(BaseCodeAnalyzer, ICodeAnalyzer):
         return processed_results
 
     def _should_use_ai_analysis(self, local_result: AnalysisResult) -> bool:
-        """判断是否需要AI深度分析 - 集成策略引擎"""
-        # 使用策略引擎进行智能决策
-        try:
-            # 构建文件信息
-            file_info = {
-                'size': local_result.file_size,
-                'path': local_result.file_path,
-                'is_sensitive': self._is_sensitive_file(local_result.file_path)
-            }
+        """判断是否需要AI深度分析 - 统一使用策略引擎"""
+        # 构建文件信息
+        file_info = {
+            'size': local_result.file_size,
+            'path': local_result.file_path,
+            'is_sensitive': self._is_sensitive_file(local_result.file_path)
+        }
 
-            # 使用策略引擎判断是否需要深度AI分析
-            if self.analysis_strategy.should_use_ai_heavy_analysis(file_info, local_result):
-                return True
-
-        except Exception as e:
-            logger.warning(f"策略引擎决策失败, 使用默认逻辑: {e}.")
-
-        # 回退到默认的决策逻辑
-        # 如果有高危漏洞，使用AI进行深度分析
-        high_risk_vulnerabilities = [
-            vuln for vuln in local_result.vulnerabilities
-            if vuln.severity in [SeverityLevel.HIGH, SeverityLevel.CRITICAL]
-        ]
-        if high_risk_vulnerabilities:
-            return True
-
-        # 如果本地分析置信度较低，使用AI验证
-        low_confidence_vulnerabilities = [
-            vuln for vuln in local_result.vulnerabilities
-            if vuln.confidence < self.confidence_threshold
-        ]
-        if len(low_confidence_vulnerabilities) > 0:
-            return True
-
-        # 如果代码复杂度较高，使用AI分析
-        if local_result.pre_analysis_info:
-            ast_info = local_result.pre_analysis_info.get('ast_analysis', {})
-            complexity_score = ast_info.get('complexity_score', 0)
-            if complexity_score > 50:  # 复杂度阈值
-                return True
-
-        # 如果文件较大或函数较多
-        if local_result.file_size > 10000:  # 10KB
-            return True
-
-        # 如果存在潜在危险节点
-        if local_result.pre_analysis_info:
-            ast_info = local_result.pre_analysis_info.get('ast_analysis', {})
-            dangerous_nodes = ast_info.get('potential_dangerous_nodes', [])
-            if len(dangerous_nodes) > 3:
-                return True
-
-        return False
+        # 统一使用策略引擎进行决策
+        return self.analysis_strategy.should_use_ai_analysis(file_info, local_result, self.confidence_threshold)
 
     def _is_sensitive_file(self, file_path: str) -> bool:
         """判断是否为敏感文件"""
@@ -160,13 +128,8 @@ class HybridCodeAnalyzer(BaseCodeAnalyzer, ICodeAnalyzer):
             local_result.recommendations + ai_result.recommendations
         ))
 
-        # 计算综合安全评分
-        # 优先使用AI的评分，如果没有则使用本地评分
-        security_score = ai_result.security_score if ai_result.security_score > 0 else local_result.security_score
-
-        # 如果AI分析失败但本地分析成功，使用本地结果
-        if ai_result.security_score == -1 and local_result.security_score > 0:
-            security_score = local_result.security_score
+        # 计算综合安全评分 - 使用更智能的合并逻辑
+        security_score = self._calculate_merged_security_score(local_result.security_score, ai_result.security_score)
 
         # 合并预分析信息
         merged_pre_analysis = {
@@ -211,11 +174,15 @@ class HybridCodeAnalyzer(BaseCodeAnalyzer, ICodeAnalyzer):
 
         return deduplicated
 
-    def _calculate_final_security_score(self, local_score: int, ai_score: int) -> int:
-        """计算最终安全评分"""
+    def _calculate_merged_security_score(self, local_score: int, ai_score: int) -> int:
+        """计算合并后的安全评分"""
         # 如果AI分析失败，使用本地评分
         if ai_score == -1:
             return local_score
+
+        # 如果本地分析失败，使用AI评分
+        if local_score == -1:
+            return ai_score
 
         # 如果本地评分和AI评分差异很大，取更保守的评分
         score_diff = abs(local_score - ai_score)
@@ -253,28 +220,62 @@ class HybridCodeAnalyzer(BaseCodeAnalyzer, ICodeAnalyzer):
 
 # 智能分析策略
 class AnalysisStrategy:
-    """分析策略类"""
+    """分析策略类 - 统一的分析决策逻辑"""
+
+    @staticmethod
+    def should_use_ai_analysis(file_info: Dict[str, Any],
+                              local_result: AnalysisResult,
+                              confidence_threshold: float) -> bool:
+        """统一判断是否需要AI深度分析"""
+
+        # 1. 高危漏洞策略
+        high_risk_vulnerabilities = [
+            vuln for vuln in local_result.vulnerabilities
+            if vuln.severity in [SeverityLevel.HIGH, SeverityLevel.CRITICAL]
+        ]
+        if high_risk_vulnerabilities:
+            return True
+
+        # 2. 置信度策略
+        low_confidence_vulnerabilities = [
+            vuln for vuln in local_result.vulnerabilities
+            if vuln.confidence < confidence_threshold
+        ]
+        if len(low_confidence_vulnerabilities) > 0:
+            return True
+
+        # 3. 文件大小策略
+        if file_info.get('size', 0) > 10000:  # 10KB以上的文件
+            return True
+
+        # 4. 敏感文件策略
+        if file_info.get('is_sensitive', False):
+            return True
+
+        # 5. 代码复杂度策略
+        if local_result.pre_analysis_info:
+            ast_info = local_result.pre_analysis_info.get('ast_analysis', {})
+            complexity_score = ast_info.get('complexity_score', 0)
+            if complexity_score > 50:  # 复杂度阈值
+                return True
+
+            # 危险节点策略
+            dangerous_nodes = ast_info.get('potential_dangerous_nodes', [])
+            if len(dangerous_nodes) > 3:
+                return True
+
+            # 函数数量策略
+            functions = local_result.pre_analysis_info.get('function_definitions', [])
+            if len(functions) > 20:  # 函数数量较多
+                return True
+
+        return False
 
     @staticmethod
     def should_use_ai_heavy_analysis(file_info: Dict[str, Any],
                                      local_result: AnalysisResult) -> bool:
-        """判断是否应该使用深度AI分析"""
-        # 文件大小策略
-        if file_info.get('size', 0) > 50000:  # 50KB以上的文件
-            return True
-
-        # 复杂度策略
-        if local_result.pre_analysis_info:
-            ast_info = local_result.pre_analysis_info.get('ast_analysis', {})
-            if ast_info.get('complexity_score', 0) > 100:
-                return True
-
-        # 业务逻辑复杂度
-        functions = local_result.pre_analysis_info.get('function_definitions', [])
-        if len(functions) > 20:  # 函数数量较多
-            return True
-
-        return False
+        """判断是否应该使用深度AI分析 - 保留向后兼容"""
+        return AnalysisStrategy.should_use_ai_analysis(file_info, local_result, 0.8)
 
     @staticmethod
     def estimate_analysis_complexity(file_path: Path, content: str) -> Dict[str, Any]:

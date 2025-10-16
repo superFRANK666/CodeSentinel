@@ -6,7 +6,6 @@
 """
 
 import os
-import asyncio
 import json
 import re
 import logging
@@ -16,7 +15,7 @@ from typing import Dict, Any, List, Optional
 import openai
 from openai import AsyncOpenAI
 
-from ..core.interfaces import ICodeAnalyzer, AnalysisResult, Vulnerability, SeverityLevel, AnalyzerConfig
+from ..core.interfaces import AnalysisResult, Vulnerability, SeverityLevel
 from ..core.analyzers.base_analyzer import BaseCodeAnalyzer
 
 
@@ -26,7 +25,8 @@ logger = logging.getLogger(__name__)
 class AICodeAnalyzer(BaseCodeAnalyzer):
     """增强版AI代码分析器"""
 
-    def __init__(self, model: str = "gpt-4o-mini", timeout: int = 60, max_retries: int = 3, base_url: Optional[str] = None):
+    def __init__(self, model: str = "gpt-4o-mini", timeout: int = 60,
+                 max_retries: int = 3, base_url: Optional[str] = None):
         super().__init__()
         self.model = model
         self.timeout = timeout
@@ -71,7 +71,8 @@ class AICodeAnalyzer(BaseCodeAnalyzer):
             ai_analysis = await self._ai_security_analysis(content, pre_analysis)
 
             # 转换结果格式
-            result = self._convert_ai_result(file_path, content, ai_analysis, severity_filter)
+            result = self._convert_ai_result(file_path, content, ai_analysis,
+                                            severity_filter)
 
             return result
 

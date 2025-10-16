@@ -11,7 +11,6 @@ import logging
 import threading
 from typing import Optional, Dict, Any, List
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
 from datetime import datetime
 
 from ..core.interfaces import IProgressReporter
@@ -383,7 +382,6 @@ class SimpleProgressReporter(BaseProgressReporter):
         # 只在百分比变化时更新显示
         if percentage != self.last_percentage and percentage % 10 == 0:
             self.last_percentage = percentage
-            elapsed = self.get_elapsed_time()
             remaining = self.get_estimated_time_remaining()
 
             if self.show_percentage:

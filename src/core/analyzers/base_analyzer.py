@@ -7,10 +7,9 @@
 
 import re
 import ast
-import tokenize
 from pathlib import Path
 from typing import Dict, Any, Optional, List
-from ..interfaces import AnalysisResult, Vulnerability, SeverityLevel
+from ..interfaces import AnalysisResult
 
 
 class BaseCodeAnalyzer:

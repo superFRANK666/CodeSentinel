@@ -7,7 +7,7 @@
 
 import traceback
 import logging
-from typing import Dict, Any, List, Optional, Type
+from typing import Dict, Any, List
 from ..core.interfaces import IErrorHandler
 
 

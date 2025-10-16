@@ -6,17 +6,13 @@ UI界面管理器
 """
 
 import os
-import sys
 import time
 import threading
-from typing import Optional, List, Dict, Any
-from datetime import datetime
-from pathlib import Path
-import asyncio
+from typing import Optional, Dict, Any
 
 try:
     import colorama
-    from colorama import Fore, Back, Style
+    from colorama import Fore, Style
     colorama.init(autoreset=True)
     COLORAMA_AVAILABLE = True
 except ImportError:
@@ -75,7 +71,7 @@ class UIManager:
         """获取终端宽度"""
         try:
             return os.get_terminal_size().columns
-        except:
+        except OSError:
             return 80
 
     def _center_text(self, text: str, width: Optional[int] = None) -> str:

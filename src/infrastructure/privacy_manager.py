@@ -6,9 +6,7 @@
 """
 
 import re
-import hashlib
-import base64
-from typing import Dict, Any, List, Optional, Pattern
+from typing import Dict, Any, List
 from ..core.interfaces import ICodePrivacyManager
 
 

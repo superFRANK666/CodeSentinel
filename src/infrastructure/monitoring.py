@@ -5,6 +5,7 @@
 提供性能监控、指标收集和健康检查功能
 """
 
+import asyncio
 import time
 import logging
 import threading

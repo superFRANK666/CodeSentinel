@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-"""
+# -*- coding: utf-8 -*-
+"""
 大文件分析器 - 支持分块分析大文件
 """
 

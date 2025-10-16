@@ -4,6 +4,7 @@
 ASCII艺术和图标模块
 提供各种ASCII艺术字体和图标
 """
+import time
 
 # CodeSentinel ASCII艺术字体
 CODESENTINEL_LOGO = r"""
