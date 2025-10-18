@@ -109,7 +109,7 @@ class BaseProgressReporter(IProgressReporter, ABC):
                 "current": 0,
                 "description": description,
                 "start_time": time.time(),
-                "status": "pending"
+                "status": "pending",
             }
             self._subtasks.append(subtask)
 
@@ -175,7 +175,7 @@ class BaseProgressReporter(IProgressReporter, ABC):
                 "description": self.description,
                 "subtasks": self._subtasks.copy(),
                 "is_finished": self._finished,
-                "last_update_time": self._last_update_time
+                "last_update_time": self._last_update_time,
             }
 
     def _record_progress_event(self, event_type: str, message: str, current: Optional[int] = None) -> None:
@@ -185,7 +185,7 @@ class BaseProgressReporter(IProgressReporter, ABC):
             "message": message,
             "timestamp": datetime.now().isoformat(),
             "progress": current if current is not None else self.current,
-            "total": self.total
+            "total": self.total,
         }
         self._progress_history.append(event)
 
@@ -243,6 +243,7 @@ class TqdmProgressReporter(BaseProgressReporter):
 
         try:
             from tqdm import tqdm
+
             self.tqdm = tqdm
         except ImportError:
             # 如果tqdm不可用,降级到简单进度报告器
@@ -257,11 +258,7 @@ class TqdmProgressReporter(BaseProgressReporter):
 
         try:
             self._progress_bar = self.tqdm(
-                total=self.total,
-                desc=self.description,
-                unit="文件",
-                leave=True,
-                file=sys.stdout
+                total=self.total, desc=self.description, unit="文件", leave=True, file=sys.stdout
             )
         except Exception:
             self.disable = True
@@ -305,10 +302,12 @@ class TqdmProgressReporter(BaseProgressReporter):
                     elapsed = self.get_elapsed_time()
                     if elapsed > 0:
                         rate = self.current / elapsed
-                        self._progress_bar.set_postfix({
-                            '速度': f'{rate:.1f}文件/秒',
-                            'ETA': self._format_time(self.get_estimated_time_remaining())
-                        })
+                        self._progress_bar.set_postfix(
+                            {
+                                "速度": f"{rate:.1f}文件/秒",
+                                "ETA": self._format_time(self.get_estimated_time_remaining()),
+                            }
+                        )
 
             except Exception as e:
                 logger.debug(f"进度条更新失败: {e}")
@@ -331,7 +330,9 @@ class TqdmProgressReporter(BaseProgressReporter):
         if self.disable:
             elapsed_time = self.get_elapsed_time()
             processing_rate = self.total / elapsed_time if elapsed_time > 0 else 0
-            print(f"✅ {self.description} 完成 ({self.total}个文件, {elapsed_time:.2f}秒, {processing_rate:.1f}文件/秒)")
+            print(
+                f"✅ {self.description} 完成 ({self.total}个文件, {elapsed_time:.2f}秒, {processing_rate:.1f}文件/秒)"
+            )
             return
 
         if self._progress_bar:
@@ -413,6 +414,7 @@ class LogProgressReporter(BaseProgressReporter):
 
         if self.logger is None:
             import logging
+
             self.logger = logging.getLogger(__name__)
 
     def _on_start(self) -> None:

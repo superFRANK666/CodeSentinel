@@ -1,0 +1,113 @@
+version: '3.8'
+
+services:
+  codesentinel:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    image: codesentinel:latest
+    container_name: codesentinel-app
+    restart: unless-stopped
+    environment:
+      - PYTHONPATH=/app
+      - LOG_LEVEL=INFO
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - MAX_FILE_SIZE=10485760
+      - CONCURRENT_LIMIT=5
+    volumes:
+      - ./reports:/app/reports
+      - ./logs:/app/logs
+      - ./config:/app/config
+      - ${ANALYSIS_PATH:-./data}:/data:ro
+    networks:
+      - codesentinel-network
+    command: ["analyze", "/data", "--output", "/app/reports"]
+
+  codesentinel-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    image: codesentinel:latest
+    container_name: codesentinel-api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONPATH=/app
+      - LOG_LEVEL=INFO
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
+      - MAX_FILE_SIZE=10485760
+      - CONCURRENT_LIMIT=5
+    volumes:
+      - ./reports:/app/reports
+      - ./logs:/app/logs
+      - ./config:/app/config
+    networks:
+      - codesentinel-network
+    command: ["server", "--host", "0.0.0.0", "--port", "8000"]
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7-alpine
+    container_name: codesentinel-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - codesentinel-network
+    command: redis-server --appendonly yes
+
+  nginx:
+    image: nginx:alpine
+    container_name: codesentinel-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    networks:
+      - codesentinel-network
+    depends_on:
+      - codesentinel-api
+
+  # Worker for background processing
+  codesentinel-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    image: codesentinel:latest
+    restart: unless-stopped
+    environment:
+      - PYTHONPATH=/app
+      - LOG_LEVEL=INFO
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - REDIS_URL=redis://redis:6379/0
+      - WORKER_PROCESSES=2
+    volumes:
+      - ./reports:/app/reports
+      - ./logs:/app/logs
+      - ./config:/app/config
+      - ${ANALYSIS_PATH:-./data}:/data:ro
+    networks:
+      - codesentinel-network
+    command: ["worker"]
+    depends_on:
+      - redis
+
+volumes:
+  redis_data:
+    driver: local
+
+networks:
+  codesentinel-network:
+    driver: bridge

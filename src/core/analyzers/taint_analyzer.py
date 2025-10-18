@@ -16,47 +16,52 @@ logger = logging.getLogger(__name__)
 
 class TaintType(Enum):
     """污点类型枚举"""
-    USER_INPUT = "user_input"          # 用户输入
-    REQUEST_PARAM = "request_param"    # 请求参数
-    FILE_INPUT = "file_input"          # 文件输入
-    ENVIRONMENT = "environment"        # 环境变量
-    DATABASE = "database"              # 数据库输入
-    NETWORK = "network"                # 网络输入
+
+    USER_INPUT = "user_input"  # 用户输入
+    REQUEST_PARAM = "request_param"  # 请求参数
+    FILE_INPUT = "file_input"  # 文件输入
+    ENVIRONMENT = "environment"  # 环境变量
+    DATABASE = "database"  # 数据库输入
+    NETWORK = "network"  # 网络输入
 
 
 class TaintStatus(Enum):
     """污点状态枚举"""
-    TAINTED = "tainted"        # 已污染
-    CLEAN = "clean"           # 干净
-    UNKNOWN = "unknown"       # 未知
+
+    TAINTED = "tainted"  # 已污染
+    CLEAN = "clean"  # 干净
+    UNKNOWN = "unknown"  # 未知
 
 
 @dataclass
 class TaintSource:
     """污点源"""
-    name: str                    # 变量名
-    taint_type: TaintType        # 污点类型
-    line: int                    # 行号
-    source_function: str         # 源函数
-    confidence: float = 1.0      # 置信度
+
+    name: str  # 变量名
+    taint_type: TaintType  # 污点类型
+    line: int  # 行号
+    source_function: str  # 源函数
+    confidence: float = 1.0  # 置信度
 
 
 @dataclass
 class TaintFlow:
     """污点滴流"""
-    source: TaintSource          # 污点源
-    sink: str                    # 污染点（危险函数）
-    sink_line: int              # 污染点行号
-    flow_path: List[str]        # 数据流路径
-    confidence: float = 1.0     # 置信度
+
+    source: TaintSource  # 污点源
+    sink: str  # 污染点（危险函数）
+    sink_line: int  # 污染点行号
+    flow_path: List[str]  # 数据流路径
+    confidence: float = 1.0  # 置信度
 
 
 @dataclass
 class SanitizerInfo:
     """清理函数信息"""
-    function_name: str          # 函数名
-    effectiveness: float        # 有效性（0-1）
-    taint_types: Set[TaintType] # 可处理的污点类型
+
+    function_name: str  # 函数名
+    effectiveness: float  # 有效性（0-1）
+    taint_types: Set[TaintType]  # 可处理的污点类型
 
 
 class TaintAnalyzer:
@@ -73,98 +78,91 @@ class TaintAnalyzer:
         """初始化清理函数库"""
         return {
             # SQL注入清理
-            'escape_sql': SanitizerInfo('escape_sql', 0.9, {TaintType.USER_INPUT, TaintType.REQUEST_PARAM}),
-            'quote': SanitizerInfo('quote', 0.8, {TaintType.USER_INPUT, TaintType.REQUEST_PARAM}),
-            'mysql_real_escape_string': SanitizerInfo('mysql_real_escape_string', 0.9, {TaintType.USER_INPUT}),
-
+            "escape_sql": SanitizerInfo("escape_sql", 0.9, {TaintType.USER_INPUT, TaintType.REQUEST_PARAM}),
+            "quote": SanitizerInfo("quote", 0.8, {TaintType.USER_INPUT, TaintType.REQUEST_PARAM}),
+            "mysql_real_escape_string": SanitizerInfo("mysql_real_escape_string", 0.9, {TaintType.USER_INPUT}),
             # XSS清理
-            'escape_html': SanitizerInfo('escape_html', 0.95, {TaintType.USER_INPUT, TaintType.REQUEST_PARAM}),
-            'htmlspecialchars': SanitizerInfo('htmlspecialchars', 0.95, {TaintType.USER_INPUT, TaintType.REQUEST_PARAM}),
-            'bleach.clean': SanitizerInfo('bleach.clean', 0.9, {TaintType.USER_INPUT, TaintType.REQUEST_PARAM}),
-
+            "escape_html": SanitizerInfo("escape_html", 0.95, {TaintType.USER_INPUT, TaintType.REQUEST_PARAM}),
+            "htmlspecialchars": SanitizerInfo(
+                "htmlspecialchars", 0.95, {TaintType.USER_INPUT, TaintType.REQUEST_PARAM}
+            ),
+            "bleach.clean": SanitizerInfo("bleach.clean", 0.9, {TaintType.USER_INPUT, TaintType.REQUEST_PARAM}),
             # 命令注入清理
-            'escape_shell_arg': SanitizerInfo('escape_shell_arg', 0.95, {TaintType.USER_INPUT, TaintType.REQUEST_PARAM}),
-            'escapeshellarg': SanitizerInfo('escapeshellarg', 0.95, {TaintType.USER_INPUT, TaintType.REQUEST_PARAM}),
-
+            "escape_shell_arg": SanitizerInfo(
+                "escape_shell_arg", 0.95, {TaintType.USER_INPUT, TaintType.REQUEST_PARAM}
+            ),
+            "escapeshellarg": SanitizerInfo("escapeshellarg", 0.95, {TaintType.USER_INPUT, TaintType.REQUEST_PARAM}),
             # 路径清理
-            'basename': SanitizerInfo('basename', 0.8, {TaintType.USER_INPUT, TaintType.FILE_INPUT}),
-            'realpath': SanitizerInfo('realpath', 0.7, {TaintType.USER_INPUT, TaintType.FILE_INPUT}),
-            'path.normpath': SanitizerInfo('path.normpath', 0.6, {TaintType.USER_INPUT, TaintType.FILE_INPUT}),
+            "basename": SanitizerInfo("basename", 0.8, {TaintType.USER_INPUT, TaintType.FILE_INPUT}),
+            "realpath": SanitizerInfo("realpath", 0.7, {TaintType.USER_INPUT, TaintType.FILE_INPUT}),
+            "path.normpath": SanitizerInfo("path.normpath", 0.6, {TaintType.USER_INPUT, TaintType.FILE_INPUT}),
         }
 
     def _init_dangerous_functions(self) -> Dict[str, List[TaintType]]:
         """初始化危险函数库"""
         return {
             # SQL注入相关
-            'execute': [TaintType.USER_INPUT, TaintType.REQUEST_PARAM],
-            'executemany': [TaintType.USER_INPUT, TaintType.REQUEST_PARAM],
-            'cursor.execute': [TaintType.USER_INPUT, TaintType.REQUEST_PARAM],
-            'query': [TaintType.USER_INPUT, TaintType.REQUEST_PARAM],
-            'raw': [TaintType.USER_INPUT, TaintType.REQUEST_PARAM],
-
+            "execute": [TaintType.USER_INPUT, TaintType.REQUEST_PARAM],
+            "executemany": [TaintType.USER_INPUT, TaintType.REQUEST_PARAM],
+            "cursor.execute": [TaintType.USER_INPUT, TaintType.REQUEST_PARAM],
+            "query": [TaintType.USER_INPUT, TaintType.REQUEST_PARAM],
+            "raw": [TaintType.USER_INPUT, TaintType.REQUEST_PARAM],
             # 命令注入相关
-            'os.system': [TaintType.USER_INPUT, TaintType.REQUEST_PARAM],
-            'subprocess.call': [TaintType.USER_INPUT, TaintType.REQUEST_PARAM],
-            'subprocess.run': [TaintType.USER_INPUT, TaintType.REQUEST_PARAM],
-            'subprocess.Popen': [TaintType.USER_INPUT, TaintType.REQUEST_PARAM],
-            'popen': [TaintType.USER_INPUT, TaintType.REQUEST_PARAM],
-            'spawn': [TaintType.USER_INPUT, TaintType.REQUEST_PARAM],
-
+            "os.system": [TaintType.USER_INPUT, TaintType.REQUEST_PARAM],
+            "subprocess.call": [TaintType.USER_INPUT, TaintType.REQUEST_PARAM],
+            "subprocess.run": [TaintType.USER_INPUT, TaintType.REQUEST_PARAM],
+            "subprocess.Popen": [TaintType.USER_INPUT, TaintType.REQUEST_PARAM],
+            "popen": [TaintType.USER_INPUT, TaintType.REQUEST_PARAM],
+            "spawn": [TaintType.USER_INPUT, TaintType.REQUEST_PARAM],
             # XSS相关
-            'innerHTML': [TaintType.USER_INPUT, TaintType.REQUEST_PARAM],
-            'document.write': [TaintType.USER_INPUT, TaintType.REQUEST_PARAM],
-            'eval': [TaintType.USER_INPUT, TaintType.REQUEST_PARAM],
-            'Function': [TaintType.USER_INPUT, TaintType.REQUEST_PARAM],
-            'render_template_string': [TaintType.USER_INPUT, TaintType.REQUEST_PARAM],
-            'mark_safe': [TaintType.USER_INPUT, TaintType.REQUEST_PARAM],
-
+            "innerHTML": [TaintType.USER_INPUT, TaintType.REQUEST_PARAM],
+            "document.write": [TaintType.USER_INPUT, TaintType.REQUEST_PARAM],
+            "eval": [TaintType.USER_INPUT, TaintType.REQUEST_PARAM],
+            "Function": [TaintType.USER_INPUT, TaintType.REQUEST_PARAM],
+            "render_template_string": [TaintType.USER_INPUT, TaintType.REQUEST_PARAM],
+            "mark_safe": [TaintType.USER_INPUT, TaintType.REQUEST_PARAM],
             # 反序列化相关
-            'pickle.loads': [TaintType.USER_INPUT, TaintType.NETWORK, TaintType.FILE_INPUT],
-            'pickle.load': [TaintType.USER_INPUT, TaintType.NETWORK, TaintType.FILE_INPUT],
-            'yaml.load': [TaintType.USER_INPUT, TaintType.NETWORK, TaintType.FILE_INPUT],
-            'exec': [TaintType.USER_INPUT, TaintType.NETWORK, TaintType.FILE_INPUT],
-
+            "pickle.loads": [TaintType.USER_INPUT, TaintType.NETWORK, TaintType.FILE_INPUT],
+            "pickle.load": [TaintType.USER_INPUT, TaintType.NETWORK, TaintType.FILE_INPUT],
+            "yaml.load": [TaintType.USER_INPUT, TaintType.NETWORK, TaintType.FILE_INPUT],
+            "exec": [TaintType.USER_INPUT, TaintType.NETWORK, TaintType.FILE_INPUT],
             # 文件操作相关
-            'open': [TaintType.USER_INPUT, TaintType.FILE_INPUT],
-            'file': [TaintType.USER_INPUT, TaintType.FILE_INPUT],
+            "open": [TaintType.USER_INPUT, TaintType.FILE_INPUT],
+            "file": [TaintType.USER_INPUT, TaintType.FILE_INPUT],
         }
 
     def _init_user_input_functions(self) -> Dict[str, TaintType]:
         """初始化用户输入函数库"""
         return {
             # Web框架输入
-            'request.args.get': TaintType.REQUEST_PARAM,
-            'request.form.get': TaintType.REQUEST_PARAM,
-            'request.json.get': TaintType.REQUEST_PARAM,
-            'request.data': TaintType.REQUEST_PARAM,
-            'request.values.get': TaintType.REQUEST_PARAM,
-            'request.cookies.get': TaintType.REQUEST_PARAM,
-            'request.headers.get': TaintType.REQUEST_PARAM,
-            'request.files.get': TaintType.FILE_INPUT,
-
+            "request.args.get": TaintType.REQUEST_PARAM,
+            "request.form.get": TaintType.REQUEST_PARAM,
+            "request.json.get": TaintType.REQUEST_PARAM,
+            "request.data": TaintType.REQUEST_PARAM,
+            "request.values.get": TaintType.REQUEST_PARAM,
+            "request.cookies.get": TaintType.REQUEST_PARAM,
+            "request.headers.get": TaintType.REQUEST_PARAM,
+            "request.files.get": TaintType.FILE_INPUT,
             # 标准输入
-            'input': TaintType.USER_INPUT,
-            'raw_input': TaintType.USER_INPUT,
-            'sys.stdin.read': TaintType.USER_INPUT,
-            'sys.stdin.readline': TaintType.USER_INPUT,
-
+            "input": TaintType.USER_INPUT,
+            "raw_input": TaintType.USER_INPUT,
+            "sys.stdin.read": TaintType.USER_INPUT,
+            "sys.stdin.readline": TaintType.USER_INPUT,
             # 环境变量
-            'os.environ.get': TaintType.ENVIRONMENT,
-            'os.getenv': TaintType.ENVIRONMENT,
-
+            "os.environ.get": TaintType.ENVIRONMENT,
+            "os.getenv": TaintType.ENVIRONMENT,
             # 文件读取
-            'open': TaintType.FILE_INPUT,
-            'file.read': TaintType.FILE_INPUT,
-            'read': TaintType.FILE_INPUT,
-            'readlines': TaintType.FILE_INPUT,
-            'csv.reader': TaintType.FILE_INPUT,
-            'json.load': TaintType.FILE_INPUT,
-
+            "open": TaintType.FILE_INPUT,
+            "file.read": TaintType.FILE_INPUT,
+            "read": TaintType.FILE_INPUT,
+            "readlines": TaintType.FILE_INPUT,
+            "csv.reader": TaintType.FILE_INPUT,
+            "json.load": TaintType.FILE_INPUT,
             # 网络输入
-            'socket.recv': TaintType.NETWORK,
-            'urllib.request.urlopen': TaintType.NETWORK,
-            'requests.get': TaintType.NETWORK,
-            'requests.post': TaintType.NETWORK,
+            "socket.recv": TaintType.NETWORK,
+            "urllib.request.urlopen": TaintType.NETWORK,
+            "requests.get": TaintType.NETWORK,
+            "requests.post": TaintType.NETWORK,
         }
 
     def analyze_taint_flows(self, ast_tree: ast.AST, content: str) -> List[TaintFlow]:
@@ -185,6 +183,7 @@ class TaintAnalyzer:
 
     def _identify_taint_sources(self, ast_tree: ast.AST):
         """识别污点源"""
+
         class TaintSourceVisitor(ast.NodeVisitor):
             def __init__(self, analyzer):
                 self.analyzer = analyzer
@@ -214,7 +213,7 @@ class TaintAnalyzer:
                                     taint_type=taint_type,
                                     line=node.lineno,
                                     source_function=func_name,
-                                    confidence=0.9
+                                    confidence=0.9,
                                 )
                                 self.analyzer.taint_sources[target.id] = taint_source
 
@@ -241,6 +240,7 @@ class TaintAnalyzer:
 
     def _track_data_flow(self, ast_tree: ast.AST):
         """追踪数据流"""
+
         class DataFlowVisitor(ast.NodeVisitor):
             def __init__(self, analyzer):
                 self.analyzer = analyzer
@@ -304,6 +304,7 @@ class TaintAnalyzer:
 
     def _identify_dangerous_usage(self, ast_tree: ast.AST):
         """识别危险使用"""
+
         class DangerousUsageVisitor(ast.NodeVisitor):
             def __init__(self, analyzer):
                 self.analyzer = analyzer
@@ -358,7 +359,7 @@ class TaintAnalyzer:
                         sink=func_name,
                         sink_line=node.lineno,
                         flow_path=[var_name, func_name],
-                        confidence=self._calculate_flow_confidence(taint_source, func_name)
+                        confidence=self._calculate_flow_confidence(taint_source, func_name),
                     )
                     self.analyzer.taint_flows.append(flow)
 
@@ -391,11 +392,11 @@ class TaintAnalyzer:
     def get_taint_summary(self) -> Dict[str, Any]:
         """获取污点分析摘要"""
         return {
-            'taint_sources': len(self.taint_sources),
-            'taint_flows': len(self.taint_flows),
-            'sources_by_type': self._count_sources_by_type(),
-            'flows_by_sink': self._count_flows_by_sink(),
-            'high_confidence_flows': len([f for f in self.taint_flows if f.confidence > 0.8])
+            "taint_sources": len(self.taint_sources),
+            "taint_flows": len(self.taint_flows),
+            "sources_by_type": self._count_sources_by_type(),
+            "flows_by_sink": self._count_flows_by_sink(),
+            "high_confidence_flows": len([f for f in self.taint_flows if f.confidence > 0.8]),
         }
 
     def _count_sources_by_type(self) -> Dict[str, int]:

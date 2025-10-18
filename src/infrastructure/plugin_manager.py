@@ -14,8 +14,12 @@ from typing import List, Dict, Any, Type, Optional, Protocol
 from abc import ABC, abstractmethod
 
 from ..core.interfaces import (
-    IVulnerabilityDetector, IReportGenerator, ICodeAnalyzer,
-    Vulnerability, SeverityLevel, AnalysisResult
+    IVulnerabilityDetector,
+    IReportGenerator,
+    ICodeAnalyzer,
+    Vulnerability,
+    SeverityLevel,
+    AnalysisResult,
 )
 
 
@@ -25,9 +29,15 @@ logger = logging.getLogger(__name__)
 class PluginMetadata:
     """插件元数据"""
 
-    def __init__(self, name: str, version: str, description: str,
-                 author: str = "", requires: List[str] = None,
-                 plugin_type: str = "detector"):
+    def __init__(
+        self,
+        name: str,
+        version: str,
+        description: str,
+        author: str = "",
+        requires: List[str] = None,
+        plugin_type: str = "detector",
+    ):
         self.name = name
         self.version = version
         self.description = description
@@ -45,7 +55,7 @@ class PluginMetadata:
             "author": self.author,
             "requires": self.requires,
             "plugin_type": self.plugin_type,
-            "enabled": self.enabled
+            "enabled": self.enabled,
         }
 
 
@@ -96,7 +106,7 @@ class BaseVulnerabilityDetector(BasePlugin, IVulnerabilityDetector):
             "name": self.metadata.name,
             "version": self.metadata.version,
             "description": self.metadata.description,
-            "plugin_type": self.plugin_type
+            "plugin_type": self.plugin_type,
         }
 
 
@@ -144,7 +154,7 @@ class BaseAnalyzerPlugin(BasePlugin, ICodeAnalyzer):
             "name": self.metadata.name,
             "version": self.metadata.version,
             "description": self.metadata.description,
-            "plugin_type": self.plugin_type
+            "plugin_type": self.plugin_type,
         }
 
 
@@ -242,11 +252,13 @@ class DynamicPluginManager(IPluginManager):
             # 查找插件类
             plugin_classes = []
             for name, obj in inspect.getmembers(module, inspect.isclass):
-                if (issubclass(obj, BasePlugin) and
-                    obj != BasePlugin and
-                    obj != BaseVulnerabilityDetector and
-                    obj != BaseReportGeneratorPlugin and
-                    obj != BaseAnalyzerPlugin):
+                if (
+                    issubclass(obj, BasePlugin)
+                    and obj != BasePlugin
+                    and obj != BaseVulnerabilityDetector
+                    and obj != BaseReportGeneratorPlugin
+                    and obj != BaseAnalyzerPlugin
+                ):
                     plugin_classes.append(obj)
 
             if not plugin_classes:
@@ -370,8 +382,8 @@ class DynamicPluginManager(IPluginManager):
             "plugin_types": {
                 "detector": len([p for p in self.plugins.values() if p.metadata.plugin_type == "detector"]),
                 "reporter": len([p for p in self.plugins.values() if p.metadata.plugin_type == "reporter"]),
-                "analyzer": len([p for p in self.plugins.values() if p.metadata.plugin_type == "analyzer"])
-            }
+                "analyzer": len([p for p in self.plugins.values() if p.metadata.plugin_type == "analyzer"]),
+            },
         }
 
 
@@ -385,18 +397,19 @@ class ExampleSQLInjectionDetector(BaseVulnerabilityDetector):
             version="1.0.0",
             description="示例SQL注入检测器插件",
             author="CodeSentinel Team",
-            plugin_type="detector"
+            plugin_type="detector",
         )
 
     def detect_vulnerabilities(self, content: str, file_path: Path) -> List[Vulnerability]:
         """检测SQL注入漏洞"""
         import re
+
         vulnerabilities = []
-        lines = content.split('\n')
+        lines = content.split("\n")
 
         dangerous_patterns = [
-            (r'execute\s*\([^)]*\+[^)]*\)', 'SQL字符串拼接'),
-            (r'execute\s*\([^)]*%[^)]*\)', 'SQL字符串格式化')
+            (r"execute\s*\([^)]*\+[^)]*\)", "SQL字符串拼接"),
+            (r"execute\s*\([^)]*%[^)]*\)", "SQL字符串格式化"),
         ]
 
         for i, line in enumerate(lines, 1):
@@ -409,7 +422,7 @@ class ExampleSQLInjectionDetector(BaseVulnerabilityDetector):
                         description=f"检测到{description},可能导致SQL注入",
                         remediation="使用参数化查询替代字符串拼接",
                         code_snippet=line.strip()[:100],
-                        confidence=0.8
+                        confidence=0.8,
                     )
                     vulnerabilities.append(vulnerability)
                     break
@@ -426,7 +439,7 @@ class ExampleCustomReportGenerator(BaseReportGeneratorPlugin):
             version="1.0.0",
             description="示例自定义报告生成器插件",
             author="CodeSentinel Team",
-            plugin_type="reporter"
+            plugin_type="reporter",
         )
 
     def generate_console_report(self, results: Dict[str, Any]) -> None:
@@ -437,7 +450,7 @@ class ExampleCustomReportGenerator(BaseReportGeneratorPlugin):
 
     def generate_markdown_report(self, results: Dict[str, Any], output_path: str) -> None:
         """生成自定义Markdown报告"""
-        with open(output_path, 'w', encoding='utf-8') as f:
+        with open(output_path, "w", encoding="utf-8") as f:
             f.write("# 自定义安全报告\n\n")
             f.write(f"发现 {results.get('total_vulnerabilities', 0)} 个漏洞\n")
 
@@ -454,10 +467,7 @@ class PluginFactory:
     @staticmethod
     def create_example_plugins() -> List[BasePlugin]:
         """创建示例插件"""
-        return [
-            ExampleSQLInjectionDetector(),
-            ExampleCustomReportGenerator()
-        ]
+        return [ExampleSQLInjectionDetector(), ExampleCustomReportGenerator()]
 
     @staticmethod
     def get_plugin_types() -> Dict[str, Type[BasePlugin]]:
@@ -465,5 +475,5 @@ class PluginFactory:
         return {
             "detector": BaseVulnerabilityDetector,
             "reporter": BaseReportGeneratorPlugin,
-            "analyzer": BaseAnalyzerPlugin
+            "analyzer": BaseAnalyzerPlugin,
         }

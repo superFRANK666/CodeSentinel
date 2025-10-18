@@ -9,10 +9,19 @@ from typing import Dict, Any, Type, Optional
 from pathlib import Path
 
 from .interfaces import (
-    ICodeAnalyzer, IReportGenerator, IConfigManager,
-    ICacheManager, IProgressReporter, IPluginManager,
-    IErrorHandler, ICodePrivacyManager, IAuthenticationManager,
-    AppConfig, AnalyzerConfig, ReportConfig, SecurityConfig
+    ICodeAnalyzer,
+    IReportGenerator,
+    IConfigManager,
+    ICacheManager,
+    IProgressReporter,
+    IPluginManager,
+    IErrorHandler,
+    ICodePrivacyManager,
+    IAuthenticationManager,
+    AppConfig,
+    AnalyzerConfig,
+    ReportConfig,
+    SecurityConfig,
 )
 
 
@@ -73,9 +82,9 @@ class DependencyContainer:
     def _dict_to_config(self, config_dict: Dict[str, Any]) -> AppConfig:
         """将字典转换为配置对象"""
         return AppConfig(
-            analyzer=AnalyzerConfig(**config_dict.get('analyzer', {})),
-            report=ReportConfig(**config_dict.get('report', {})),
-            security=SecurityConfig(**config_dict.get('security', {}))
+            analyzer=AnalyzerConfig(**config_dict.get("analyzer", {})),
+            report=ReportConfig(**config_dict.get("report", {})),
+            security=SecurityConfig(**config_dict.get("security", {})),
         )
 
     async def _initialize_components(self) -> None:
@@ -83,41 +92,48 @@ class DependencyContainer:
         # 配置管理器
         if not self.is_registered(IConfigManager):
             from ..infrastructure.config_manager import JsonConfigManager
+
             self.register(IConfigManager, JsonConfigManager())
 
         # 缓存管理器
-        if (not self.is_registered(ICacheManager) and
-            self._config is not None and
-            self._config.analyzer.cache_enabled):
+        if not self.is_registered(ICacheManager) and self._config is not None and self._config.analyzer.cache_enabled:
             from ..infrastructure.cache_manager import FileCacheManager
+
             cache_manager = FileCacheManager(ttl=self._config.analyzer.cache_ttl)
             self.register(ICacheManager, cache_manager)
 
         # 进度报告器
         if not self.is_registered(IProgressReporter):
             from ..infrastructure.progress_reporter import TqdmProgressReporter
+
             self.register(IProgressReporter, TqdmProgressReporter())
 
         # 错误处理器
         if not self.is_registered(IErrorHandler):
             from ..infrastructure.error_handler import FriendlyErrorHandler
+
             self.register(IErrorHandler, FriendlyErrorHandler())
 
         # 代码隐私管理器
-        if (not self.is_registered(ICodePrivacyManager) and
-            self._config is not None and
-            self._config.security.enable_privacy_check):
+        if (
+            not self.is_registered(ICodePrivacyManager)
+            and self._config is not None
+            and self._config.security.enable_privacy_check
+        ):
             from ..infrastructure.privacy_manager import RegexPrivacyManager
+
             self.register(ICodePrivacyManager, RegexPrivacyManager())
 
         # 认证管理器（可选）
         if not self.is_registered(IAuthenticationManager):
             from ..infrastructure.auth_manager import SimpleAuthManager
+
             self.register(IAuthenticationManager, SimpleAuthManager())
 
         # 插件管理器
         if not self.is_registered(IPluginManager):
             from ..infrastructure.plugin_manager import DynamicPluginManager
+
             plugin_manager = DynamicPluginManager()
             plugin_dir = Path("plugins")
             if plugin_dir.exists():
@@ -137,27 +153,28 @@ class DependencyContainer:
 
         # 总是注册本地分析器
         from ..application.local_analyzer import LocalCodeAnalyzer
-        concurrent_limit = (self._config.analyzer.concurrent_limit
-                           if self._config is not None else 5)
+
+        concurrent_limit = self._config.analyzer.concurrent_limit if self._config is not None else 5
         local_analyzer = LocalCodeAnalyzer(concurrent_limit=concurrent_limit)
         self.register(ICodeAnalyzer, local_analyzer, "local")
 
         if ai_enabled:
             # 注册AI分析器
             from ..application.ai_analyzer import AICodeAnalyzer
+
             ai_analyzer = AICodeAnalyzer(
                 model=self._config.analyzer.ai_model,
                 timeout=self._config.analyzer.api_timeout,
                 max_retries=self._config.analyzer.max_retries,
-                base_url=self._config.analyzer.base_url
+                base_url=self._config.analyzer.base_url,
             )
             self.register(ICodeAnalyzer, ai_analyzer, "ai")
 
             # 注册混合分析器（AI+本地规则）
             from ..application.hybrid_analyzer import HybridCodeAnalyzer
+
             hybrid_analyzer = HybridCodeAnalyzer(
-                ai_analyzer=self.resolve(ICodeAnalyzer, "ai"),
-                local_analyzer=self.resolve(ICodeAnalyzer, "local")
+                ai_analyzer=self.resolve(ICodeAnalyzer, "ai"), local_analyzer=self.resolve(ICodeAnalyzer, "local")
             )
             self.register(ICodeAnalyzer, hybrid_analyzer, "hybrid")
         else:
@@ -166,6 +183,7 @@ class DependencyContainer:
 
         # 注册多语言分析器（基于混合分析器或本地分析器）
         from ..application.multi_language_analyzer import MultiLanguageAnalyzer
+
         base_analyzer = self.resolve(ICodeAnalyzer, "hybrid")
         multi_language_analyzer = MultiLanguageAnalyzer(base_analyzer)
         self.register(ICodeAnalyzer, multi_language_analyzer, "multi_language")
@@ -173,13 +191,16 @@ class DependencyContainer:
     def _can_use_ai_analyzer(self) -> bool:
         """检查是否可以使用AI分析器"""
         import os
-        return bool(os.getenv('OPENAI_API_KEY'))
+
+        return bool(os.getenv("OPENAI_API_KEY"))
 
     async def _initialize_reporters(self) -> None:
         """初始化报告生成器"""
         from ..application.report_generators import (
-            ConsoleReportGenerator, MarkdownReportGenerator,
-            JsonReportGenerator, HtmlReportGenerator
+            ConsoleReportGenerator,
+            MarkdownReportGenerator,
+            JsonReportGenerator,
+            HtmlReportGenerator,
         )
 
         # 控制台报告生成器
@@ -207,7 +228,7 @@ class DependencyContainer:
     def cleanup(self) -> None:
         """清理资源"""
         for component in self._components.values():
-            if hasattr(component, 'cleanup'):
+            if hasattr(component, "cleanup"):
                 component.cleanup()
         self._components.clear()
         self._initialized = False

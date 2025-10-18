@@ -31,11 +31,7 @@ class SimpleAuthManager(IAuthenticationManager):
     def get_user_info(self) -> Optional[Dict[str, Any]]:
         """获取用户信息"""
         if self._authenticated:
-            return {
-                "user_id": "default_user",
-                "permissions": ["read", "analyze"],
-                "rate_limit": 1000
-            }
+            return {"user_id": "default_user", "permissions": ["read", "analyze"], "rate_limit": 1000}
         return None
 
     def check_permission(self, permission: str) -> bool:

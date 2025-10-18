@@ -25,8 +25,9 @@ logger = logging.getLogger(__name__)
 class AICodeAnalyzer(BaseCodeAnalyzer):
     """增强版AI代码分析器"""
 
-    def __init__(self, model: str = "gpt-4o-mini", timeout: int = 60,
-                 max_retries: int = 3, base_url: Optional[str] = None):
+    def __init__(
+        self, model: str = "gpt-4o-mini", timeout: int = 60, max_retries: int = 3, base_url: Optional[str] = None
+    ):
         super().__init__()
         self.model = model
         self.timeout = timeout
@@ -37,24 +38,20 @@ class AICodeAnalyzer(BaseCodeAnalyzer):
 
     def _initialize_client(self) -> None:
         """初始化AI客户端"""
-        api_key = os.getenv('OPENAI_API_KEY')
+        api_key = os.getenv("OPENAI_API_KEY")
         if not api_key:
             logger.warning("OpenAI API密钥未设置, AI分析器将处于不可用状态")
             return
 
         try:
             self.client = AsyncOpenAI(
-                api_key=api_key,
-                base_url=self.base_url,
-                timeout=self.timeout,
-                max_retries=self.max_retries
+                api_key=api_key, base_url=self.base_url, timeout=self.timeout, max_retries=self.max_retries
             )
         except Exception as e:
             logger.error(f"初始化OpenAI客户端失败: {e}.")
             self.client = None
 
-    async def analyze_file(self, file_path: Path,
-                           severity_filter: SeverityLevel = SeverityLevel.LOW) -> AnalysisResult:
+    async def analyze_file(self, file_path: Path, severity_filter: SeverityLevel = SeverityLevel.LOW) -> AnalysisResult:
         """分析单个文件"""
         if not self.client:
             return self._create_error_result(file_path, "AI分析器未初始化，请检查API密钥配置")
@@ -71,8 +68,7 @@ class AICodeAnalyzer(BaseCodeAnalyzer):
             ai_analysis = await self._ai_security_analysis(content, pre_analysis)
 
             # 转换结果格式
-            result = self._convert_ai_result(file_path, content, ai_analysis,
-                                            severity_filter)
+            result = self._convert_ai_result(file_path, content, ai_analysis, severity_filter)
 
             return result
 
@@ -80,8 +76,7 @@ class AICodeAnalyzer(BaseCodeAnalyzer):
             logger.error(f"AI分析文件失败 {file_path}: {e}.")
             return self._create_error_result(file_path, f"AI分析失败: {str(e)}.")
 
-    async def _ai_security_analysis(self, content: str,
-                                    pre_analysis: Dict[str, Any]) -> Dict[str, Any]:
+    async def _ai_security_analysis(self, content: str, pre_analysis: Dict[str, Any]) -> Dict[str, Any]:
         """使用AI进行深度安全分析"""
         if not self.client:
             return self._create_ai_error_result("AI客户端未初始化")
@@ -124,16 +119,13 @@ class AICodeAnalyzer(BaseCodeAnalyzer):
     "security_score": 75,
     "recommendations": ["建议1", "建议2"],
     "summary": "整体安全评估摘要"
-}"""
+}""",
                     },
-                    {
-                        "role": "user",
-                        "content": prompt
-                    }
+                    {"role": "user", "content": prompt},
                 ],
                 temperature=0.1,
                 max_tokens=4000,
-                response_format={"type": "json_object"}  # 强制JSON格式输出
+                response_format={"type": "json_object"},  # 强制JSON格式输出
             )
 
             # 解析AI响应 - 增强错误处理
@@ -166,7 +158,7 @@ class AICodeAnalyzer(BaseCodeAnalyzer):
                         "vulnerabilities": parsed_result.get("vulnerabilities", []),
                         "security_score": parsed_result.get("security_score", -1),
                         "recommendations": parsed_result.get("recommendations", ["AI响应格式不完整"]),
-                        "summary": parsed_result.get("summary", "AI分析结果")
+                        "summary": parsed_result.get("summary", "AI分析结果"),
                     }
                     return safe_result
 
@@ -176,7 +168,7 @@ class AICodeAnalyzer(BaseCodeAnalyzer):
                 logger.error(f"AI响应JSON解析失败: {e}, 原始响应: {cleaned_response[:200]}...")
 
                 # 尝试从响应中提取可能的JSON片段
-                json_match = re.search(r'\{.*\}', cleaned_response, re.DOTALL)
+                json_match = re.search(r"\{.*\}", cleaned_response, re.DOTALL)
                 if json_match:
                     try:
                         partial_result = json.loads(json_match.group())
@@ -197,8 +189,7 @@ class AICodeAnalyzer(BaseCodeAnalyzer):
             logger.error(f"AI分析出错: {e}.")
             return self._create_ai_error_result(f"AI分析出错: {str(e)}.")
 
-    def _build_enhanced_analysis_prompt(self, content: str,
-                                        pre_analysis: Dict[str, Any]) -> str:
+    def _build_enhanced_analysis_prompt(self, content: str, pre_analysis: Dict[str, Any]) -> str:
         """构建增强的分析提示词"""
         vulnerability_types = """
 请重点检查以下安全漏洞类型：
@@ -254,9 +245,9 @@ class AICodeAnalyzer(BaseCodeAnalyzer):
 """
         return prompt
 
-    def _convert_ai_result(self, file_path: Path, content: str,
-                           ai_result: Dict[str, Any],
-                           severity_filter: SeverityLevel) -> AnalysisResult:
+    def _convert_ai_result(
+        self, file_path: Path, content: str, ai_result: Dict[str, Any], severity_filter: SeverityLevel
+    ) -> AnalysisResult:
         """转换AI分析结果为标准格式"""
         vulnerabilities = []
 
@@ -277,7 +268,7 @@ class AICodeAnalyzer(BaseCodeAnalyzer):
                 code_snippet=vuln_data.get("code_snippet", "")[:200],
                 confidence=vuln_data.get("confidence", 0.8),
                 cwe_id=vuln_data.get("cwe_id"),
-                owasp_category=vuln_data.get("owasp_category")
+                owasp_category=vuln_data.get("owasp_category"),
             )
             vulnerabilities.append(vulnerability)
 
@@ -299,7 +290,7 @@ class AICodeAnalyzer(BaseCodeAnalyzer):
             security_score=security_score,
             recommendations=recommendations,
             analysis_time=0.0,  # 将在外层计算
-            pre_analysis_info=None
+            pre_analysis_info=None,
         )
 
     def _parse_severity(self, severity_str: str) -> SeverityLevel:
@@ -308,18 +299,17 @@ class AICodeAnalyzer(BaseCodeAnalyzer):
             "critical": SeverityLevel.CRITICAL,
             "high": SeverityLevel.HIGH,
             "medium": SeverityLevel.MEDIUM,
-            "low": SeverityLevel.LOW
+            "low": SeverityLevel.LOW,
         }
         return severity_map.get(severity_str.lower(), SeverityLevel.LOW)
 
-    def _should_include_vulnerability(self, severity: SeverityLevel,
-                                      filter_level: SeverityLevel) -> bool:
+    def _should_include_vulnerability(self, severity: SeverityLevel, filter_level: SeverityLevel) -> bool:
         """判断是否应该包含该漏洞"""
         severity_order = {
             SeverityLevel.LOW: 1,
             SeverityLevel.MEDIUM: 2,
             SeverityLevel.HIGH: 3,
-            SeverityLevel.CRITICAL: 4
+            SeverityLevel.CRITICAL: 4,
         }
         return severity_order.get(severity, 1) >= severity_order.get(filter_level, 1)
 
@@ -362,7 +352,7 @@ class AICodeAnalyzer(BaseCodeAnalyzer):
             "vulnerabilities": [],
             "security_score": -1,  # 特殊标记表示分析失败
             "recommendations": [f"AI分析出错: {error_message}"],
-            "summary": "AI分析失败"
+            "summary": "AI分析失败",
         }
 
     def get_analyzer_info(self) -> Dict[str, Any]:
@@ -377,13 +367,10 @@ class AICodeAnalyzer(BaseCodeAnalyzer):
                 "支持多种漏洞类型检测",
                 "智能修复建议生成",
                 "置信度评估",
-                "CWE/OWASP分类支持"
+                "CWE/OWASP分类支持",
             ],
-            "requirements": [
-                "OpenAI API密钥",
-                "网络连接"
-            ],
-            "status": "active" if self.client else "inactive"
+            "requirements": ["OpenAI API密钥", "网络连接"],
+            "status": "active" if self.client else "inactive",
         }
 
 
@@ -410,11 +397,7 @@ class OfflineAIModel:
 
         # 这里实现具体的模型推理逻辑
         # 返回与OpenAI API兼容的结果格式
-        return {
-            "vulnerabilities": [],
-            "security_score": 100,
-            "recommendations": ["离线模型分析结果"]
-        }
+        return {"vulnerabilities": [], "security_score": 100, "recommendations": ["离线模型分析结果"]}
 
 
 class LocalLLMAnalyzer(BaseCodeAnalyzer):
@@ -432,13 +415,13 @@ class LocalLLMAnalyzer(BaseCodeAnalyzer):
         try:
             # 支持Ollama API
             import httpx
+
             self.client = httpx.AsyncClient(base_url=self.base_url, timeout=30.0)
         except ImportError:
             logger.error("httpx库未安装，无法使用本地LLM分析器")
             self.client = None
 
-    async def analyze_file(self, file_path: Path,
-                           severity_filter: SeverityLevel = SeverityLevel.LOW) -> AnalysisResult:
+    async def analyze_file(self, file_path: Path, severity_filter: SeverityLevel = SeverityLevel.LOW) -> AnalysisResult:
         """使用本地LLM分析文件"""
         if not self.client:
             return self._create_error_result(file_path, "本地LLM客户端未初始化")
@@ -458,11 +441,8 @@ class LocalLLMAnalyzer(BaseCodeAnalyzer):
                     "model": self.model_name,
                     "prompt": prompt,
                     "stream": False,
-                    "options": {
-                        "temperature": 0.1,
-                        "top_p": 0.9
-                    }
-                }
+                    "options": {"temperature": 0.1, "top_p": 0.9},
+                },
             )
 
             if response.status_code != 200:
@@ -498,16 +478,17 @@ class LocalLLMAnalyzer(BaseCodeAnalyzer):
     "recommendations": [""]
 }}"""
 
-    def _parse_local_llm_result(self, file_path: Path, content: str,
-                                llm_result: Dict[str, Any],
-                                severity_filter: SeverityLevel) -> AnalysisResult:
+    def _parse_local_llm_result(
+        self, file_path: Path, content: str, llm_result: Dict[str, Any], severity_filter: SeverityLevel
+    ) -> AnalysisResult:
         """解析本地LLM结果"""
         # 解析响应文本中的JSON
         try:
             response_text = llm_result.get("response", "")
             # 尝试从响应中提取JSON
             import re
-            json_match = re.search(r'\{.*\}', response_text, re.DOTALL)
+
+            json_match = re.search(r"\{.*\}", response_text, re.DOTALL)
             if json_match:
                 analysis_result = json.loads(json_match.group())
             else:
@@ -525,13 +506,7 @@ class LocalLLMAnalyzer(BaseCodeAnalyzer):
             "description": "基于本地LLM的代码安全分析器",
             "model": self.model_name,
             "base_url": self.base_url,
-            "features": [
-                "本地AI模型支持",
-                "无需外部API",
-                "代码隐私保护"
-            ],
-            "requirements": [
-                "本地LLM服务（如Ollama）"
-            ],
-            "status": "active" if self.client else "inactive"
+            "features": ["本地AI模型支持", "无需外部API", "代码隐私保护"],
+            "requirements": ["本地LLM服务（如Ollama）"],
+            "status": "active" if self.client else "inactive",
         }

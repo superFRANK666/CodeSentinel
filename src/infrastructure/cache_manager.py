@@ -48,7 +48,7 @@ class FileCacheManager(ICacheManager):
                 return None
 
             # 读取缓存数据
-            with open(cache_file, 'r', encoding='utf-8') as f:
+            with open(cache_file, "r", encoding="utf-8") as f:
                 cache_data = json.load(f)
 
             # 反序列化分析结果
@@ -87,14 +87,14 @@ class FileCacheManager(ICacheManager):
 
                 # 序列化分析结果
                 cache_data = self._serialize_result(result)
-                cache_data['_timestamp'] = time.time()
-                cache_data['_ttl'] = self.ttl
+                cache_data["_timestamp"] = time.time()
+                cache_data["_ttl"] = self.ttl
 
                 # 使用临时文件和原子重命名避免并发写入问题
-                temp_file = cache_file.with_suffix('.tmp')
+                temp_file = cache_file.with_suffix(".tmp")
 
                 try:
-                    with open(temp_file, 'w', encoding='utf-8') as f:
+                    with open(temp_file, "w", encoding="utf-8") as f:
                         json.dump(cache_data, f, indent=2, ensure_ascii=False)
 
                     # 原子重命名,确保缓存文件始终处于一致状态
@@ -155,7 +155,7 @@ class FileCacheManager(ICacheManager):
     def _calculate_file_hash(self, file_path: Path) -> str:
         """计算文件内容的SHA-256哈希值"""
         try:
-            with open(file_path, 'rb') as f:
+            with open(file_path, "rb") as f:
                 file_content = f.read()
                 return hashlib.sha256(file_content).hexdigest()
         except Exception as e:
@@ -170,6 +170,7 @@ class FileCacheManager(ICacheManager):
         # 清空文件缓存
         try:
             import shutil
+
             if self.cache_dir.exists():
                 shutil.rmtree(self.cache_dir)
             self.cache_dir.mkdir(exist_ok=True)
@@ -270,14 +271,14 @@ class FileCacheManager(ICacheManager):
                     "code_snippet": v.code_snippet,
                     "confidence": v.confidence,
                     "cwe_id": v.cwe_id,
-                    "owasp_category": v.owasp_category
+                    "owasp_category": v.owasp_category,
                 }
                 for v in result.vulnerabilities
             ],
             "security_score": result.security_score,
             "recommendations": result.recommendations,
             "analysis_time": result.analysis_time,
-            "pre_analysis_info": result.pre_analysis_info
+            "pre_analysis_info": result.pre_analysis_info,
         }
 
     def _deserialize_result(self, data: Dict[str, Any]) -> AnalysisResult:
@@ -295,7 +296,7 @@ class FileCacheManager(ICacheManager):
                 code_snippet=vuln_data["code_snippet"],
                 confidence=vuln_data.get("confidence", 0.8),
                 cwe_id=vuln_data.get("cwe_id"),
-                owasp_category=vuln_data.get("owasp_category")
+                owasp_category=vuln_data.get("owasp_category"),
             )
             vulnerabilities.append(vulnerability)
 
@@ -307,7 +308,7 @@ class FileCacheManager(ICacheManager):
             security_score=data["security_score"],
             recommendations=data["recommendations"],
             analysis_time=data["analysis_time"],
-            pre_analysis_info=data.get("pre_analysis_info")
+            pre_analysis_info=data.get("pre_analysis_info"),
         )
 
     def _get_dir_size(self, path: Path) -> int:
@@ -372,5 +373,5 @@ class MemoryCacheManager(ICacheManager):
             "cache_size": len(self._cache),
             "max_size": self.max_size,
             "ttl": self.ttl,
-            "memory_usage": "low"  # 内存使用相对较低
+            "memory_usage": "low",  # 内存使用相对较低
         }

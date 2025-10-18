@@ -8,11 +8,15 @@
 import json
 import xml.etree.ElementTree as ET
 from datetime import datetime
-from pathlib import Path
 from typing import Dict, Any, List, Optional
 from xml.dom import minidom
 
-from ..core.interfaces import IReportGenerator, Vulnerability, SeverityLevel, AnalysisResult
+from ..core.interfaces import (
+    IReportGenerator,
+    Vulnerability,
+    SeverityLevel,
+    AnalysisResult,
+)
 
 
 class BaseReportGenerator(IReportGenerator):
@@ -20,27 +24,29 @@ class BaseReportGenerator(IReportGenerator):
 
     def __init__(self):
         self.severity_colors = {
-            'critical': '🔴',
-            'high': '🔴',
-            'medium': '🟡',
-            'low': '🟢'
+            "critical": "🔴",
+            "high": "🔴",
+            "medium": "🟡",
+            "low": "🟢",
         }
         self.severity_names = {
-            'critical': '严重',
-            'high': '高危',
-            'medium': '中危',
-            'low': '低危'
+            "critical": "严重",
+            "high": "高危",
+            "medium": "中危",
+            "low": "低危",
         }
 
     def _format_severity(self, severity: SeverityLevel) -> str:
         """格式化严重度显示"""
-        emoji = self.severity_colors.get(severity.value, '⚪')
+        emoji = self.severity_colors.get(severity.value, "⚪")
         name = self.severity_names.get(severity.value, severity.value)
         return f"{emoji} {name}"
 
-    def _group_vulnerabilities_by_severity(self, vulnerabilities: List[Vulnerability]) -> Dict[str, List[Vulnerability]]:
+    def _group_vulnerabilities_by_severity(
+        self, vulnerabilities: List[Vulnerability]
+    ) -> Dict[str, List[Vulnerability]]:
         """按严重度对漏洞进行分组"""
-        grouped = {'critical': [], 'high': [], 'medium': [], 'low': []}
+        grouped = {"critical": [], "high": [], "medium": [], "low": []}
 
         for vuln in vulnerabilities:
             severity = vuln.severity.value
@@ -51,45 +57,46 @@ class BaseReportGenerator(IReportGenerator):
 
     def _calculate_statistics(self, results: Dict[str, Any]) -> Dict[str, Any]:
         """计算统计信息"""
-        summary = results.get('scan_summary', {})
-        file_results = results.get('file_results', [])
+        summary = results.get("scan_summary", {})
+        file_results = results.get("file_results", [])
 
-        total_vulnerabilities = summary.get('total_vulnerabilities', 0)
-        severity_counts = summary.get('severity_counts', {})
+        total_vulnerabilities = summary.get("total_vulnerabilities", 0)
+        severity_counts = summary.get("severity_counts", {})
 
         # 计算各类漏洞的百分比
         stats = {
-            'total_files': summary.get('total_files', 0),
-            'total_vulnerabilities': total_vulnerabilities,
-            'scan_time': summary.get('scan_time', 0),
-            'severity_breakdown': {},
-            'risk_assessment': self._assess_risk_level(total_vulnerabilities, severity_counts),
-            'top_vulnerability_types': self._get_top_vulnerability_types(file_results),
-            'files_with_issues': summary.get('files_with_issues', 0)
+            "total_files": summary.get("total_files", 0),
+            "total_vulnerabilities": total_vulnerabilities,
+            "scan_time": summary.get("scan_time", 0),
+            "severity_breakdown": {},
+            "risk_assessment": self._assess_risk_level(
+                total_vulnerabilities, severity_counts
+            ),
+            "top_vulnerability_types": self._get_top_vulnerability_types(file_results),
+            "files_with_issues": summary.get("files_with_issues", 0),
         }
 
         # 计算各严重度的百分比
         if total_vulnerabilities > 0:
             for severity, count in severity_counts.items():
                 percentage = (count / total_vulnerabilities) * 100
-                stats['severity_breakdown'][severity] = {
-                    'count': count,
-                    'percentage': round(percentage, 1)
+                stats["severity_breakdown"][severity] = {
+                    "count": count,
+                    "percentage": round(percentage, 1),
                 }
         else:
-            for severity in ['critical', 'high', 'medium', 'low']:
-                stats['severity_breakdown'][severity] = {
-                    'count': 0,
-                    'percentage': 0.0
-                }
+            for severity in ["critical", "high", "medium", "low"]:
+                stats["severity_breakdown"][severity] = {"count": 0, "percentage": 0.0}
 
         return stats
 
-    def _assess_risk_level(self, total_vulnerabilities: int, severity_counts: Dict[str, int]) -> str:
+    def _assess_risk_level(
+        self, total_vulnerabilities: int, severity_counts: Dict[str, int]
+    ) -> str:
         """评估风险等级"""
-        critical_count = severity_counts.get('critical', 0)
-        high_count = severity_counts.get('high', 0)
-        medium_count = severity_counts.get('medium', 0)
+        critical_count = severity_counts.get("critical", 0)
+        high_count = severity_counts.get("high", 0)
+        medium_count = severity_counts.get("medium", 0)
 
         if critical_count > 0 or high_count >= 5:
             return "极高风险."
@@ -100,7 +107,9 @@ class BaseReportGenerator(IReportGenerator):
         else:
             return "低风险."
 
-    def _get_top_vulnerability_types(self, file_results: List[AnalysisResult]) -> List[Dict[str, Any]]:
+    def _get_top_vulnerability_types(
+        self, file_results: List[AnalysisResult]
+    ) -> List[Dict[str, Any]]:
         """获取最常见的漏洞类型"""
         vuln_type_counts = {}
 
@@ -109,8 +118,10 @@ class BaseReportGenerator(IReportGenerator):
                 vuln_type_counts[vuln.type] = vuln_type_counts.get(vuln.type, 0) + 1
 
         # 排序并返回前10种
-        sorted_types = sorted(vuln_type_counts.items(), key=lambda x: x[1], reverse=True)
-        return [{'type': vtype, 'count': count} for vtype, count in sorted_types[:10]]
+        sorted_types = sorted(
+            vuln_type_counts.items(), key=lambda x: x[1], reverse=True
+        )
+        return [{"type": vtype, "count": count} for vtype, count in sorted_types[:10]]
 
 
 class ConsoleReportGenerator(BaseReportGenerator):
@@ -118,7 +129,7 @@ class ConsoleReportGenerator(BaseReportGenerator):
 
     def generate_report(self, results: Dict[str, Any], output_path: str = None) -> None:
         """生成控制台报告"""
-        file_results = results.get('file_results', [])
+        file_results = results.get("file_results", [])
         stats = self._calculate_statistics(results)
 
         # 显示扫描摘要
@@ -143,22 +154,28 @@ class ConsoleReportGenerator(BaseReportGenerator):
         print(f"🎯 发现漏洞: {stats['total_vulnerabilities']}个")
         print(f"📊 风险等级: {stats['risk_assessment']}")
 
-        if stats['total_vulnerabilities'] > 0:
+        if stats["total_vulnerabilities"] > 0:
             print("\n📈 漏洞分布:")
-            for severity, info in stats['severity_breakdown'].items():
-                if info['count'] > 0:
-                    emoji = self.severity_colors.get(severity, '⚪')
+            for severity, info in stats["severity_breakdown"].items():
+                if info["count"] > 0:
+                    emoji = self.severity_colors.get(severity, "⚪")
                     name = self.severity_names.get(severity, severity)
-                    print(f"   {emoji} {name}: {info['count']}个 ({info['percentage']}%) ")
+                    print(
+                        f"   {emoji} {name}: {info['count']}个 ({info['percentage']}%) "
+                    )
 
         print("=" * 60)
 
-    def _display_detailed_results(self, file_results: List[AnalysisResult], stats: Dict[str, Any]) -> None:
+    def _display_detailed_results(
+        self, file_results: List[AnalysisResult], stats: Dict[str, Any]
+    ) -> None:
         """显示详细分析结果"""
         for i, file_result in enumerate(file_results, 1):
             self._display_file_result(file_result, i, stats)
 
-    def _display_file_result(self, file_result: AnalysisResult, index: int, stats: Dict[str, Any]) -> None:
+    def _display_file_result(
+        self, file_result: AnalysisResult, index: int, stats: Dict[str, Any]
+    ) -> None:
         """显示单个文件的分析结果"""
         file_path = file_result.file_path
         vulnerabilities = file_result.vulnerabilities
@@ -168,8 +185,12 @@ class ConsoleReportGenerator(BaseReportGenerator):
         print(f"\n📄 文件 {index}: {file_path}")
         print("-" * 50)
 
-        if status == 'error':
-            error_msg = file_result.recommendations[0] if file_result.recommendations else '未知错误'
+        if status == "error":
+            error_msg = (
+                file_result.recommendations[0]
+                if file_result.recommendations
+                else "未知错误"
+            )
             print(f"❌ 分析失败: {error_msg}")
             return
 
@@ -186,14 +207,16 @@ class ConsoleReportGenerator(BaseReportGenerator):
 
         for severity, vuln_list in vuln_by_severity.items():
             if vuln_list:
-                emoji = self.severity_colors.get(severity, '⚪')
+                emoji = self.severity_colors.get(severity, "⚪")
                 name = self.severity_names.get(severity, severity)
                 print(f"\n{emoji} {name}漏洞 ({len(vuln_list)}个):")
 
                 for j, vuln in enumerate(vuln_list, 1):
                     self._display_vulnerability(vuln, j, stats)
 
-    def _display_vulnerability(self, vuln: Vulnerability, index: int, stats: Dict[str, Any]) -> None:
+    def _display_vulnerability(
+        self, vuln: Vulnerability, index: int, stats: Dict[str, Any]
+    ) -> None:
         """显示单个漏洞详情"""
         vuln_type = vuln.type
         line = vuln.line
@@ -206,7 +229,9 @@ class ConsoleReportGenerator(BaseReportGenerator):
         print(f"      📖 描述: {description}")
 
         if code_snippet:
-            print(f"      💻 代码: {code_snippet[:100]}{'...' if len(code_snippet) > 100 else ''}")
+            print(
+                f"      💻 代码: {code_snippet[:100]}{'...' if len(code_snippet) > 100 else ''}"
+            )
 
         print(f"      🔧 修复: {remediation}")
 
@@ -216,11 +241,13 @@ class ConsoleReportGenerator(BaseReportGenerator):
         if vuln.owasp_category:
             print(f"      🛡️  OWASP: {vuln.owasp_category}")
 
-    def _display_summary_and_recommendations(self, file_results: List[AnalysisResult], stats: Dict[str, Any]) -> None:
+    def _display_summary_and_recommendations(
+        self, file_results: List[AnalysisResult], stats: Dict[str, Any]
+    ) -> None:
         """显示总结和建议"""
         all_recommendations = []
-        total_vulnerabilities = stats['total_vulnerabilities']
-        files_with_issues = stats['files_with_issues']
+        total_vulnerabilities = stats["total_vulnerabilities"]
+        files_with_issues = stats["files_with_issues"]
 
         # 收集所有推荐建议
         for file_result in file_results:
@@ -237,9 +264,9 @@ class ConsoleReportGenerator(BaseReportGenerator):
         print(f"📊 风险等级: {stats['risk_assessment']}")
 
         # 显示常见漏洞类型
-        if stats['top_vulnerability_types']:
+        if stats["top_vulnerability_types"]:
             print("\n🔍 常见漏洞类型:")
-            for i, vuln_type in enumerate(stats['top_vulnerability_types'][:5], 1):
+            for i, vuln_type in enumerate(stats["top_vulnerability_types"][:5], 1):
                 print(f"   {i}. {vuln_type['type']}: {vuln_type['count']}个")
 
         # 显示通用建议
@@ -253,9 +280,9 @@ class ConsoleReportGenerator(BaseReportGenerator):
         print("\n🎯 整体评估:")
         if total_vulnerabilities == 0:
             print("   ✅ 代码安全性良好，未发现明显漏洞")
-        elif stats['risk_assessment'] == "极高风险":
+        elif stats["risk_assessment"] == "极高风险":
             print("   🚨 发现严重安全问题，需要立即处理")
-        elif stats['risk_assessment'] == "高风险":
+        elif stats["risk_assessment"] == "高风险":
             print("   ⚠️  发现较多安全问题，需要尽快修复")
         else:
             print("   ℹ️  发现少量安全问题，建议及时修复")
@@ -273,14 +300,16 @@ class ConsoleReportGenerator(BaseReportGenerator):
 class MarkdownReportGenerator(BaseReportGenerator):
     """Markdown报告生成器"""
 
-    def generate_report(self, results: Dict[str, Any], output_path: Optional[str] = None) -> None:
+    def generate_report(
+        self, results: Dict[str, Any], output_path: Optional[str] = None
+    ) -> None:
         """生成Markdown报告"""
         try:
             stats = self._calculate_statistics(results)
             content = self._build_markdown_content(results, stats)
 
             if output_path:
-                with open(output_path, 'w', encoding='utf-8') as f:
+                with open(output_path, "w", encoding="utf-8") as f:
                     f.write(content)
             else:
                 print(content)
@@ -288,9 +317,11 @@ class MarkdownReportGenerator(BaseReportGenerator):
         except Exception as e:
             raise RuntimeError(f"生成Markdown报告失败: {e}.")
 
-    def _build_markdown_content(self, results: Dict[str, Any], stats: Dict[str, Any]) -> str:
+    def _build_markdown_content(
+        self, results: Dict[str, Any], stats: Dict[str, Any]
+    ) -> str:
         """构建Markdown内容"""
-        file_results = results.get('file_results', [])
+        file_results = results.get("file_results", [])
         current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         content = f"""# 🔍 AI代码安全审计报告
@@ -317,21 +348,21 @@ class MarkdownReportGenerator(BaseReportGenerator):
 """
 
         # 添加漏洞分布图表
-        for severity, info in stats['severity_breakdown'].items():
-            if info['count'] > 0:
-                emoji = self.severity_colors.get(severity, '⚪')
+        for severity, info in stats["severity_breakdown"].items():
+            if info["count"] > 0:
+                emoji = self.severity_colors.get(severity, "⚪")
                 name = self.severity_names.get(severity, severity)
-                bar_length = int(info['percentage'] / 5)
+                bar_length = int(info["percentage"] / 5)
                 content += f"{emoji} {name:4} | {'█' * bar_length} {info['percentage']:.1f}% ({info['count']}个)\n"
 
         content += "```\n\n"
 
         # 添加常见漏洞类型
-        if stats['top_vulnerability_types']:
+        if stats["top_vulnerability_types"]:
             content += "### 🔍 常见漏洞类型\n\n"
             content += "| 排名 | 漏洞类型 | 数量 |\n"
             content += "|------|----------|------|\n"
-            for i, vuln_type in enumerate(stats['top_vulnerability_types'][:10], 1):
+            for i, vuln_type in enumerate(stats["top_vulnerability_types"][:10], 1):
                 content += f"| {i} | {vuln_type['type']} | {vuln_type['count']} |\n"
             content += "\n"
 
@@ -352,7 +383,9 @@ class MarkdownReportGenerator(BaseReportGenerator):
 
         return content
 
-    def _generate_file_section(self, file_result: AnalysisResult, index: int, stats: Dict[str, Any]) -> str:
+    def _generate_file_section(
+        self, file_result: AnalysisResult, index: int, stats: Dict[str, Any]
+    ) -> str:
         """生成单个文件的报告章节"""
         file_path = file_result.file_path
         vulnerabilities = file_result.vulnerabilities
@@ -361,13 +394,19 @@ class MarkdownReportGenerator(BaseReportGenerator):
 
         section = f"""### 📄 文件 {index}: `{file_path}`\n\n"""
 
-        if status == 'error':
-            error_msg = file_result.recommendations[0] if file_result.recommendations else '未知错误.'
+        if status == "error":
+            error_msg = (
+                file_result.recommendations[0]
+                if file_result.recommendations
+                else "未知错误."
+            )
             section += f"\n❌ **分析失败**: {error_msg}\n\n"
             return section
 
         # 安全评分
-        score_color = "🟢" if security_score >= 80 else "🟡" if security_score >= 60 else "🔴"
+        score_color = (
+            "🟢" if security_score >= 80 else "🟡" if security_score >= 60 else "🔴"
+        )
         section += f"**🔒 安全评分**: {score_color} {security_score}/100\n\n"
 
         if not vulnerabilities:
@@ -379,7 +418,7 @@ class MarkdownReportGenerator(BaseReportGenerator):
 
         for severity, vuln_list in vuln_by_severity.items():
             if vuln_list:
-                emoji = self.severity_colors.get(severity, '⚪')
+                emoji = self.severity_colors.get(severity, "⚪")
                 name = self.severity_names.get(severity, severity)
                 section += f"#### {emoji} {name}漏洞 ({len(vuln_list)}个)\n\n"
 
@@ -390,7 +429,7 @@ class MarkdownReportGenerator(BaseReportGenerator):
 
     def _generate_vulnerability_detail(self, vuln: Vulnerability, index: int) -> str:
         """生成单个漏洞的详细信息"""
-        emoji = self.severity_colors.get(vuln.severity.value, '⚪')
+        emoji = self.severity_colors.get(vuln.severity.value, "⚪")
 
         detail = f"""**{index}. {emoji} {vuln.type}**\n\n"""
         detail += f"- **位置**: 第{vuln.line}行\n"
@@ -412,7 +451,9 @@ class MarkdownReportGenerator(BaseReportGenerator):
         detail += "\n---\n\n"
         return detail
 
-    def _generate_recommendations_section(self, file_results: List[AnalysisResult], stats: Dict[str, Any]) -> str:
+    def _generate_recommendations_section(
+        self, file_results: List[AnalysisResult], stats: Dict[str, Any]
+    ) -> str:
         """生成安全建议章节"""
         all_recommendations = set()
 
@@ -509,13 +550,15 @@ class MarkdownReportGenerator(BaseReportGenerator):
 class JsonReportGenerator(BaseReportGenerator):
     """JSON报告生成器"""
 
-    def generate_report(self, results: Dict[str, Any], output_path: Optional[str] = None) -> None:
+    def generate_report(
+        self, results: Dict[str, Any], output_path: Optional[str] = None
+    ) -> None:
         """生成JSON报告"""
         try:
             json_data = self._build_json_content(results)
 
             if output_path:
-                with open(output_path, 'w', encoding='utf-8') as f:
+                with open(output_path, "w", encoding="utf-8") as f:
                     json.dump(json_data, f, indent=2, ensure_ascii=False)
             else:
                 print(json.dumps(json_data, indent=2, ensure_ascii=False))
@@ -526,33 +569,39 @@ class JsonReportGenerator(BaseReportGenerator):
     def _build_json_content(self, results: Dict[str, Any]) -> Dict[str, Any]:
         """构建JSON内容"""
         stats = self._calculate_statistics(results)
-        file_results = results.get('file_results', [])
+        file_results = results.get("file_results", [])
 
         return {
             "scan_metadata": {
                 "tool_name": "AI Code Security Audit Tool",
                 "version": "2.0.0",
                 "scan_timestamp": datetime.now().isoformat(),
-                "analysis_engine": results.get('scan_summary', {}).get('analysis_engine', 'hybrid'),
-                "scan_duration": stats['scan_time']
+                "analysis_engine": results.get("scan_summary", {}).get(
+                    "analysis_engine", "hybrid"
+                ),
+                "scan_duration": stats["scan_time"],
             },
             "summary": {
-                "total_files": stats['total_files'],
-                "total_vulnerabilities": stats['total_vulnerabilities'],
-                "files_with_issues": stats['files_with_issues'],
-                "risk_assessment": stats['risk_assessment'],
-                "severity_breakdown": stats['severity_breakdown'],
-                "top_vulnerability_types": stats['top_vulnerability_types']
+                "total_files": stats["total_files"],
+                "total_vulnerabilities": stats["total_vulnerabilities"],
+                "files_with_issues": stats["files_with_issues"],
+                "risk_assessment": stats["risk_assessment"],
+                "severity_breakdown": stats["severity_breakdown"],
+                "top_vulnerability_types": stats["top_vulnerability_types"],
             },
             "results": [
                 self._standardize_file_result(result) for result in file_results
             ],
             "recommendations": self._extract_all_recommendations(results),
             "statistics": {
-                "average_vulnerabilities_per_file": round(stats['total_vulnerabilities'] / max(stats['total_files'], 1), 2),
-                "most_common_severity": self._get_most_common_severity(stats['severity_breakdown']),
-                "scan_efficiency": self._calculate_scan_efficiency(stats)
-            }
+                "average_vulnerabilities_per_file": round(
+                    stats["total_vulnerabilities"] / max(stats["total_files"], 1), 2
+                ),
+                "most_common_severity": self._get_most_common_severity(
+                    stats["severity_breakdown"]
+                ),
+                "scan_efficiency": self._calculate_scan_efficiency(stats),
+            },
         }
 
     def _standardize_file_result(self, file_result: AnalysisResult) -> Dict[str, Any]:
@@ -577,19 +626,19 @@ class JsonReportGenerator(BaseReportGenerator):
                     "owasp_category": vuln.owasp_category,
                     "metadata": {
                         "detected_by": "hybrid_analysis",
-                        "detection_timestamp": datetime.now().isoformat()
-                    }
+                        "detection_timestamp": datetime.now().isoformat(),
+                    },
                 }
                 for vuln in file_result.vulnerabilities
             ],
-            "recommendations": file_result.recommendations
+            "recommendations": file_result.recommendations,
         }
 
     def _extract_all_recommendations(self, results: Dict[str, Any]) -> List[str]:
         """提取所有推荐建议"""
         recommendations = set()
-        for file_result in results.get('file_results', []):
-            recommendations.update(file_result.get('recommendations', []))
+        for file_result in results.get("file_results", []):
+            recommendations.update(file_result.get("recommendations", []))
         return list(recommendations)
 
     def _get_most_common_severity(self, severity_breakdown: Dict[str, Any]) -> str:
@@ -600,30 +649,39 @@ class JsonReportGenerator(BaseReportGenerator):
         max_count = 0
         most_common = "none"
         for severity, info in severity_breakdown.items():
-            if info['count'] > max_count:
-                max_count = info['count']
+            if info["count"] > max_count:
+                max_count = info["count"]
                 most_common = severity
         return most_common
 
     def _calculate_scan_efficiency(self, stats: Dict[str, Any]) -> Dict[str, Any]:
         """计算扫描效率"""
         return {
-            "vulnerabilities_per_second": round(stats['total_vulnerabilities'] / max(stats['scan_time'], 0.1), 2),
-            "files_per_second": round(stats['total_files'] / max(stats['scan_time'], 0.1), 2),
-            "efficiency_score": min(100, int(stats['total_vulnerabilities'] / max(stats['total_files'], 1) * 10))
+            "vulnerabilities_per_second": round(
+                stats["total_vulnerabilities"] / max(stats["scan_time"], 0.1), 2
+            ),
+            "files_per_second": round(
+                stats["total_files"] / max(stats["scan_time"], 0.1), 2
+            ),
+            "efficiency_score": min(
+                100,
+                int(stats["total_vulnerabilities"] / max(stats["total_files"], 1) * 10),
+            ),
         }
 
 
 class HtmlReportGenerator(BaseReportGenerator):
     """HTML报告生成器"""
 
-    def generate_report(self, results: Dict[str, Any], output_path: Optional[str] = None) -> None:
+    def generate_report(
+        self, results: Dict[str, Any], output_path: Optional[str] = None
+    ) -> None:
         """生成HTML报告"""
         try:
             html_content = self._build_html_content(results)
 
             if output_path:
-                with open(output_path, 'w', encoding='utf-8') as f:
+                with open(output_path, "w", encoding="utf-8") as f:
                     f.write(html_content)
             else:
                 print(html_content)
@@ -634,7 +692,7 @@ class HtmlReportGenerator(BaseReportGenerator):
     def _build_html_content(self, results: Dict[str, Any]) -> str:
         """构建HTML内容"""
         stats = self._calculate_statistics(results)
-        file_results = results.get('file_results', [])
+        file_results = results.get("file_results", [])
         current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         html = f"""<!DOCTYPE html>
@@ -800,11 +858,11 @@ class HtmlReportGenerator(BaseReportGenerator):
 """
 
         # 添加漏洞分布表
-        for severity, info in stats['severity_breakdown'].items():
-            if info['count'] > 0:
-                emoji = self.severity_colors.get(severity, '⚪')
+        for severity, info in stats["severity_breakdown"].items():
+            if info["count"] > 0:
+                emoji = self.severity_colors.get(severity, "⚪")
                 name = self.severity_names.get(severity, severity)
-                percentage = info['percentage']
+                percentage = info["percentage"]
                 bar_width = int(percentage * 2)
 
                 html += f"""
@@ -849,11 +907,13 @@ class HtmlReportGenerator(BaseReportGenerator):
             "极高风险": "high-risk",
             "高风险": "medium-risk",
             "中等风险": "low-risk",
-            "低风险": "low-risk"
+            "低风险": "low-risk",
         }
         return risk_class_map.get(risk_level, "low-risk")
 
-    def _generate_html_file_section(self, file_result: AnalysisResult, index: int) -> str:
+    def _generate_html_file_section(
+        self, file_result: AnalysisResult, index: int
+    ) -> str:
         """生成HTML文件部分"""
         file_path = file_result.file_path
         vulnerabilities = file_result.vulnerabilities
@@ -897,7 +957,9 @@ class HtmlReportGenerator(BaseReportGenerator):
         </div>
 """
 
-    def _generate_html_recommendations_section(self, file_results: List[AnalysisResult]) -> str:
+    def _generate_html_recommendations_section(
+        self, file_results: List[AnalysisResult]
+    ) -> str:
         """生成HTML安全建议部分"""
         all_recommendations = set()
         for file_result in file_results:
@@ -921,7 +983,9 @@ class HtmlReportGenerator(BaseReportGenerator):
 class XmlReportGenerator(BaseReportGenerator):
     """XML报告生成器"""
 
-    def generate_report(self, results: Dict[str, Any], output_path: Optional[str] = None) -> None:
+    def generate_report(
+        self, results: Dict[str, Any], output_path: Optional[str] = None
+    ) -> None:
         """生成XML报告"""
         try:
             xml_content = self._build_xml_content(results)
@@ -931,7 +995,7 @@ class XmlReportGenerator(BaseReportGenerator):
             pretty_xml = dom.toprettyxml(indent="  ")
 
             if output_path:
-                with open(output_path, 'w', encoding='utf-8') as f:
+                with open(output_path, "w", encoding="utf-8") as f:
                     f.write(pretty_xml)
             else:
                 print(pretty_xml)
@@ -942,7 +1006,7 @@ class XmlReportGenerator(BaseReportGenerator):
     def _build_xml_content(self, results: Dict[str, Any]) -> str:
         """构建XML内容"""
         stats = self._calculate_statistics(results)
-        file_results = results.get('file_results', [])
+        file_results = results.get("file_results", [])
 
         # 创建根元素
         root = ET.Element("SecurityAuditReport")
@@ -953,23 +1017,27 @@ class XmlReportGenerator(BaseReportGenerator):
         metadata = ET.SubElement(root, "Metadata")
         ET.SubElement(metadata, "ToolName").text = "AI Code Security Audit Tool"
         ET.SubElement(metadata, "Version").text = "2.0.0"
-        ET.SubElement(metadata, "AnalysisEngine").text = results.get('scan_summary', {}).get('analysis_engine', 'hybrid')
-        ET.SubElement(metadata, "ScanDuration").text = str(stats['scan_time'])
+        ET.SubElement(metadata, "AnalysisEngine").text = results.get(
+            "scan_summary", {}
+        ).get("analysis_engine", "hybrid")
+        ET.SubElement(metadata, "ScanDuration").text = str(stats["scan_time"])
 
         # 添加摘要
         summary = ET.SubElement(root, "Summary")
-        ET.SubElement(summary, "TotalFiles").text = str(stats['total_files'])
-        ET.SubElement(summary, "TotalVulnerabilities").text = str(stats['total_vulnerabilities'])
-        ET.SubElement(summary, "FilesWithIssues").text = str(stats['files_with_issues'])
-        ET.SubElement(summary, "RiskAssessment").text = stats['risk_assessment']
+        ET.SubElement(summary, "TotalFiles").text = str(stats["total_files"])
+        ET.SubElement(summary, "TotalVulnerabilities").text = str(
+            stats["total_vulnerabilities"]
+        )
+        ET.SubElement(summary, "FilesWithIssues").text = str(stats["files_with_issues"])
+        ET.SubElement(summary, "RiskAssessment").text = stats["risk_assessment"]
 
         # 添加严重度分布
         severity_dist = ET.SubElement(summary, "SeverityDistribution")
-        for severity, info in stats['severity_breakdown'].items():
-            if info['count'] > 0:
+        for severity, info in stats["severity_breakdown"].items():
+            if info["count"] > 0:
                 severity_elem = ET.SubElement(severity_dist, "Severity")
                 severity_elem.set("level", severity)
-                severity_elem.set("count", str(info['count']))
+                severity_elem.set("count", str(info["count"]))
                 severity_elem.set("percentage", f"{info['percentage']:.1f}")
 
         # 添加结果
@@ -984,9 +1052,11 @@ class XmlReportGenerator(BaseReportGenerator):
             ET.SubElement(recommendations, "Recommendation").text = rec
 
         # 转换为字符串
-        return ET.tostring(root, encoding='unicode')
+        return ET.tostring(root, encoding="unicode")
 
-    def _add_file_result_to_xml(self, parent: ET.Element, file_result: AnalysisResult) -> None:
+    def _add_file_result_to_xml(
+        self, parent: ET.Element, file_result: AnalysisResult
+    ) -> None:
         """添加文件结果到XML"""
         file_elem = ET.SubElement(parent, "File")
         file_elem.set("path", file_result.file_path)
@@ -1019,7 +1089,7 @@ class XmlReportGenerator(BaseReportGenerator):
     def _extract_all_recommendations(self, results: Dict[str, Any]) -> List[str]:
         """提取所有推荐建议"""
         recommendations = set()
-        for file_result in results.get('file_results', []):
+        for file_result in results.get("file_results", []):
             recommendations.update(file_result.recommendations)
         return list(recommendations)
 
@@ -1029,7 +1099,9 @@ class ReportGeneratorFactory:
     """报告生成器工厂"""
 
     @staticmethod
-    def create_report_generator(generator_type: str = "console", **kwargs) -> IReportGenerator:
+    def create_report_generator(
+        generator_type: str = "console", **kwargs
+    ) -> IReportGenerator:
         """创建报告生成器实例"""
         generator_type = generator_type.lower()
 
@@ -1058,27 +1130,27 @@ class ReportGeneratorFactory:
             "console": {
                 "description": "控制台输出，适合命令行查看",
                 "file_extension": None,
-                "use_case": "快速查看分析结果"
+                "use_case": "快速查看分析结果",
             },
             "markdown": {
                 "description": "Markdown格式，适合文档和分享",
                 "file_extension": ".md",
-                "use_case": "生成可读的审计报告"
+                "use_case": "生成可读的审计报告",
             },
             "json": {
                 "description": "JSON格式，适合程序化处理",
                 "file_extension": ".json",
-                "use_case": "集成到其他工具或系统"
+                "use_case": "集成到其他工具或系统",
             },
             "html": {
                 "description": "HTML格式，适合网页查看",
                 "file_extension": ".html",
-                "use_case": "生成交互式报告"
+                "use_case": "生成交互式报告",
             },
             "xml": {
                 "description": "XML格式，适合企业集成",
                 "file_extension": ".xml",
-                "use_case": "与传统安全工具集成"
-            }
+                "use_case": "与传统安全工具集成",
+            },
         }
         return format_info.get(format_type, {})

@@ -1,0 +1,57 @@
+# Include the main README files
+include README.md
+include README.zh-CN.md
+include LICENSE
+include CHANGELOG.md
+
+# Include configuration files
+include requirements.txt
+include requirements-dev.txt
+include pyproject.toml
+include .flake8
+include mypy.ini
+include pytest.ini
+include .dockerignore
+include Dockerfile
+include docker-compose.yml
+include docker-compose.dev.yml
+include .eslintrc.json
+
+# Include documentation
+recursive-include docs *.md *.rst *.txt
+recursive-include examples *.md *.py *.js *.json
+
+# Include configuration directory
+recursive-include config *.json *.yaml *.yml *.toml *.ini
+
+# Exclude development and cache files
+global-exclude *.pyc
+global-exclude *.pyo
+global-exclude *.pyd
+global-exclude __pycache__
+global-exclude .git*
+global-exclude .DS_Store
+global-exclude *.log
+global-exclude *.tmp
+global-exclude *.bak
+global-exclude *.swp
+global-exclude *~
+global-exclude Thumbs.db
+global-exclude .coverage
+global-exclude htmlcov
+prune htmlcov
+prune .pytest_cache
+prune .mypy_cache
+prune __pycache__
+prune .git
+prune venv
+prune env
+prune .env
+prune .venv
+prune build
+prune dist
+prune *.egg-info
+
+# Exclude archive and release directories from distribution
+prune archive
+prune release

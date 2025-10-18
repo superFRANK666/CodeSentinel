@@ -22,6 +22,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class PerformanceMetrics:
     """性能指标数据类"""
+
     # 分析相关指标
     total_files_analyzed: int = 0
     total_analysis_time: float = 0.0
@@ -69,7 +70,9 @@ class MetricsCollector:
             # 计算平均分析时间
             if self._analysis_times:
                 self._metrics.average_analysis_time = sum(self._analysis_times) / len(self._analysis_times)
-                self._metrics.files_per_second = 1.0 / self._metrics.average_analysis_time if self._metrics.average_analysis_time > 0 else 0.0
+                self._metrics.files_per_second = (
+                    1.0 / self._metrics.average_analysis_time if self._metrics.average_analysis_time > 0 else 0.0
+                )
 
     def record_ai_api_call(self, response_time: float, success: bool) -> None:
         """记录AI API调用"""
@@ -82,7 +85,9 @@ class MetricsCollector:
 
             # 计算成功率
             if self._metrics.ai_api_calls > 0:
-                self._metrics.ai_api_success_rate = ((self._metrics.ai_api_calls - self._metrics.ai_api_errors) / self._metrics.ai_api_calls) * 100.0
+                self._metrics.ai_api_success_rate = (
+                    (self._metrics.ai_api_calls - self._metrics.ai_api_errors) / self._metrics.ai_api_calls
+                ) * 100.0
 
             # 计算平均响应时间
             if self._ai_response_times:
@@ -112,7 +117,7 @@ class MetricsCollector:
             self._metrics.cpu_usage_percent = psutil.cpu_percent(interval=0.1)
 
             # 获取磁盘使用情况
-            disk_info = psutil.disk_usage('.')
+            disk_info = psutil.disk_usage(".")
             self._metrics.disk_usage_mb = (disk_info.total - disk_info.free) / (1024 * 1024)
 
         except Exception as e:
@@ -144,7 +149,7 @@ class HealthChecker:
         self._health_status: Dict[str, Any] = {
             "status": "healthy",
             "checks": {},
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }
         self._check_functions: Dict[str, callable] = {}
 
@@ -171,18 +176,10 @@ class HealthChecker:
                     overall_status = "unhealthy"
 
             except Exception as e:
-                checks[name] = {
-                    "status": "error",
-                    "message": str(e),
-                    "timestamp": datetime.now().isoformat()
-                }
+                checks[name] = {"status": "error", "message": str(e), "timestamp": datetime.now().isoformat()}
                 overall_status = "unhealthy"
 
-        self._health_status = {
-            "status": overall_status,
-            "checks": checks,
-            "timestamp": datetime.now().isoformat()
-        }
+        self._health_status = {"status": overall_status, "checks": checks, "timestamp": datetime.now().isoformat()}
 
         return self._health_status
 
@@ -210,7 +207,7 @@ class MonitoringService:
         def check_disk_space():
             """检查磁盘空间"""
             try:
-                disk_info = psutil.disk_usage('.')
+                disk_info = psutil.disk_usage(".")
                 free_percent = (disk_info.free / disk_info.total) * 100
 
                 if free_percent < 10:
@@ -227,14 +224,10 @@ class MonitoringService:
                     "status": status,
                     "message": message,
                     "free_percent": free_percent,
-                    "timestamp": datetime.now().isoformat()
+                    "timestamp": datetime.now().isoformat(),
                 }
             except Exception as e:
-                return {
-                    "status": "error",
-                    "message": f"磁盘检查失败: {e}",
-                    "timestamp": datetime.now().isoformat()
-                }
+                return {"status": "error", "message": f"磁盘检查失败: {e}", "timestamp": datetime.now().isoformat()}
 
         def check_memory_usage():
             """检查内存使用"""
@@ -256,14 +249,10 @@ class MonitoringService:
                     "message": message,
                     "memory_percent": memory_info.percent,
                     "available_mb": memory_info.available / (1024 * 1024),
-                    "timestamp": datetime.now().isoformat()
+                    "timestamp": datetime.now().isoformat(),
                 }
             except Exception as e:
-                return {
-                    "status": "error",
-                    "message": f"内存检查失败: {e}",
-                    "timestamp": datetime.now().isoformat()
-                }
+                return {"status": "error", "message": f"内存检查失败: {e}", "timestamp": datetime.now().isoformat()}
 
         self.health_checker.register_check("disk_space", check_disk_space)
         self.health_checker.register_check("memory_usage", check_memory_usage)
@@ -275,11 +264,7 @@ class MonitoringService:
             return
 
         self._stop_monitoring.clear()
-        self._monitoring_thread = threading.Thread(
-            target=self._monitoring_loop,
-            args=(interval,),
-            daemon=True
-        )
+        self._monitoring_thread = threading.Thread(target=self._monitoring_loop, args=(interval,), daemon=True)
         self._monitoring_thread.start()
         logger.info(f"监控服务启动,更新间隔：{interval}秒")
 
@@ -319,15 +304,15 @@ class MonitoringService:
             metrics_dict = {
                 "metrics": metrics.__dict__,
                 "uptime_seconds": self.metrics_collector.get_uptime_seconds(),
-                "export_timestamp": datetime.now().isoformat()
+                "export_timestamp": datetime.now().isoformat(),
             }
 
             # 确保目录存在
             self.metrics_file.parent.mkdir(parents=True, exist_ok=True)
 
             # 写入临时文件然后原子重命名
-            temp_file = self.metrics_file.with_suffix('.tmp')
-            with open(temp_file, 'w', encoding='utf-8') as f:
+            temp_file = self.metrics_file.with_suffix(".tmp")
+            with open(temp_file, "w", encoding="utf-8") as f:
                 json.dump(metrics_dict, f, indent=2, ensure_ascii=False)
 
             temp_file.replace(self.metrics_file)
@@ -344,7 +329,7 @@ class MonitoringService:
             "metrics": metrics.__dict__,
             "health": health,
             "uptime_seconds": self.metrics_collector.get_uptime_seconds(),
-            "report_timestamp": datetime.now().isoformat()
+            "report_timestamp": datetime.now().isoformat(),
         }
 
 

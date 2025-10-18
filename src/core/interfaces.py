@@ -5,7 +5,6 @@ Core interface definition module
 Defines abstract interfaces for all core components in the system, implementing dependency inversion principle
 """
 
-from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Dict, Any, List, Optional, Protocol
 from dataclasses import dataclass
@@ -14,6 +13,7 @@ from enum import Enum
 
 class SeverityLevel(Enum):
     """漏洞严重度等级"""
+
     LOW = "low"
     MEDIUM = "medium"
     HIGH = "high"
@@ -23,6 +23,7 @@ class SeverityLevel(Enum):
 @dataclass
 class Vulnerability:
     """安全漏洞数据模型"""
+
     type: str
     severity: SeverityLevel
     line: int
@@ -37,6 +38,7 @@ class Vulnerability:
 @dataclass
 class AnalysisResult:
     """分析结果数据模型"""
+
     file_path: str
     file_size: int
     analysis_status: str
@@ -50,6 +52,7 @@ class AnalysisResult:
 @dataclass
 class ScanSummary:
     """扫描摘要数据模型"""
+
     total_files: int
     scan_time: float
     total_vulnerabilities: int
@@ -62,13 +65,13 @@ class ScanSummary:
 class ICodeAnalyzer(Protocol):
     """代码分析器接口"""
 
-    async def analyze_file(self, file_path: Path,
-                          severity_filter: SeverityLevel = SeverityLevel.LOW) -> AnalysisResult:
+    async def analyze_file(self, file_path: Path, severity_filter: SeverityLevel = SeverityLevel.LOW) -> AnalysisResult:
         """分析单个文件"""
         ...
 
-    async def analyze_batch(self, file_paths: List[Path],
-                           severity_filter: SeverityLevel = SeverityLevel.LOW) -> List[AnalysisResult]:
+    async def analyze_batch(
+        self, file_paths: List[Path], severity_filter: SeverityLevel = SeverityLevel.LOW
+    ) -> List[AnalysisResult]:
         """批量分析文件"""
         ...
 
@@ -221,6 +224,7 @@ class IAuthenticationManager(Protocol):
 @dataclass
 class AnalyzerConfig:
     """分析器配置"""
+
     severity_threshold: SeverityLevel = SeverityLevel.LOW
     max_file_size: int = 1024 * 1024  # 1MB
     concurrent_limit: int = 5
@@ -235,13 +239,14 @@ class AnalyzerConfig:
 @dataclass
 class ReportConfig:
     """报告配置"""
-    formats: List[str] = None
+
+    formats: Optional[List[str]] = None
     output_dir: str = "./reports"
     include_code_snippets: bool = True
     include_remediation: bool = True
     max_vulnerabilities: int = 1000
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.formats is None:
             self.formats = ["console", "markdown"]
 
@@ -249,39 +254,33 @@ class ReportConfig:
 @dataclass
 class SecurityConfig:
     """安全配置"""
+
     enable_privacy_check: bool = True
     enable_code_sanitization: bool = False
-    allowed_file_extensions: List[str] = None
-    blocked_patterns: List[str] = None
+    allowed_file_extensions: Optional[List[str]] = None
+    blocked_patterns: Optional[List[str]] = None
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.allowed_file_extensions is None:
             self.allowed_file_extensions = [".py"]
         if self.blocked_patterns is None:
-            self.blocked_patterns = [
-                "*.pyc", "__pycache__", "*.so", "*.dll"
-            ]
+            self.blocked_patterns = ["*.pyc", "__pycache__", "*.so", "*.dll"]
 
 
 @dataclass
 class AppConfig:
     """应用配置"""
-    analyzer: AnalyzerConfig = None
-    report: ReportConfig = None
-    security: SecurityConfig = None
 
-    def __post_init__(self):
-        if isinstance(self.analyzer, dict):
-            self.analyzer = AnalyzerConfig(**self.analyzer)
-        elif self.analyzer is None:
+    analyzer: Optional[AnalyzerConfig] = None
+    report: Optional[ReportConfig] = None
+    security: Optional[SecurityConfig] = None
+
+    def __post_init__(self) -> None:
+        if self.analyzer is None:
             self.analyzer = AnalyzerConfig()
 
-        if isinstance(self.report, dict):
-            self.report = ReportConfig(**self.report)
-        elif self.report is None:
+        if self.report is None:
             self.report = ReportConfig()
 
-        if isinstance(self.security, dict):
-            self.security = SecurityConfig(**self.security)
-        elif self.security is None:
+        if self.security is None:
             self.security = SecurityConfig()

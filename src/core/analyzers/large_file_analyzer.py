@@ -23,11 +23,10 @@ class LargeFileAnalyzer(BaseCodeAnalyzer, ICodeAnalyzer):
         self.name = "LargeFileAnalyzer"
         self.version = "1.0.0"
         self.chunk_size = chunk_size  # 每块代码行数
-        self.overlap = overlap        # 块间重叠行数
+        self.overlap = overlap  # 块间重叠行数
         self.max_file_size = 50 * 1024 * 1024  # 50MB最大文件大小
 
-    async def analyze_file(self, file_path: Path,
-                           severity_filter: SeverityLevel = SeverityLevel.LOW) -> AnalysisResult:
+    async def analyze_file(self, file_path: Path, severity_filter: SeverityLevel = SeverityLevel.LOW) -> AnalysisResult:
         """分析大文件"""
         try:
             logger.info(f"开始分析大文件: {file_path}")
@@ -36,7 +35,9 @@ class LargeFileAnalyzer(BaseCodeAnalyzer, ICodeAnalyzer):
             # 检查文件大小
             file_size = file_path.stat().st_size
             if file_size > self.max_file_size:
-                return self._create_error_result(file_path, f"文件过大({file_size}字节),最大支持{self.max_file_size}字节")
+                return self._create_error_result(
+                    file_path, f"文件过大({file_size}字节),最大支持{self.max_file_size}字节"
+                )
 
             # 读取文件内容
             content = self._read_file_safely(file_path)
@@ -62,7 +63,7 @@ class LargeFileAnalyzer(BaseCodeAnalyzer, ICodeAnalyzer):
 
     def _split_content_into_chunks(self, content: str) -> List[Dict[str, Any]]:
         """将内容分割成可分析的块"""
-        lines = content.split('\n')
+        lines = content.split("\n")
         chunks = []
         total_lines = len(lines)
 
@@ -81,14 +82,14 @@ class LargeFileAnalyzer(BaseCodeAnalyzer, ICodeAnalyzer):
 
             # 提取块内容
             chunk_lines = lines[start_line:adjusted_end]
-            chunk_content = '\n'.join(chunk_lines)
+            chunk_content = "\n".join(chunk_lines)
 
             chunk_info = {
-                'id': chunk_id,
-                'start_line': start_line + 1,  # 转换为1-based
-                'end_line': adjusted_end,
-                'content': chunk_content,
-                'line_count': adjusted_end - start_line
+                "id": chunk_id,
+                "start_line": start_line + 1,  # 转换为1-based
+                "end_line": adjusted_end,
+                "content": chunk_content,
+                "line_count": adjusted_end - start_line,
             }
 
             chunks.append(chunk_info)
@@ -113,18 +114,19 @@ class LargeFileAnalyzer(BaseCodeAnalyzer, ICodeAnalyzer):
                     boundaries.append(node.lineno)
         except SyntaxError:
             # 如果AST解析失败,使用简单的启发式方法
-            lines = content.split('\n')
+            lines = content.split("\n")
             for i, line in enumerate(lines, 1):
                 line_stripped = line.strip()
-                if (line_stripped.startswith('def ') or
-                        line_stripped.startswith('class ') or
-                        line_stripped.startswith('async def ')):
+                if (
+                    line_stripped.startswith("def ")
+                    or line_stripped.startswith("class ")
+                    or line_stripped.startswith("async def ")
+                ):
                     boundaries.append(i)
 
         return sorted(boundaries)
 
-    def _adjust_chunk_boundary(self, lines: List[str], start_line: int,
-                              end_line: int, boundaries: List[int]) -> int:
+    def _adjust_chunk_boundary(self, lines: List[str], start_line: int, end_line: int, boundaries: List[int]) -> int:
         """Adjust chunk boundaries to appropriate code boundaries"""
         # 找到不超过end_line的最大边界
         adjusted_end = end_line
@@ -138,8 +140,9 @@ class LargeFileAnalyzer(BaseCodeAnalyzer, ICodeAnalyzer):
 
         return adjusted_end
 
-    async def _analyze_chunks(self, chunks: List[Dict[str, Any]], file_path: Path,
-                             severity_filter: SeverityLevel) -> List[AnalysisResult]:
+    async def _analyze_chunks(
+        self, chunks: List[Dict[str, Any]], file_path: Path, severity_filter: SeverityLevel
+    ) -> List[AnalysisResult]:
         """并发分析各个块"""
         chunk_results = []
 
@@ -151,6 +154,7 @@ class LargeFileAnalyzer(BaseCodeAnalyzer, ICodeAnalyzer):
                 try:
                     # Create temporary analyzer for chunk analysis
                     from application.local_analyzer import LocalCodeAnalyzer
+
                     chunk_analyzer = LocalCodeAnalyzer()
 
                     # Create virtual file path for analysis
@@ -160,7 +164,7 @@ class LargeFileAnalyzer(BaseCodeAnalyzer, ICodeAnalyzer):
                     result = await chunk_analyzer.analyze_file(chunk_file_path, severity_filter)
 
                     # Adjust line numbers (relative to original file)
-                    adjusted_result = self._adjust_vulnerability_lines(result, chunk['start_line'])
+                    adjusted_result = self._adjust_vulnerability_lines(result, chunk["start_line"])
 
                     logger.debug(f"块 {chunk['id']} 分析完成: {len(adjusted_result.vulnerabilities)} 个漏洞")
                     return adjusted_result
@@ -170,12 +174,12 @@ class LargeFileAnalyzer(BaseCodeAnalyzer, ICodeAnalyzer):
                     # 返回空结果而不是失败
                     return AnalysisResult(
                         file_path=str(chunk_file_path),
-                        file_size=len(chunk['content']),
+                        file_size=len(chunk["content"]),
                         analysis_status="completed",
                         vulnerabilities=[],
                         security_score=100,
                         recommendations=[],
-                        analysis_time=0.0
+                        analysis_time=0.0,
                     )
 
         # 并发分析所有块
@@ -199,7 +203,7 @@ class LargeFileAnalyzer(BaseCodeAnalyzer, ICodeAnalyzer):
                 code_snippet=vuln.code_snippet,
                 confidence=vuln.confidence,
                 cwe_id=vuln.cwe_id,
-                owasp_category=vuln.owasp_category
+                owasp_category=vuln.owasp_category,
             )
             adjusted_vulnerabilities.append(adjusted_vuln)
 
@@ -212,12 +216,12 @@ class LargeFileAnalyzer(BaseCodeAnalyzer, ICodeAnalyzer):
             security_score=result.security_score,
             recommendations=result.recommendations,
             analysis_time=result.analysis_time,
-            pre_analysis_info=result.pre_analysis_info
+            pre_analysis_info=result.pre_analysis_info,
         )
 
-    def _merge_chunk_results(self, chunk_results: List[AnalysisResult],
-                            original_file_path: Path, original_content: str,
-                            start_time: float) -> AnalysisResult:
+    def _merge_chunk_results(
+        self, chunk_results: List[AnalysisResult], original_file_path: Path, original_content: str, start_time: float
+    ) -> AnalysisResult:
         """Merge analysis results from each chunk"""
         all_vulnerabilities = []
         all_recommendations = set()
@@ -250,8 +254,8 @@ class LargeFileAnalyzer(BaseCodeAnalyzer, ICodeAnalyzer):
             pre_analysis_info={
                 "analysis_method": "chunked_analysis",
                 "total_chunks": len(chunk_results),
-                "chunks_with_vulnerabilities": sum(1 for r in chunk_results if r.vulnerabilities)
-            }
+                "chunks_with_vulnerabilities": sum(1 for r in chunk_results if r.vulnerabilities),
+            },
         )
 
     def _deduplicate_vulnerabilities(self, vulnerabilities: List[Vulnerability]) -> List[Vulnerability]:
@@ -278,7 +282,7 @@ class LargeFileAnalyzer(BaseCodeAnalyzer, ICodeAnalyzer):
             SeverityLevel.CRITICAL: 25,
             SeverityLevel.HIGH: 20,
             SeverityLevel.MEDIUM: 10,
-            SeverityLevel.LOW: 5
+            SeverityLevel.LOW: 5,
         }
 
         total_penalty = 0
@@ -290,8 +294,9 @@ class LargeFileAnalyzer(BaseCodeAnalyzer, ICodeAnalyzer):
         score = max(0, 100 - total_penalty)
         return score
 
-    async def analyze_batch(self, file_paths: List[Path],
-                            severity_filter: SeverityLevel = SeverityLevel.LOW) -> List[AnalysisResult]:
+    async def analyze_batch(
+        self, file_paths: List[Path], severity_filter: SeverityLevel = SeverityLevel.LOW
+    ) -> List[AnalysisResult]:
         """批量分析大文件"""
         semaphore = asyncio.Semaphore(2)  # 限制大文件并发数
 
@@ -307,9 +312,7 @@ class LargeFileAnalyzer(BaseCodeAnalyzer, ICodeAnalyzer):
         processed_results = []
         for i, result in enumerate(results):
             if isinstance(result, Exception):
-                error_result = self._create_error_result(
-                    file_paths[i], f"批处理分析失败: {str(result)}"
-                )
+                error_result = self._create_error_result(file_paths[i], f"批处理分析失败: {str(result)}")
                 processed_results.append(error_result)
             else:
                 processed_results.append(result)
@@ -327,24 +330,24 @@ class LargeFileAnalyzer(BaseCodeAnalyzer, ICodeAnalyzer):
                 "代码边界识别",
                 "并发块处理",
                 "Result deduplication and merging",
-                "内存高效使用"
+                "内存高效使用",
             ],
             "chunk_size": self.chunk_size,
             "overlap": self.overlap,
             "max_file_size": self.max_file_size,
-            "status": "active"
+            "status": "active",
         }
 
 
 class StreamingFileAnalyzer(BaseCodeAnalyzer):
     """Streaming file analyzer - for handling very large files"""
-    
+
     def __init__(self, buffer_size: int = 8192):
         super().__init__()
         self.name = "StreamingFileAnalyzer"
         self.version = "1.0.0"
         self.buffer_size = buffer_size
-    
+
     async def analyze_file(self, file_path: Path, severity_filter: Optional[List[str]] = None) -> AnalysisResult:
         """Analyze files using streaming"""
         return AnalysisResult(
@@ -355,5 +358,5 @@ class StreamingFileAnalyzer(BaseCodeAnalyzer):
             security_score=100,
             recommendations=[],
             analysis_time=0.0,
-            pre_analysis_info={}
+            pre_analysis_info={},
         )

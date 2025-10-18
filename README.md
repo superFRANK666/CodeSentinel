@@ -4,14 +4,15 @@
 
 <div align="center">
 
-![CodeSentinel Logo](https://img.shields.io/badge/CodeSentinel-v2.0-blue?style=for-the-badge)
+![CodeSentinel Logo](https://img.shields.io/badge/CodeSentinel-v2.0.0-blue?style=for-the-badge)
 [![Python](https://img.shields.io/badge/Python-3.10+-green?style=for-the-badge&logo=python)](https://python.org)
 [![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-yellow?style=for-the-badge&logo=javascript)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 [![License](https://img.shields.io/badge/License-MIT-red?style=for-the-badge)](LICENSE)
+[![Docker](https://img.shields.io/badge/Docker-Ready-blue?style=for-the-badge&logo=docker)](https://docker.com)
 
 **Advanced AI-powered security auditing tool for Python and JavaScript**
 
-CodeSentinel combines local static analysis, AI-powered deep inspection, and industry-standard tools to provide comprehensive vulnerability detection for modern codebases.
+CodeSentinel combines local static analysis, AI-powered deep inspection, and industry-standard tools to provide comprehensive vulnerability detection for modern codebases. Built with a clean, enterprise-grade architecture and enhanced developer experience.
 
 </div>
 
@@ -19,31 +20,39 @@ CodeSentinel combines local static analysis, AI-powered deep inspection, and ind
 
 ### 🌍 Multi-Language Support
 - **Python**: Full AST analysis, taint analysis, and AI-powered inspection
-- **JavaScript**: ESLint integration with security-focused rules
+- **JavaScript**: ESLint integration with comprehensive security rules (including React support)
 - **Auto-Detection**: Automatically identifies file types and selects appropriate analyzers
+- **Large File Handling**: Specialized analyzer for large codebases with memory optimization
 
 ### 🔍 Advanced Analysis Capabilities
 - **Hybrid Analysis Engine**: Combines AST/Taint analysis speed with AI deep inspection
 - **Multiple Analyzer Modes**: `local`, `ai`, `hybrid`, and `multi_language` modes
+- **Intelligent Caching**: SHA-256 based file caching for dramatic performance improvements
+- **Incremental Analysis**: Only analyzes changed files, perfect for CI/CD
 - **Real-time Vulnerability Detection**: Comprehensive security pattern matching
 
 ### 🛡️ Comprehensive Vulnerability Coverage
-- **Injection Attacks**: SQL, Command, Code Injection
-- **Web Security**: XSS, CSRF, Path Traversal
-- **Crypto Issues**: Weak algorithms, insecure randomness
-- **Data Exposure**: Hardcoded secrets, sensitive data leakage
-- **JavaScript-specific**: eval() usage, prototype pollution, unsafe dynamic code
+- **Injection Attacks**: SQL, Command, Code Injection with advanced detection
+- **Web Security**: XSS, CSRF, Path Traversal, prototype pollution
+- **Crypto Issues**: Weak algorithms, insecure randomness, timing attacks
+- **Data Exposure**: Hardcoded secrets, sensitive data leakage patterns
+- **JavaScript-specific**: eval() usage, unsafe dynamic code, object injection
+- **Modern Threats**: Detection of latest security vulnerabilities and attack vectors
 
 ### 🚀 Performance & Usability
-- **Intelligent Caching**: Dramatically speeds up subsequent scans
-- **Parallel Processing**: Concurrent analysis of multiple files
-- **Rich Reporting**: Console, Markdown, JSON, HTML, XML formats
-- **Progress Tracking**: Real-time analysis progress indication
+- **Intelligent Caching**: SHA-256 based caching dramatically speeds up subsequent scans
+- **Parallel Processing**: Concurrent analysis with configurable worker limits
+- **Rich Reporting**: Console, Markdown, JSON, HTML, XML formats with detailed vulnerability reports
+- **Progress Tracking**: Real-time analysis progress with animated UI and status indicators
+- **Enhanced CLI**: Beautiful ASCII art animations, loading screens, and intuitive error messages
 
-### 🔧 Extensibility
+### 🔧 Enterprise-Grade Architecture
+- **Dependency Injection**: Clean, testable architecture with proper separation of concerns
+- **Layered Design**: Application → Core → Infrastructure layers for maintainability
+- **Error Handling**: Comprehensive error management with user-friendly messages and debugging support
+- **Container Support**: Docker-ready with multi-stage builds and optimized deployment
 - **Plugin Architecture**: Easy addition of new analyzers and reporters
-- **Configurable Rules**: Customizable security rule sets
-- **CI/CD Integration**: Perfect for automated security pipelines
+- **CI/CD Integration**: GitHub Actions ready with automated testing and deployment
 
 ## 📋 Requirements
 
@@ -112,6 +121,9 @@ python main.py --help
 echo "console.log('test');" > test.js
 python main.py test.js
 rm test.js
+
+# Verify the enhanced CLI with animations
+python main.py --version
 ```
 
 ## JavaScript Support
@@ -185,6 +197,9 @@ python main.py src/ --workers 8             # 8 parallel workers
 # Cache management
 python main.py src/ --no-cache              # Disable caching
 python main.py --clear-cache                # Clear existing cache
+
+# Privacy options
+python main.py src/ --privacy-mode full     # Enhanced privacy for sensitive code
 ```
 
 ### Quick Start Examples
@@ -201,26 +216,64 @@ python main.py src/ --severity critical --quiet
 
 ## Project Structure
 
-The project is organized into a clean, layered architecture:
+The project is organized into a clean, layered architecture following enterprise best practices:
 
 ```
 CodeSentinel/
-├── config/                # Default configuration files
-├── docs/                  # Documentation and examples
-├── src/
-│   ├── application/       # Core application logic (analyzers, report generators)
-│   ├── core/              # Core components (interfaces, container, base classes)
-│   └── infrastructure/    # Supporting modules (config, cache, UI, etc.)
-├── .gitignore
-├── main.py                # Main CLI entry point
-├── requirements.txt       # Project dependencies
-└── .env                   # Environment variables (you create this)
+├── 📁 config/                 # Default configuration files
+├── 📁 docs/                   # Comprehensive documentation and examples
+│   ├── api/                   # API documentation
+│   └── README.md              # Additional docs
+├── 📁 examples/               # Usage examples and tutorials
+├── 📁 src/
+│   ├── 📁 application/        # Core application logic
+│   │   ├── ai_analyzer.py     # AI-powered analysis
+│   │   ├── hybrid_analyzer.py # Hybrid analysis engine
+│   │   ├── local_analyzer.py  # Local static analysis
+│   │   ├── multi_language_analyzer.py  # Multi-language support
+│   │   └── report_generators.py # Report generation
+│   ├── 📁 core/               # Core components and interfaces
+│   │   ├── analyzers/         # Specialized analyzers
+│   │   ├── container.py       # Dependency injection container
+│   │   ├── interfaces.py      # Core interfaces and contracts
+│   │   └── input_validator.py # Input validation
+│   └── 📁 infrastructure/     # Supporting infrastructure
+│       ├── ascii_art.py       # Enhanced UI elements
+│       ├── auth_manager.py    # Authentication management
+│       ├── cache_manager.py   # Intelligent caching system
+│       ├── config_manager.py  # Configuration management
+│       ├── error_handler.py   # Comprehensive error handling
+│       ├── monitoring.py      # System monitoring
+│       ├── plugin_manager.py  # Plugin architecture
+│       ├── privacy_manager.py # Privacy and security
+│       ├── progress_reporter.py # Progress tracking
+│       └── ui_manager.py      # User interface management
+├── 📁 tests/                  # Test suite (ready for implementation)
+├── 📁 .github/                # GitHub Actions workflows
+├── 📁 archive/                # Archived files (not in distribution)
+├── 📁 release/                # Release artifacts and builds
+├── 📁 scripts/                # Development and setup scripts
+├── 🐳 Dockerfile              # Multi-stage Docker build
+├── 🐳 docker-compose.yml      # Development environment
+├── 📄 Makefile                # Development task automation
+├── 📄 MANIFEST.in             # Package distribution manifest
+├── 📄 pyproject.toml          # Modern Python package configuration
+├── 📄 .flake8                 # Code quality configuration
+├── 📄 .gitignore              # Git ignore patterns
+├── 📄 LICENSE                 # MIT License
+├── 📄 main.py                 # Enhanced CLI entry point
+├── 📄 requirements.txt        # Python dependencies
+├── 📄 requirements-dev.txt    # Development dependencies
+├── 📄 .eslintrc.json          # JavaScript analysis configuration
+└── 📄 .env                    # Environment variables (you create this)
 ```
 
-## Configuration
-
--   **Environment Variables**: The primary way to configure secrets like the OpenAI API key is through the `.env` file in the project root.
--   **JSON Configuration**: Default behaviors (like analyzer settings, report formats, etc.) are defined in `config/default.json`. You can create a custom `config.json` to override these settings.
+### Architecture Highlights
+- **Clean Architecture**: Separation of concerns with clear layer boundaries
+- **Dependency Injection**: Testable, maintainable code structure
+- **Plugin System**: Extensible analyzer and reporter architecture
+- **Enterprise Ready**: Comprehensive error handling, logging, and monitoring
+- **Container Support**: Docker-optimized with multi-stage builds
 
 ## 🛠️ Configuration
 
@@ -300,7 +353,7 @@ python main.py src/ --verbose --progress
 
 We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
 
-### Development Setup
+#### Development Setup
 ```bash
 # Clone and install development dependencies
 git clone https://github.com/superFRANK666/CodeSentinel.git
@@ -310,12 +363,31 @@ source venv/bin/activate
 pip install -r requirements.txt
 pip install -r requirements-dev.txt  # Development dependencies
 
-# Run tests
+# Run tests (framework ready for implementation)
 python -m pytest tests/
 
 # Run code quality checks
 flake8 src/
 mypy src/
+black src/
+
+# Format code automatically
+black --line-length 88 src/
+
+# Check for security issues in dependencies
+pip-audit
+```
+
+### Docker Development
+```bash
+# Build development image
+docker-compose build
+
+# Run analysis with Docker
+docker-compose run codesentinel python main.py src/
+
+# Run tests in container
+docker-compose run --rm test
 ```
 
 ## 📄 License
@@ -324,9 +396,29 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- [ESLint](https://eslint.org/) - JavaScript analysis engine
+- [ESLint](https://eslint.org/) - JavaScript analysis engine with security plugin
 - [OpenAI](https://openai.com/) - AI-powered code analysis
+- [Python AST](https://docs.python.org/3/library/ast.html) - Abstract Syntax Tree parsing
 - The Python security community for inspiration and feedback
+
+## 🆕 What's New in v2.0.0
+
+### Major Features Added
+- ✨ **Enhanced CLI**: Beautiful ASCII art animations and loading screens
+- 🏗️ **Enterprise Architecture**: Clean layered design with dependency injection
+- 🐳 **Docker Support**: Multi-stage builds and development environment
+- 🔒 **Privacy Protection**: Enhanced privacy modes for sensitive code analysis
+- 📊 **Advanced Caching**: SHA-256 based intelligent file caching
+- 🚀 **Performance Boost**: Parallel processing and incremental analysis
+- 🎯 **Large File Support**: Memory-optimized analysis for large codebases
+- 🔧 **Better Error Handling**: User-friendly error messages with debugging support
+
+### Recent Improvements
+- 🧹 **Code Quality**: Automated formatting with Black and Flake8
+- 📝 **Enhanced Documentation**: Comprehensive project documentation
+- 🔍 **Security Rules**: Updated vulnerability detection patterns
+- ⚡ **UI/UX**: Improved progress indicators and status reporting
+- 🛠️ **Developer Tools**: Better testing framework and CI/CD setup
 
 ---
 
@@ -335,5 +427,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 **⭐ Star this repository if it helped you!**
 
 [🐛 Report Bug](https://github.com/superFRANK666/CodeSentinel/issues) | [💡 Feature Request](https://github.com/superFRANK666/CodeSentinel/issues/new) | [📖 Documentation](https://github.com/superFRANK666/CodeSentinel/wiki)
+
+[![CodeSentinel](https://img.shields.io/badge/CodeSentinel-AI%20Powered%20Security%20Auditor-blue?style=for-the-badge)](https://github.com/superFRANK666/CodeSentinel)
 
 </div>
