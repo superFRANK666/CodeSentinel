@@ -105,7 +105,7 @@ class SecurityAuditCLI:
     def _create_argument_parser(self) -> argparse.ArgumentParser:
         """创建参数解析器"""
         parser = argparse.ArgumentParser(
-            description="AI代码安全审计CLI工具 v2.0 - 智能检测代码安全漏洞",
+            description="AI代码安全审计CLI工具 v1.0 - 智能检测代码安全漏洞",
             formatter_class=argparse.RawDescriptionHelpFormatter,
             epilog="""
 示例用法:
@@ -236,7 +236,7 @@ class SecurityAuditCLI:
         parser.add_argument(
             '--version',
             action='version',
-            version='%(prog)s 2.0.0'
+            version='%(prog)s 1.0.0'
         )
 
         return parser
@@ -576,7 +576,7 @@ async def main():
 
     # 清屏并显示启动界面
     clear_terminal()
-    ui_manager.show_startup_screen("2.0.0")
+    ui_manager.show_startup_screen("1.0.0")
 
     # 显示Logo动画
     ui_manager.show_logo_animation()

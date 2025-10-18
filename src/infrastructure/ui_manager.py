@@ -88,7 +88,7 @@ class UIManager:
         line = char * self.terminal_width
         print(f"{COLORS[color]}{line}{COLORS['reset']}")
 
-    def show_startup_screen(self, version: str = "2.0.0") -> None:
+    def show_startup_screen(self, version: str = "1.0.0") -> None:
         """显示启动界面"""
         self.clear_screen()
 
@@ -336,7 +336,7 @@ class UIManager:
 ui_manager = UIManager()
 
 
-def show_startup_banner(version: str = "2.0.0") -> None:
+def show_startup_banner(version: str = "1.0.0") -> None:
     """显示启动横幅（便捷函数）"""
     ui_manager.show_startup_screen(version)
 

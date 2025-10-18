@@ -4,7 +4,7 @@
 
 <div align="center">
 
-![CodeSentinel Logo](https://img.shields.io/badge/CodeSentinel-v2.0.0-blue?style=for-the-badge)
+![CodeSentinel Logo](https://img.shields.io/badge/CodeSentinel-v1.0.0-blue?style=for-the-badge)
 [![Python](https://img.shields.io/badge/Python-3.10+-green?style=for-the-badge&logo=python)](https://python.org)
 [![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-yellow?style=for-the-badge&logo=javascript)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 [![License](https://img.shields.io/badge/License-MIT-red?style=for-the-badge)](LICENSE)
@@ -401,24 +401,6 @@ docker-compose run --rm test
 - [Python AST](https://docs.python.org/3/library/ast.html) - 抽象语法树解析
 - Python 安全社区的灵感和反馈
 
-## 🆕 v2.0.0 新功能
-
-### 主要新增功能
-- ✨ **增强 CLI**: 精美的 ASCII 艺术动画和加载屏幕
-- 🏗️ **企业架构**: 清晰的分层设计和依赖注入
-- 🐳 **Docker 支持**: 多阶段构建和开发环境
-- 🔒 **隐私保护**: 为敏感代码分析增强的隐私模式
-- 📊 **高级缓存**: 基于 SHA-256 的智能文件缓存
-- 🚀 **性能提升**: 并行处理和增量分析
-- 🎯 **大文件支持**: 针对大型代码库的内存优化分析
-- 🔧 **更好的错误处理**: 用户友好的错误消息和调试支持
-
-### 近期改进
-- 🧹 **代码质量**: 使用 Black 和 Flake8 自动格式化
-- 📝 **增强文档**: 全面的项目文档
-- 🔍 **安全规则**: 更新的漏洞检测模式
-- ⚡ **UI/UX**: 改进的进度指示器和状态报告
-- 🛠️ **开发者工具**: 更好的测试框架和 CI/CD 设置
 
 ---
 

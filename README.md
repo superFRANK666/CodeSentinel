@@ -4,7 +4,7 @@
 
 <div align="center">
 
-![CodeSentinel Logo](https://img.shields.io/badge/CodeSentinel-v2.0.0-blue?style=for-the-badge)
+![CodeSentinel Logo](https://img.shields.io/badge/CodeSentinel-v1.0.0-blue?style=for-the-badge)
 [![Python](https://img.shields.io/badge/Python-3.10+-green?style=for-the-badge&logo=python)](https://python.org)
 [![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-yellow?style=for-the-badge&logo=javascript)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 [![License](https://img.shields.io/badge/License-MIT-red?style=for-the-badge)](LICENSE)
@@ -401,24 +401,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Python AST](https://docs.python.org/3/library/ast.html) - Abstract Syntax Tree parsing
 - The Python security community for inspiration and feedback
 
-## 🆕 What's New in v2.0.0
-
-### Major Features Added
-- ✨ **Enhanced CLI**: Beautiful ASCII art animations and loading screens
-- 🏗️ **Enterprise Architecture**: Clean layered design with dependency injection
-- 🐳 **Docker Support**: Multi-stage builds and development environment
-- 🔒 **Privacy Protection**: Enhanced privacy modes for sensitive code analysis
-- 📊 **Advanced Caching**: SHA-256 based intelligent file caching
-- 🚀 **Performance Boost**: Parallel processing and incremental analysis
-- 🎯 **Large File Support**: Memory-optimized analysis for large codebases
-- 🔧 **Better Error Handling**: User-friendly error messages with debugging support
-
-### Recent Improvements
-- 🧹 **Code Quality**: Automated formatting with Black and Flake8
-- 📝 **Enhanced Documentation**: Comprehensive project documentation
-- 🔍 **Security Rules**: Updated vulnerability detection patterns
-- ⚡ **UI/UX**: Improved progress indicators and status reporting
-- 🛠️ **Developer Tools**: Better testing framework and CI/CD setup
 
 ---
 

@@ -359,7 +359,7 @@ class AICodeAnalyzer(BaseCodeAnalyzer):
         """获取分析器信息"""
         return {
             "name": "AICodeAnalyzer",
-            "version": "2.0.0",
+            "version": "1.0.0",
             "description": "基于OpenAI GPT模型的智能代码安全分析器",
             "model": self.model,
             "features": [
