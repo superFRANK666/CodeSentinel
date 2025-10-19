@@ -4,25 +4,6 @@ __pycache__/
 *.pyo
 *.pyd
 
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
-
 # Environments
 .env
 .venv
@@ -31,9 +12,6 @@ venv/
 ENV/
 env.bak
 venv.bak
-
-# mypy cache
-.mypy_cache/
 
 # IDE / Editor specific files
 .idea/
@@ -78,27 +56,11 @@ logs/
 *~
 .#*
 
-# Build artifacts
-build/
-dist/
-*.egg-info/
-
 # Package managers
 node_modules/
 
 # pip install logs
 =*
-
-# Environment files
-.env.local
-.env.development
-.env.test
-.env.production
-
-# PyInstaller
-*.spec
-build/
-dist/
 
 # Cache and temp directories
 cache/
@@ -114,5 +76,16 @@ security_audit*.log
 *.zip
 *.rar
 
-# Release directories
+# Build artifacts
+build/
+dist/
+*.spec
+
+# Local configurations
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Release builds
 release/
