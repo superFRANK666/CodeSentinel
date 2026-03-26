@@ -1,0 +1,25 @@
+{
+  "scenario": "secret_incremental_trusted_no_delta",
+  "assertions": {
+    "scan_summary.scan_mode": "incremental",
+    "scan_summary.findings_total": 0,
+    "scan_summary.file_change_summary": {
+      "analyzed": 0,
+      "new": 0,
+      "changed": 0,
+      "unchanged": 5,
+      "deleted": 0
+    },
+    "scan_summary.coverage_limitations_contains": [
+      "unchanged_files_not_reanalyzed",
+      "no_changed_or_new_files"
+    ],
+    "diagnostics.incremental.trusted": true,
+    "diagnostics.incremental.fallback_to_full": false,
+    "policy_decision.decision": "pass",
+    "policy_decision.reason_codes": [
+      "pass"
+    ]
+  }
+}
+

@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codesentinel.local/schemas/batch-manifest.schema.json",
+  "title": "CodeSentinel Batch Manifest",
+  "type": "object",
+  "required": [
+    "projects"
+  ],
+  "properties": {
+    "schema": {
+      "type": "string",
+      "const": "batch-manifest.v1"
+    },
+    "output_dir": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "projects": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "target"
+        ],
+        "properties": {
+          "id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "target": {
+            "type": "string"
+          },
+          "config": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}

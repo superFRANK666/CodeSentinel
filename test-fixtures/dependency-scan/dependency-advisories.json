@@ -1,0 +1,26 @@
+{
+  "schema": "dependency-advisories.v1",
+  "advisories": [
+    {
+      "id": "ADV-NPM-0001",
+      "ecosystem": "npm",
+      "package": "known-vuln",
+      "affected": "<1.2.5",
+      "severity": "high",
+      "title": "Known vulnerable npm package version",
+      "cwe": ["CWE-1104"],
+      "owasp": ["A06:2021"]
+    },
+    {
+      "id": "ADV-GO-0001",
+      "ecosystem": "go",
+      "package": "github.com/pkg/errors",
+      "affected": "<0.9.1",
+      "severity": "medium",
+      "title": "Known vulnerable Go module version",
+      "cwe": ["CWE-1104"],
+      "owasp": ["A06:2021"]
+    }
+  ]
+}
+

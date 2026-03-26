@@ -1,0 +1,25 @@
+{
+  "scenario": "secret_full_scan_sarif_mapping",
+  "assertions": {
+    "sarif_version": "2.1.0",
+    "run_count": 1,
+    "result_count": 6,
+    "policy_decision.decision": "fail",
+    "notification_ids_contains": [
+      "codesentinel.policy.fail"
+    ],
+    "first_result_properties_contains": [
+      "codesentinel.secret_type",
+      "codesentinel.validation_state",
+      "codesentinel.detector_class",
+      "codesentinel.policy_scope"
+    ],
+    "run_properties_contains": [
+      "codesentinel.policy_decision",
+      "codesentinel.incremental",
+      "codesentinel.baseline",
+      "codesentinel.analyzer_stages"
+    ]
+  }
+}
+

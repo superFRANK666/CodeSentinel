@@ -1,0 +1,14 @@
+{
+  "scenario": "policy_pack_overrides_sarif_projection",
+  "assertions": {
+    "sarif_version": "2.1.0",
+    "run_count": 1,
+    "result_count": 10,
+    "policy_decision.decision": "fail",
+    "run_properties_contains": [
+      "codesentinel.policy_pack",
+      "codesentinel.policy_decision"
+    ]
+  }
+}
+

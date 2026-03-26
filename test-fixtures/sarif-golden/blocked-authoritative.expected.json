@@ -1,0 +1,15 @@
+{
+  "scenario": "coverage_blocked_require_authoritative",
+  "assertions": {
+    "policy_decision.decision": "blocked",
+    "policy_decision.decision_kind": "coverage_blocked",
+    "policy_decision.reason_codes_contains": [
+      "coverage_authoritative_required"
+    ],
+    "scan_summary.completeness": "partial",
+    "invocation.exitCode": 12,
+    "notification_ids_contains": [
+      "codesentinel.policy.blocked"
+    ]
+  }
+}

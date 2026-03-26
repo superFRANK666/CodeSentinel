@@ -1,0 +1,28 @@
+{
+  "scenario": "secret_full_scan_default_policy",
+  "assertions": {
+    "scan_summary.scan_mode": "full",
+    "scan_summary.completeness": "partial",
+    "scan_summary.findings_total": 6,
+    "scan_summary.severity_counts": {
+      "critical": 1,
+      "high": 2,
+      "medium": 2,
+      "low": 1,
+      "info": 0
+    },
+    "policy_decision.decision": "fail",
+    "policy_decision.decision_kind": "policy_breach",
+    "policy_decision.reason_codes": [
+      "threshold_breach"
+    ],
+    "secret_stage.detector_hits": {
+      "secret.aws.access_key": 1,
+      "secret.generic.assignment": 2,
+      "secret.high_entropy.assignment": 1,
+      "secret.openai.api_key": 1,
+      "secret.private_key.block": 1
+    }
+  }
+}
+

@@ -1,0 +1,24 @@
+{
+  "scenario": "dependency_full_scan_sarif_mapping",
+  "assertions": {
+    "sarif_version": "2.1.0",
+    "run_count": 1,
+    "result_count": 12,
+    "policy_decision.decision": "fail",
+    "notification_ids_contains": [
+      "codesentinel.policy.fail"
+    ],
+    "first_result_properties_contains": [
+      "codesentinel.dependency_package",
+      "codesentinel.dependency_ecosystem",
+      "codesentinel.dependency_risk"
+    ],
+    "run_properties_contains": [
+      "codesentinel.policy_decision",
+      "codesentinel.incremental",
+      "codesentinel.baseline",
+      "codesentinel.analyzer_stages"
+    ]
+  }
+}
+

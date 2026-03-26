@@ -1,0 +1,17 @@
+{
+  "scenario": "policy_pack_rule_and_category_overrides",
+  "assertions": {
+    "scan_summary.findings_total": 10,
+    "policy_decision.decision": "fail",
+    "diagnostics.policy_pack.status": "applied",
+    "diagnostics.policy_pack.findings_in": 12,
+    "diagnostics.policy_pack.findings_out": 10,
+    "diagnostics.policy_pack.suppressed_total": 2,
+    "diagnostics.policy_pack.suppressed_by_rule": {
+      "deps.lockfile.missing": 2
+    },
+    "diagnostics.policy_pack.severity_overrides_applied": 5,
+    "diagnostics.policy_pack.confidence_overrides_applied": 2
+  }
+}
+

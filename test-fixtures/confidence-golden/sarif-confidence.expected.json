@@ -1,0 +1,20 @@
+{
+  "scenario": "sarif_confidence_semantics",
+  "assertions": {
+    "sarif_version": "2.1.0",
+    "run_count": 1,
+    "policy_decision.decision": "fail",
+    "run_properties_contains": [
+      "codesentinel.confidence_model_version",
+      "codesentinel.policy_decision"
+    ],
+    "first_result_properties_contains": [
+      "codesentinel.raw_confidence",
+      "codesentinel.confidence",
+      "codesentinel.confidence_level",
+      "codesentinel.confidence_model_version",
+      "codesentinel.confidence_rationale"
+    ]
+  }
+}
+

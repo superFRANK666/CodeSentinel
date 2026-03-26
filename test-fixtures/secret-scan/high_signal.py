@@ -1,0 +1,2 @@
+OPENAI_API_KEY = "sk-abcdefghijklmnopqrstuvwxyz1234567890"
+AWS_KEY = "AKIA1234567890ABCD12"

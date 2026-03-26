@@ -1,0 +1,28 @@
+{
+  "schema": "batch-manifest.v1",
+  "output_dir": "../../reports/portfolio-batch-projects",
+  "projects": [
+    {
+      "id": "secret-fixture",
+      "target": "../secret-scan",
+      "config": {
+        "analyzer_mode": "local-only",
+        "fallback_policy": "fail-open",
+        "secret_scan_enabled": true,
+        "no_cache_write": true
+      }
+    },
+    {
+      "id": "dependency-fixture",
+      "target": "../dependency-scan",
+      "config": {
+        "analyzer_mode": "local-only",
+        "fallback_policy": "fail-open",
+        "dependency_scan_enabled": true,
+        "dependency_policy_file": "../dependency-scan/dependency-policy.json",
+        "dependency_advisory_file": "../dependency-scan/dependency-advisories.json",
+        "no_cache_write": true
+      }
+    }
+  ]
+}

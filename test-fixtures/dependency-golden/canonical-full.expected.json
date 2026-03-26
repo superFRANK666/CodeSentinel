@@ -1,0 +1,27 @@
+{
+  "scenario": "dependency_full_scan_policy_and_advisory",
+  "assertions": {
+    "scan_summary.scan_mode": "full",
+    "scan_summary.completeness": "partial",
+    "scan_summary.findings_total": 12,
+    "policy_decision.decision": "fail",
+    "policy_decision.reason_codes": [
+      "threshold_breach"
+    ],
+    "dependency_stage.detector_hits": {
+      "deps.index.insecure_url": 1,
+      "deps.lockfile.missing": 2,
+      "deps.policy.blocked_package": 1,
+      "deps.replace.directive": 1,
+      "deps.unpinned.version": 3,
+      "deps.untrusted.source": 2,
+      "deps.vulnerable.package": 2
+    },
+    "dependency_stage.policy.status": "loaded",
+    "dependency_stage.policy.blocked_rules": 1,
+    "dependency_stage.advisory_bundle.status": "loaded",
+    "dependency_stage.advisory_bundle.advisories_total": 2,
+    "dependency_stage.advisory_bundle.matched": 2
+  }
+}
+

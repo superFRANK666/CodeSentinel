@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codesentinel.local/schemas/policy.schema.json",
+  "title": "CodeSentinel Policy Profile",
+  "type": "object",
+  "required": [
+    "policy_id",
+    "name",
+    "fail_on",
+    "min_confidence"
+  ],
+  "properties": {
+    "policy_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "fail_on": {
+      "type": "string",
+      "enum": [
+        "critical",
+        "high",
+        "medium",
+        "low",
+        "info"
+      ]
+    },
+    "min_confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "severity_overrides": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "rule_overrides": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "enabled_categories": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": true
+}

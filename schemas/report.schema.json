@@ -1,0 +1,592 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codesentinel.local/schemas/report.schema.json",
+  "title": "CodeSentinel Normalized Report",
+  "type": "object",
+  "required": [
+    "report_version",
+    "spec_version",
+    "generated_at",
+    "metadata",
+    "scan_summary",
+    "policy_decision",
+    "findings",
+    "errors"
+  ],
+  "properties": {
+    "report_version": {
+      "type": "string"
+    },
+    "spec_version": {
+      "type": "string"
+    },
+    "generated_at": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "scan_summary": {
+      "type": "object",
+      "required": [
+        "status",
+        "findings_total",
+        "exit_reason",
+        "policy"
+      ],
+      "properties": {
+        "status": {
+          "type": "string"
+        },
+        "scan_mode": {
+          "type": "string",
+          "enum": [
+            "full",
+            "incremental"
+          ]
+        },
+        "completeness": {
+          "type": "string",
+          "enum": [
+            "full",
+            "partial",
+            "failed"
+          ]
+        },
+        "file_change_summary": {
+          "type": "object",
+          "properties": {
+            "total_scoped": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "analyzed": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "new": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "changed": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "unchanged": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "deleted": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "additionalProperties": true
+        },
+        "coverage_limitations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "completeness_reasons": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "findings_total": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "exit_reason": {
+          "type": "string"
+        },
+        "severity_counts": {
+          "type": "object"
+        },
+        "confidence_counts": {
+          "type": "object"
+        },
+        "policy": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": true
+    },
+    "diagnostics": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "type": "object",
+          "properties": {
+            "root": {
+              "type": "string"
+            },
+            "selection_contract_version": {
+              "type": "string"
+            },
+            "selection_order": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "selected_digest": {
+              "type": "string"
+            },
+            "total_files": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "selected_files": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "analyzed_files": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "excluded_files": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "excluded_by_include": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "excluded_by_exclude": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "excluded_by_default_exclude": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "excluded_by_user_exclude": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "excluded_by_gitignore": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "include_patterns": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "include": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "exclude": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "respect_gitignore": {
+              "type": "boolean"
+            },
+            "exclude_patterns": {
+              "type": "object",
+              "properties": {
+                "use_default_excludes": {
+                  "type": "boolean"
+                },
+                "default": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "user": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "effective": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "additionalProperties": true
+            },
+            "gitignore": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "applied": {
+                  "type": "boolean"
+                },
+                "file": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "patterns_count": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "patterns": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "additionalProperties": true
+            },
+            "decision_trace": {
+              "type": "object",
+              "properties": {
+                "sample_limit": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "selected": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "excluded_by_include": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "excluded_by_exclude": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                },
+                "excluded_by_gitignore": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "effective_config": {
+      "type": "object"
+    },
+    "provenance": {
+      "type": "object"
+    },
+    "policy_decision": {
+      "type": "object",
+      "required": [
+        "contract_version",
+        "decision",
+        "reason_codes",
+        "scope_requested",
+        "scope_effective",
+        "input_findings_total",
+        "evaluated_findings_total",
+        "exit_code"
+      ],
+      "properties": {
+        "contract_version": {
+          "type": "string"
+        },
+        "decision": {
+          "type": "string",
+          "enum": [
+            "pass",
+            "fail",
+            "blocked"
+          ]
+        },
+        "decision_kind": {
+          "type": "string"
+        },
+        "reason_code": {
+          "type": "string"
+        },
+        "reason_codes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "scope_requested": {
+          "type": "string"
+        },
+        "scope_effective": {
+          "type": "string"
+        },
+        "input_findings_total": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "evaluated_findings_total": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "threshold": {
+          "type": "object"
+        },
+        "breach_summary": {
+          "type": "object"
+        },
+        "coverage": {
+          "type": "object"
+        },
+        "profile": {
+          "type": "object"
+        },
+        "precedence": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "reasoning": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "exit_code": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": true
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "rule_id",
+          "severity",
+          "normalized_severity",
+          "confidence",
+          "location"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "finding_id": {
+            "type": "string"
+          },
+          "fingerprint": {
+            "type": "string"
+          },
+          "fingerprint_version": {
+            "type": "string"
+          },
+          "dedup_key": {
+            "type": "string"
+          },
+          "origin": {
+            "type": "object"
+          },
+          "rule_id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "critical",
+              "high",
+              "medium",
+              "low",
+              "info"
+            ]
+          },
+          "normalized_severity": {
+            "type": "string",
+            "enum": [
+              "critical",
+              "high",
+              "medium",
+              "low",
+              "info"
+            ]
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "raw_confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "confidence_level": {
+            "type": "string",
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ]
+          },
+          "confidence_model_version": {
+            "type": "string"
+          },
+          "confidence_reason": {
+            "type": "string"
+          },
+          "confidence_rationale": {
+            "type": "object"
+          },
+          "language": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "category": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "secret_type": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "validation_state": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "detector_class": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "dependency_package": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "dependency_version": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "dependency_ecosystem": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "dependency_risk": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "metadata": {
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "cwe": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "owasp": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "location": {
+            "type": "object",
+            "required": [
+              "line",
+              "column"
+            ],
+            "properties": {
+              "file": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "line": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "column": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "additionalProperties": true
+          },
+          "evidence": {},
+          "remediation": {}
+        },
+        "additionalProperties": true
+      }
+    },
+    "errors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "code",
+          "message"
+        ],
+        "properties": {
+          "code": {
+            "type": "string",
+            "minLength": 1
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1
+          },
+          "details": {},
+          "hint": {
+            "type": "string"
+          },
+          "doc_url": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": true
+}

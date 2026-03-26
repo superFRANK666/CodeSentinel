@@ -1,0 +1,14 @@
+{
+  "scenario": "dependency_incremental_trusted_with_baseline_not_reevaluated",
+  "assertions": {
+    "scan_summary.scan_mode": "incremental",
+    "diagnostics.incremental.trusted": true,
+    "scan_summary.findings_total": 0,
+    "diagnostics.baseline.status": "loaded",
+    "diagnostics.baseline.incremental_status.status": "estimated",
+    "diagnostics.baseline.incremental_status.reevaluated_entries": 0,
+    "diagnostics.baseline.incremental_status.not_reevaluated": 12,
+    "policy_decision.decision": "pass"
+  }
+}
+

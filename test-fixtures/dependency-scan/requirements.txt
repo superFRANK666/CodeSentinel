@@ -1,0 +1,5 @@
+flask
+requests==2.31.0
+-e git+https://example.com/repo.git#egg=custom
+--extra-index-url http://insecure.example/simple
+

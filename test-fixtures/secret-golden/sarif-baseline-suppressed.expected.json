@@ -1,0 +1,12 @@
+{
+  "scenario": "secret_baseline_suppressed_sarif",
+  "assertions": {
+    "sarif_version": "2.1.0",
+    "run_count": 1,
+    "result_count": 0,
+    "policy_decision.decision": "pass",
+    "baseline.status": "loaded",
+    "baseline.suppressed": 6
+  }
+}
+

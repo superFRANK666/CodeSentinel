@@ -1,0 +1,12 @@
+{
+  "scenario": "scope_gitignore_disabled",
+  "assertions": {
+    "diagnostics.scope.selection_contract_version": "1.1",
+    "diagnostics.scope.gitignore.enabled": false,
+    "diagnostics.scope.gitignore.applied": false,
+    "diagnostics.scope.gitignore.patterns_count": 0,
+    "diagnostics.scope.excluded_by_gitignore": 0,
+    "diagnostics.scope.selected_files": 8,
+    "diagnostics.scope.selected_digest": "42ef1fb0dda834d596d176b382589cdf952511e0e7f3848b6ba7956d9958675c"
+  }
+}

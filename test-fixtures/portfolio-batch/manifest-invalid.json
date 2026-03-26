@@ -1,0 +1,23 @@
+{
+  "schema": "batch-manifest.v1",
+  "output_dir": "../../reports/portfolio-batch-projects-invalid",
+  "projects": [
+    {
+      "id": "valid-secret",
+      "target": "../secret-scan",
+      "config": {
+        "analyzer_mode": "local-only",
+        "fallback_policy": "fail-open",
+        "secret_scan_enabled": true,
+        "no_cache_write": true
+      }
+    },
+    {
+      "id": "bad-project",
+      "target": "../dependency-scan",
+      "config": {
+        "analyzer_mode": "invalid-mode"
+      }
+    }
+  ]
+}

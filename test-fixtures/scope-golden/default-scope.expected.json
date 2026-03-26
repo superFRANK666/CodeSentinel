@@ -1,0 +1,23 @@
+{
+  "scenario": "scope_default_contract_v1_1",
+  "assertions": {
+    "diagnostics.scope.selection_contract_version": "1.1",
+    "diagnostics.scope.selection_order": [
+      "include",
+      "exclude",
+      "gitignore"
+    ],
+    "diagnostics.scope.total_files": 12,
+    "diagnostics.scope.selected_files": 5,
+    "diagnostics.scope.excluded_by_include": 0,
+    "diagnostics.scope.excluded_by_exclude": 4,
+    "diagnostics.scope.excluded_by_default_exclude": 4,
+    "diagnostics.scope.excluded_by_user_exclude": 0,
+    "diagnostics.scope.excluded_by_gitignore": 3,
+    "diagnostics.scope.exclude_patterns.use_default_excludes": true,
+    "diagnostics.scope.gitignore.enabled": true,
+    "diagnostics.scope.gitignore.applied": true,
+    "diagnostics.scope.gitignore.patterns_count": 2,
+    "diagnostics.scope.selected_digest": "7faa4b9bb33dab22d3aed3e4eff6220c72136ad42aaa3227433e364a28248300"
+  }
+}

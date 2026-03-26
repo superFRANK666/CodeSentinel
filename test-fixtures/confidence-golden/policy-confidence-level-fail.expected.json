@@ -1,0 +1,16 @@
+{
+  "scenario": "policy_with_confidence_level_threshold_fail",
+  "assertions": {
+    "policy_decision.decision": "fail",
+    "policy_decision.reason_codes": [
+      "threshold_breach"
+    ],
+    "policy_decision.threshold": {
+      "fail_on": "high",
+      "min_confidence": 0.7,
+      "min_confidence_level": "high",
+      "exit_zero_on_findings": false
+    }
+  }
+}
+

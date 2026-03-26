@@ -1,0 +1,28 @@
+{
+  "policy_id": "team-ci-overrides",
+  "policy_pack_version": "1.0.0",
+  "name": "Team CI Overrides",
+  "fail_on": "high",
+  "min_confidence": 0.0,
+  "min_confidence_level": "low",
+  "enabled_categories": [
+    "dependency"
+  ],
+  "severity_overrides": {
+    "deps.unpinned.version": "low"
+  },
+  "rule_overrides": {
+    "deps.lockfile.missing": {
+      "id": "suppress-lockfile-missing",
+      "enabled": false,
+      "reason": "Lockfile rollout pending across repositories."
+    },
+    "deps.untrusted.source": {
+      "id": "escalate-untrusted-source",
+      "severity": "critical",
+      "confidence_offset": 0.05,
+      "reason": "Untrusted source is critical in CI policy."
+    }
+  }
+}
+

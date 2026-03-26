@@ -1,0 +1,207 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codesentinel.local/schemas/portfolio-report.schema.json",
+  "title": "CodeSentinel Portfolio Report",
+  "type": "object",
+  "required": [
+    "report_type",
+    "portfolio_report_version",
+    "spec_version",
+    "generated_at",
+    "metadata",
+    "portfolio_summary",
+    "diagnostics",
+    "projects",
+    "errors"
+  ],
+  "properties": {
+    "report_type": {
+      "type": "string",
+      "const": "portfolio"
+    },
+    "portfolio_report_version": {
+      "type": "string"
+    },
+    "spec_version": {
+      "type": "string"
+    },
+    "generated_at": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "portfolio_summary": {
+      "type": "object",
+      "required": [
+        "decision",
+        "decision_kind",
+        "reason_codes",
+        "projects_total",
+        "projects_scanned",
+        "projects_skipped",
+        "projects_errors",
+        "projects_invalid",
+        "projects_failed",
+        "projects_blocked",
+        "projects_with_findings",
+        "exit_code"
+      ],
+      "properties": {
+        "decision": {
+          "type": "string",
+          "enum": [
+            "pass",
+            "fail",
+            "blocked"
+          ]
+        },
+        "decision_kind": {
+          "type": "string"
+        },
+        "reason_codes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "projects_total": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "projects_scanned": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "projects_skipped": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "projects_errors": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "projects_invalid": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "projects_failed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "projects_blocked": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "projects_with_findings": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "exit_code": {
+          "type": "integer"
+        },
+        "decision_summary": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": true
+    },
+    "diagnostics": {
+      "type": "object",
+      "properties": {
+        "orchestration_contract_version": {
+          "type": "string"
+        },
+        "manifest": {
+          "type": "object"
+        },
+        "project_order": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "project_status_counts": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": true
+    },
+    "projects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "project_id",
+          "status",
+          "exit_code"
+        ],
+        "properties": {
+          "project_id": {
+            "type": "string"
+          },
+          "target": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "status": {
+            "type": "string"
+          },
+          "exit_code": {
+            "type": "integer"
+          },
+          "scan_summary": {
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "policy_decision": {
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "report_path": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "errors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "code",
+          "message"
+        ],
+        "properties": {
+          "code": {
+            "type": "string",
+            "minLength": 1
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1
+          },
+          "details": {},
+          "hint": {
+            "type": "string"
+          },
+          "doc_url": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": true
+}

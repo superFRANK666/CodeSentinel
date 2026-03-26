@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codesentinel.local/schemas/baseline.schema.json",
+  "title": "CodeSentinel Baseline",
+  "type": "object",
+  "required": [
+    "spec_version",
+    "generated_at",
+    "source_report",
+    "fingerprints"
+  ],
+  "properties": {
+    "spec_version": {
+      "type": "string"
+    },
+    "generated_at": {
+      "type": "string"
+    },
+    "source_report": {
+      "type": "string"
+    },
+    "fingerprint_version": {
+      "type": "string"
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "finding_id": {
+            "type": "string"
+          },
+          "fingerprint": {
+            "type": "string"
+          },
+          "fingerprint_version": {
+            "type": "string"
+          },
+          "rule_id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "language": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "location": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "fingerprint"
+        ],
+        "additionalProperties": true
+      }
+    },
+    "fingerprints": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 64,
+        "maxLength": 64
+      }
+    }
+  },
+  "additionalProperties": false
+}

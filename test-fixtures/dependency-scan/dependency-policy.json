@@ -1,0 +1,18 @@
+{
+  "schema": "dependency-policy.v1",
+  "require_lockfile": {
+    "npm": true,
+    "go": true,
+    "pypi": false
+  },
+  "blocked_packages": [
+    {
+      "ecosystem": "npm",
+      "name": "left-pad",
+      "severity": "high",
+      "reason": "Deprecated package blocked in organization policy.",
+      "policy_id": "org.block.left-pad"
+    }
+  ]
+}
+

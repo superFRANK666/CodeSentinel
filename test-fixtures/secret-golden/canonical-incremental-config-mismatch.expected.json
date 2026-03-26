@@ -1,0 +1,15 @@
+{
+  "scenario": "secret_incremental_untrusted_on_secret_config_change",
+  "assertions": {
+    "scan_summary.scan_mode": "full",
+    "scan_summary.coverage_limitations_contains": [
+      "incremental_untrusted_fallback_to_full"
+    ],
+    "diagnostics.incremental.trusted": false,
+    "diagnostics.incremental.fallback_to_full": true,
+    "diagnostics.incremental.reasons_contains": [
+      "analysis_signature_mismatch"
+    ]
+  }
+}
+

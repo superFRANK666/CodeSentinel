@@ -1,0 +1,13 @@
+{
+  "scenario": "incremental_untrusted_blocked",
+  "assertions": {
+    "policy_decision.decision": "blocked",
+    "policy_decision.reason_codes_contains": [
+      "coverage_incremental_trust_required"
+    ],
+    "incremental.trusted": false,
+    "incremental.fallback_to_full": true,
+    "scan_summary.scan_mode": "full",
+    "invocation.exitCode": 12
+  }
+}

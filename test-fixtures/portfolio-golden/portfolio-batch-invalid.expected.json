@@ -1,0 +1,19 @@
+{
+  "scenario": "portfolio_batch_invalid_project_config",
+  "assertions": {
+    "report_type": "portfolio",
+    "portfolio_summary.decision": "blocked",
+    "portfolio_summary.decision_kind": "config_error",
+    "portfolio_summary.reason_codes": [
+      "project_config_invalid"
+    ],
+    "portfolio_summary.projects_total": 2,
+    "portfolio_summary.projects_scanned": 1,
+    "portfolio_summary.projects_skipped": 0,
+    "portfolio_summary.projects_errors": 1,
+    "portfolio_summary.projects_invalid": 1,
+    "portfolio_summary.projects_failed": 1,
+    "portfolio_summary.projects_blocked": 0,
+    "portfolio_summary.exit_code": 30
+  }
+}

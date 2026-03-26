@@ -1,0 +1,21 @@
+{
+  "policy_id": "default-ci",
+  "policy_pack_version": "2.0.0",
+  "name": "Default CI Policy",
+  "fail_on": "high",
+  "min_confidence": 0.7,
+  "min_confidence_level": "medium",
+  "severity_overrides": {},
+  "rule_overrides": {},
+  "enabled_categories": [
+    "injection",
+    "crypto",
+    "authz/authn",
+    "secrets",
+    "deserialization",
+    "filesystem",
+    "network",
+    "dependency",
+    "misconfiguration"
+  ]
+}

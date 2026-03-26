@@ -1,0 +1,19 @@
+{
+  "scenario": "scope_incremental_config_mismatch_fallback",
+  "assertions": {
+    "scan_summary.scan_mode": "full",
+    "diagnostics.incremental.trusted": false,
+    "diagnostics.incremental.fallback_to_full": true,
+    "diagnostics.incremental.reasons": [
+      "analysis_signature_mismatch"
+    ],
+    "scan_summary.file_change_summary": {
+      "total_scoped": 2,
+      "analyzed": 2,
+      "new": 0,
+      "changed": 0,
+      "unchanged": 0,
+      "deleted": 0
+    }
+  }
+}

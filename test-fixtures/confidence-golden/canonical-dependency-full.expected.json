@@ -1,0 +1,15 @@
+{
+  "scenario": "confidence_dependency_stage_full_scan",
+  "assertions": {
+    "metadata.confidence_model_version": "ucs.v1",
+    "scan_summary.findings_total": 12,
+    "scan_summary.confidence_counts": {
+      "high": 9,
+      "medium": 3,
+      "low": 0
+    },
+    "policy_decision.threshold.min_confidence": 0.0,
+    "policy_decision.threshold.min_confidence_level": null
+  }
+}
+

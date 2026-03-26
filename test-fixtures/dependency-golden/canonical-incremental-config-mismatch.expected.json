@@ -1,0 +1,12 @@
+{
+  "scenario": "dependency_incremental_untrusted_on_dependency_config_change",
+  "assertions": {
+    "scan_summary.scan_mode": "full",
+    "diagnostics.incremental.trusted": false,
+    "diagnostics.incremental.fallback_to_full": true,
+    "diagnostics.incremental.reasons_contains": [
+      "analysis_signature_mismatch"
+    ]
+  }
+}
+

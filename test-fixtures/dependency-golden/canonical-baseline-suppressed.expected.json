@@ -1,0 +1,15 @@
+{
+  "scenario": "dependency_baseline_suppression_all_findings_suppressed",
+  "assertions": {
+    "scan_summary.findings_total": 0,
+    "policy_decision.decision": "pass",
+    "diagnostics.baseline.status": "loaded",
+    "diagnostics.baseline.suppressed": 12,
+    "diagnostics.baseline.suppressed_by": {
+      "fingerprint": 12,
+      "finding_id": 0,
+      "soft_match": 0
+    }
+  }
+}
+

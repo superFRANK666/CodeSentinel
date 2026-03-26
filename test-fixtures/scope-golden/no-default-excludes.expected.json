@@ -1,0 +1,14 @@
+{
+  "scenario": "scope_no_default_excludes",
+  "assertions": {
+    "diagnostics.scope.selection_contract_version": "1.1",
+    "diagnostics.scope.exclude_patterns.use_default_excludes": false,
+    "diagnostics.scope.exclude_patterns.default": [],
+    "diagnostics.scope.exclude_patterns.effective": [],
+    "diagnostics.scope.selected_files": 9,
+    "diagnostics.scope.excluded_by_exclude": 0,
+    "diagnostics.scope.excluded_by_default_exclude": 0,
+    "diagnostics.scope.excluded_by_gitignore": 3,
+    "diagnostics.scope.selected_digest": "f3a31c5c81a1ab38bf92ed0041615bff14f20cede672755d1ba2677fe82eab2b"
+  }
+}

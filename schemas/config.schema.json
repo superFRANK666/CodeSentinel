@@ -1,0 +1,242 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codesentinel.local/schemas/config.schema.json",
+  "title": "CodeSentinel Wrapper Config",
+  "type": "object",
+  "properties": {
+    "spec_version": {
+      "type": "string"
+    },
+    "report_schema_version": {
+      "type": "string"
+    },
+    "analyzer_mode": {
+      "type": "string",
+      "enum": [
+        "local-only",
+        "ai-only",
+        "hybrid"
+      ]
+    },
+    "fallback_policy": {
+      "type": "string",
+      "enum": [
+        "fail-open",
+        "fail-closed"
+      ]
+    },
+    "min_severity": {
+      "type": "string",
+      "enum": [
+        "critical",
+        "high",
+        "medium",
+        "low",
+        "info"
+      ]
+    },
+    "format": {
+      "type": "string",
+      "enum": [
+        "console",
+        "json",
+        "markdown",
+        "html",
+        "xml",
+        "sarif"
+      ]
+    },
+    "output": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "stdout": {
+      "type": "boolean"
+    },
+    "progress": {
+      "type": "boolean"
+    },
+    "incremental": {
+      "type": "boolean"
+    },
+    "diff_from": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "cache_path": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "no_cache_write": {
+      "type": "boolean"
+    },
+    "policy_scope": {
+      "type": "string",
+      "enum": [
+        "all_findings",
+        "incremental_delta",
+        "net_new_vs_baseline"
+      ]
+    },
+    "baseline_required": {
+      "type": "boolean"
+    },
+    "require_authoritative": {
+      "type": "boolean"
+    },
+    "require_trusted_incremental": {
+      "type": "boolean"
+    },
+    "policy_profile": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "dev_local",
+        "ci_pr_fast",
+        "ci_pr_strict",
+        "ci_main_strict",
+        null
+      ]
+    },
+    "error_format": {
+      "type": "string",
+      "enum": [
+        "text",
+        "json"
+      ]
+    },
+    "exit_zero_on_findings": {
+      "type": "boolean"
+    },
+    "fail_on": {
+      "type": "string",
+      "enum": [
+        "critical",
+        "high",
+        "medium",
+        "low",
+        "info"
+      ]
+    },
+    "min_confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "min_confidence_level": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        null
+      ]
+    },
+    "include": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "exclude": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "respect_gitignore": {
+      "type": "boolean"
+    },
+    "use_default_excludes": {
+      "type": "boolean"
+    },
+    "enable": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "secrets",
+          "deps",
+          "all"
+        ]
+      }
+    },
+    "secret_scan_enabled": {
+      "type": "boolean"
+    },
+    "secret_entropy_threshold": {
+      "type": "number",
+      "minimum": 3.0,
+      "maximum": 8.0
+    },
+    "secret_min_token_length": {
+      "type": "integer",
+      "minimum": 8,
+      "maximum": 256
+    },
+    "secret_max_file_bytes": {
+      "type": "integer",
+      "minimum": 4096,
+      "maximum": 10485760
+    },
+    "dependency_scan_enabled": {
+      "type": "boolean"
+    },
+    "dependency_advisory_file": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "dependency_policy_file": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "dependency_max_file_bytes": {
+      "type": "integer",
+      "minimum": 4096,
+      "maximum": 20971520
+    },
+    "policy_file": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "baseline_file": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "ruleset_version": {
+      "type": "string"
+    },
+    "policy_load_error": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "analyzer_mode",
+    "fallback_policy",
+    "min_severity",
+    "format",
+    "error_format",
+    "fail_on",
+    "min_confidence"
+  ],
+  "additionalProperties": true
+}

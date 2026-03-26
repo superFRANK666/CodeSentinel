@@ -1,0 +1,13 @@
+{
+  "findings": [
+    {
+      "rule_id": "python.sql.injection",
+      "title": "Possible SQL injection",
+      "severity": "high",
+      "confidence": 0.9,
+      "file": "src/app.py",
+      "line": 42,
+      "column": 9
+    }
+  ]
+}

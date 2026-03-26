@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codesentinel.local/schemas/scan-index.schema.json",
+  "title": "CodeSentinel Incremental Scan Index",
+  "type": "object",
+  "required": [
+    "schema",
+    "generated_at",
+    "target_root",
+    "analysis_signature",
+    "files"
+  ],
+  "properties": {
+    "schema": {
+      "type": "string",
+      "const": "scan-index.v1"
+    },
+    "spec_version": {
+      "type": "string"
+    },
+    "generated_at": {
+      "type": "string"
+    },
+    "target_root": {
+      "type": "string"
+    },
+    "scope_digest": {
+      "type": "string"
+    },
+    "selection_contract_version": {
+      "type": "string"
+    },
+    "analysis_signature": {
+      "type": "string"
+    },
+    "config_signature": {
+      "type": "string"
+    },
+    "capability_signature": {
+      "type": "string"
+    },
+    "wrapper_version": {
+      "type": "string"
+    },
+    "ruleset_version": {
+      "type": "string"
+    },
+    "binary_sha256": {
+      "type": "string"
+    },
+    "source_completeness": {
+      "type": "string",
+      "enum": [
+        "full",
+        "partial",
+        "failed"
+      ]
+    },
+    "source_is_authoritative": {
+      "type": "boolean"
+    },
+    "files": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "rel_path",
+          "sha256",
+          "size"
+        ],
+        "properties": {
+          "rel_path": {
+            "type": "string"
+          },
+          "sha256": {
+            "type": "string"
+          },
+          "size": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "mtime_utc": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "language": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "extension": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "summary": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,17 @@
+{
+  "scenario": "policy_with_confidence_level_threshold_pass",
+  "assertions": {
+    "policy_decision.decision": "pass",
+    "policy_decision.decision_kind": "no_breach",
+    "policy_decision.reason_codes": [
+      "pass"
+    ],
+    "policy_decision.threshold": {
+      "fail_on": "critical",
+      "min_confidence": 1.0,
+      "min_confidence_level": "high",
+      "exit_zero_on_findings": true
+    }
+  }
+}
+

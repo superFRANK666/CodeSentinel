@@ -1,0 +1,20 @@
+{
+  "scenario": "default_fail_policy_breach",
+  "assertions": {
+    "sarif_version": "2.1.0",
+    "run_count": 1,
+    "policy_decision.decision": "fail",
+    "policy_decision.decision_kind": "policy_breach",
+    "policy_decision.reason_codes": [
+      "threshold_breach"
+    ],
+    "invocation.executionSuccessful": true,
+    "notification_ids_contains": [
+      "codesentinel.policy.fail"
+    ],
+    "taxonomies_contains": [
+      "CWE",
+      "OWASP"
+    ]
+  }
+}

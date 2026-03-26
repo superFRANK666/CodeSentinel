@@ -1,118 +1,32 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
+# Binary (distributed via GitHub Releases)
+CodeSentinel.exe
 
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
-
-# Environments
+# Environment and secrets
 .env
-.venv
-env/
-venv/
-ENV/
-env.bak
-venv.bak
+*.pem
+*.key
 
-# mypy cache
-.mypy_cache/
+# Reports and scan outputs
+reports/
+*.report.json
+*.report.sarif
 
-# IDE / Editor specific files
-.idea/
-.vscode/
-*.iml
-*.ipr
-*.iws
-.project
-.classpath
-.c9/
-*.launch
-.settings/
-*.sublime-workspace
+# Scan cache
+.codesentinel/
 
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
+# OS artifacts
 Thumbs.db
+Desktop.ini
+.DS_Store
 
-# Testing and coverage
-.coverage
-htmlcov/
-.pytest_cache/
-.tox/
-.nox/
-coverage.xml
-*.cover
-.hypothesis/
-
-# Logs
-*.log
-logs/
+# Editor files
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
 
 # Temporary files
 *.tmp
 *.bak
-*.swp
-*~
-.#*
-
-# Build artifacts
-build/
-dist/
-*.egg-info/
-
-# Package managers
-node_modules/
-
-# pip install logs
-=*
-
-# Environment files
-.env.local
-.env.development
-.env.test
-.env.production
-
-# PyInstaller
-*.spec
-build/
-dist/
-
-# Cache and temp directories
-cache/
-tmp/
-temp/
-
-# Security audit logs
-*.audit.log
-security_audit*.log
-
-# Archive files
-*.tar.gz
-*.zip
-*.rar
-
-# Release directories
-release/
+*.log

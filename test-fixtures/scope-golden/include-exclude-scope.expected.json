@@ -1,0 +1,21 @@
+{
+  "scenario": "scope_include_exclude_contract",
+  "assertions": {
+    "diagnostics.scope.selection_contract_version": "1.1",
+    "diagnostics.scope.include_patterns": [
+      "included/**",
+      "src/**"
+    ],
+    "diagnostics.scope.exclude_patterns.user": [
+      "src/custom.log"
+    ],
+    "diagnostics.scope.exclude_patterns.use_default_excludes": true,
+    "diagnostics.scope.selected_files": 2,
+    "diagnostics.scope.excluded_by_include": 7,
+    "diagnostics.scope.excluded_by_exclude": 1,
+    "diagnostics.scope.excluded_by_user_exclude": 1,
+    "diagnostics.scope.excluded_by_default_exclude": 0,
+    "diagnostics.scope.excluded_by_gitignore": 2,
+    "diagnostics.scope.selected_digest": "adf9a14baeed8e1ad5c8af9e78ddf0b74b4c21a05d681f4ddc22d9a3dbd34d42"
+  }
+}

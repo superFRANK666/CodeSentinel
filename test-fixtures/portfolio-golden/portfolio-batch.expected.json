@@ -1,0 +1,21 @@
+{
+  "scenario": "portfolio_batch_two_projects_policy_fail",
+  "assertions": {
+    "report_type": "portfolio",
+    "portfolio_report_version": "1.0",
+    "portfolio_summary.decision": "fail",
+    "portfolio_summary.decision_kind": "policy_breach",
+    "portfolio_summary.reason_codes": [
+      "project_policy_fail"
+    ],
+    "portfolio_summary.projects_total": 2,
+    "portfolio_summary.projects_scanned": 2,
+    "portfolio_summary.projects_skipped": 0,
+    "portfolio_summary.projects_errors": 0,
+    "portfolio_summary.projects_invalid": 0,
+    "portfolio_summary.projects_failed": 2,
+    "portfolio_summary.projects_blocked": 0,
+    "portfolio_summary.projects_with_findings": 2,
+    "portfolio_summary.exit_code": 11
+  }
+}

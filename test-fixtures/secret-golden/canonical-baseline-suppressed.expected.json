@@ -1,0 +1,18 @@
+{
+  "scenario": "secret_baseline_suppression_all_findings_suppressed",
+  "assertions": {
+    "scan_summary.findings_total": 0,
+    "policy_decision.decision": "pass",
+    "policy_decision.reason_codes": [
+      "pass"
+    ],
+    "diagnostics.baseline.status": "loaded",
+    "diagnostics.baseline.suppressed": 6,
+    "diagnostics.baseline.suppressed_by": {
+      "fingerprint": 6,
+      "finding_id": 0,
+      "soft_match": 0
+    }
+  }
+}
+

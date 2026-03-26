@@ -1,0 +1,23 @@
+{
+  "scenario": "scope_incremental_filtered_trusted",
+  "assertions": {
+    "scan_summary.scan_mode": "incremental",
+    "diagnostics.scope.selection_contract_version": "1.1",
+    "diagnostics.scope.selected_files": 2,
+    "diagnostics.scope.selected_digest": "adf9a14baeed8e1ad5c8af9e78ddf0b74b4c21a05d681f4ddc22d9a3dbd34d42",
+    "scan_summary.file_change_summary": {
+      "total_scoped": 2,
+      "analyzed": 0,
+      "new": 0,
+      "changed": 0,
+      "unchanged": 2,
+      "deleted": 0
+    },
+    "diagnostics.incremental.trusted": true,
+    "diagnostics.incremental.fallback_to_full": false,
+    "scan_summary.coverage_limitations_contains": [
+      "unchanged_files_not_reanalyzed",
+      "no_changed_or_new_files"
+    ]
+  }
+}

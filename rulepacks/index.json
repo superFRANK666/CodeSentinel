@@ -1,0 +1,19 @@
+{
+  "spec_version": "2.0.0",
+  "rulepacks": [
+    {
+      "id": "core",
+      "version": "1.0.0",
+      "channel": "stable",
+      "description": "Core cross-language security checks for Python/JavaScript/TypeScript",
+      "signed": false
+    },
+    {
+      "id": "supply-chain",
+      "version": "0.1.0",
+      "channel": "preview",
+      "description": "Dependency risk and provenance-oriented checks",
+      "signed": false
+    }
+  ]
+}

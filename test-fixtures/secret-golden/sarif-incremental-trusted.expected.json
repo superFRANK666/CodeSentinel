@@ -1,0 +1,17 @@
+{
+  "scenario": "secret_incremental_trusted_sarif_no_results",
+  "assertions": {
+    "sarif_version": "2.1.0",
+    "run_count": 1,
+    "result_count": 0,
+    "scan_summary.scan_mode": "incremental",
+    "incremental.trusted": true,
+    "incremental.fallback_to_full": false,
+    "scan_summary.coverage_limitations_contains": [
+      "unchanged_files_not_reanalyzed",
+      "no_changed_or_new_files"
+    ],
+    "policy_decision.decision": "pass"
+  }
+}
+
