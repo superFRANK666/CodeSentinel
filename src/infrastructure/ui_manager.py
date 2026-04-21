@@ -295,10 +295,9 @@ class UIManager:
 
     def show_error_screen(self, error_message: str, error_id: str) -> None:
         """显示错误界面"""
+        error_title = f"{ICONS['error']} SECURITY SCAN ERROR {ICONS['error']}"
         print(f"\n{COLORS['error']}{'=' * self.terminal_width}{COLORS['reset']}")
-        print(
-            f"{COLORS['error']}{self._center_text(f'{ICONS['error']} SECURITY SCAN ERROR {ICONS['error']}')}{COLORS['reset']}"
-        )
+        print(f"{COLORS['error']}{self._center_text(error_title)}{COLORS['reset']}")
         print(f"{COLORS['error']}{'=' * self.terminal_width}{COLORS['reset']}")
 
         print(f"\n{COLORS['error']}Error Message:{COLORS['reset']}")
@@ -316,10 +315,9 @@ class UIManager:
 
     def show_success_screen(self, summary: Dict[str, Any]) -> None:
         """显示成功完成界面"""
+        success_title = f"{ICONS['success']} SECURITY SCAN COMPLETE {ICONS['success']}"
         print(f"\n{COLORS['success']}{'=' * self.terminal_width}{COLORS['reset']}")
-        print(
-            f"{COLORS['success']}{self._center_text(f'{ICONS['success']} SECURITY SCAN COMPLETE {ICONS['success']}')}{COLORS['reset']}"
-        )
+        print(f"{COLORS['success']}{self._center_text(success_title)}{COLORS['reset']}")
         print(f"{COLORS['success']}{'=' * self.terminal_width}{COLORS['reset']}")
 
         # 显示摘要信息
