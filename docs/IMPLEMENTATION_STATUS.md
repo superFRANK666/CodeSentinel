@@ -4,7 +4,7 @@
 
 - Contracted wrapper CLI: `codesentinel.ps1`
 - Command launcher: `codesentinel.cmd`
-- CLI spec contract: `docs/CLI_SPEC_v1.md`
+- CLI spec contract: `docs/CLI_SPEC_v2.md`
 - Severity taxonomy and policy thresholds
 - Normalized report format and schema
 - Config model and validation command
@@ -51,3 +51,4 @@ These are documented as platform directions in:
 - `docs/ROADMAP.md`
 - `docs/ARCHITECTURE_DIRECTION.md`
 - `docs/LANGUAGE_COVERAGE_PLAN.md`
+

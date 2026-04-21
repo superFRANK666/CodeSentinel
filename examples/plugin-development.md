@@ -25,7 +25,7 @@ class CustomVulnerabilityDetector(IVulnerabilityDetector):
 
     def __init__(self):
         self.name = "Custom Detector"
-        self.version = "1.0.0"
+        self.version = "2.0.0"
         self.description = "Detects custom security vulnerabilities"
 
     def detect_vulnerabilities(self, content: str, file_path: Path) -> List[Vulnerability]:
@@ -91,7 +91,7 @@ class APIKeyLeakageDetector(IVulnerabilityDetector):
 
     def __init__(self):
         self.name = "API Key Leakage Detector"
-        self.version = "1.0.0"
+        self.version = "2.0.0"
         self.description = "Detects hardcoded API keys and sensitive credentials"
 
         # Regex patterns for various API key formats
@@ -245,7 +245,7 @@ class SQLInjectionDetector(IVulnerabilityDetector):
 
     def __init__(self):
         self.name = "SQL Injection Detector"
-        self.version = "1.0.0"
+        self.version = "2.0.0"
         self.description = "Detects potential SQL injection vulnerabilities"
 
         # Known SQL database modules
@@ -412,7 +412,7 @@ class JSONReportGenerator(IReportGenerator):
             "recommendations": self._extract_recommendations(results),
             "scan_metadata": {
                 "timestamp": results.get("timestamp"),
-                "analyzer_version": results.get("analyzer_version", "1.0.0"),
+                "analyzer_version": results.get("analyzer_version", "2.0.0"),
                 "scan_duration": results.get("scan_duration")
             }
         }
@@ -512,7 +512,7 @@ class HTMLReportGenerator(IReportGenerator):
             "files": results.get("files", []),
             "scan_metadata": {
                 "timestamp": results.get("timestamp"),
-                "analyzer_version": results.get("analyzer_version", "1.0.0"),
+                "analyzer_version": results.get("analyzer_version", "2.0.0"),
                 "scan_duration": results.get("scan_duration")
             }
         }
@@ -807,12 +807,12 @@ from setuptools import setup, find_packages
 
 setup(
     name="codesentinel-custom-detectors",
-    version="1.0.0",
+    version="2.0.0",
     description="Custom vulnerability detectors for CodeSentinel",
     author="Your Name",
     author_email="your.email@example.com",
     packages=find_packages(),
-    install_requires=["codesentinel>=1.0.0"],
+    install_requires=["codesentinel>=2.0.0"],
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",

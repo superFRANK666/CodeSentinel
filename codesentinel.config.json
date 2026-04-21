@@ -37,5 +37,5 @@
   "enable": [],
   "policy_file": null,
   "baseline_file": null,
-  "ruleset_version": "core-1.0.0"
+  "ruleset_version": "core-2.0.0"
 }

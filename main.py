@@ -236,7 +236,7 @@ class SecurityAuditCLI:
         parser.add_argument(
             '--version',
             action='version',
-            version='%(prog)s 1.0.0'
+            version='%(prog)s 2.0.0'
         )
 
         return parser
@@ -567,7 +567,7 @@ class SecurityAuditCLI:
             # 显示欢迎界面
             print("╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═╔═")
             print("║                 🛡️  CodeSentinel AI 代码安全审计工具  🛡️                 ║")
-            print("║                      交互式使用模式 v1.0.0                         ║")
+            print("║                      交互式使用模式 v2.0.0                         ║")
             print("╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═╚═")
             print()
 
@@ -824,7 +824,7 @@ class SecurityAuditCLI:
                 cache_enabled = os.getenv("CACHE_ENABLED", "true").lower() == "true"
                 print(f"缓存功能: {'✅ 启用' if cache_enabled else '❌ 禁用'}")
 
-            print(f"\n程序版本: v1.0.0")
+            print(f"\n程序版本: v2.0.0")
             print(f"Python版本: {sys.version.split()[0]}")
             print(f"工作目录: {os.getcwd()}")
 
@@ -883,7 +883,7 @@ async def main():
 
     # 清屏并显示启动界面
     clear_terminal()
-    ui_manager.show_startup_screen("1.0.0")
+    ui_manager.show_startup_screen("2.0.0")
 
     # 显示Logo动画
     ui_manager.show_logo_animation()

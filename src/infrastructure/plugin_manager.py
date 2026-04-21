@@ -394,7 +394,7 @@ class ExampleSQLInjectionDetector(BaseVulnerabilityDetector):
     def get_metadata(self) -> PluginMetadata:
         return PluginMetadata(
             name="ExampleSQLInjectionDetector",
-            version="1.0.0",
+            version="2.0.0",
             description="示例SQL注入检测器插件",
             author="CodeSentinel Team",
             plugin_type="detector",
@@ -436,7 +436,7 @@ class ExampleCustomReportGenerator(BaseReportGeneratorPlugin):
     def get_metadata(self) -> PluginMetadata:
         return PluginMetadata(
             name="ExampleCustomReportGenerator",
-            version="1.0.0",
+            version="2.0.0",
             description="示例自定义报告生成器插件",
             author="CodeSentinel Team",
             plugin_type="reporter",

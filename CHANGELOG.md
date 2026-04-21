@@ -36,18 +36,3 @@ All notable changes to CodeSentinel will be documented in this file.
 ### Fixed
 - Consistent version numbering across all components
 
-## [1.0.0] - 2024-10-19
-
-### Added
-- Initial release
-- `CodeSentinel.exe` Windows binary (x86-64)
-- `codesentinel.ps1` contracted wrapper CLI
-- `codesentinel.cmd` launcher
-- Local deterministic analyzer for Python, JavaScript, TypeScript
-- Optional AI-assisted analysis via OpenAI API
-- Console, JSON, Markdown, HTML, XML output formats
-- Basic severity taxonomy (critical/high/medium/low/info)
-- Config file support with environment variable overrides
-- Dependency diagnostics (`doctor` command)
-- `config-validate` command
-- Deterministic exit code contract

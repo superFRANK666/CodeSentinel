@@ -20,7 +20,7 @@ class MultiLanguageAnalyzer(ICodeAnalyzer):
 
     def __init__(self, python_analyzer: ICodeAnalyzer) -> None:
         self.name = "MultiLanguageAnalyzer"
-        self.version = "1.0.0"
+        self.version = "2.0.0"
         self.python_analyzer = python_analyzer
         self.javascript_analyzer = JavaScriptAnalyzer()
 

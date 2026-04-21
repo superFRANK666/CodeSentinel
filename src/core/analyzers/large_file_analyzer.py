@@ -21,7 +21,7 @@ class LargeFileAnalyzer(BaseCodeAnalyzer, ICodeAnalyzer):
     def __init__(self, chunk_size: int = 5000, overlap: int = 100):
         super().__init__()
         self.name = "LargeFileAnalyzer"
-        self.version = "1.0.0"
+        self.version = "2.0.0"
         self.chunk_size = chunk_size  # 每块代码行数
         self.overlap = overlap  # 块间重叠行数
         self.max_file_size = 50 * 1024 * 1024  # 50MB最大文件大小
@@ -345,7 +345,7 @@ class StreamingFileAnalyzer(BaseCodeAnalyzer):
     def __init__(self, buffer_size: int = 8192):
         super().__init__()
         self.name = "StreamingFileAnalyzer"
-        self.version = "1.0.0"
+        self.version = "2.0.0"
         self.buffer_size = buffer_size
 
     async def analyze_file(self, file_path: Path, severity_filter: Optional[List[str]] = None) -> AnalysisResult:

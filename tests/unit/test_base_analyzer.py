@@ -18,7 +18,7 @@ class TestBaseCodeAnalyzer:
         """Test analyzer initialization"""
         analyzer = BaseCodeAnalyzer()
         assert analyzer.name == "BaseCodeAnalyzer"
-        assert analyzer.version == "1.0.0"
+        assert analyzer.version == "2.0.0"
 
     def test_read_file_safely_valid_file(self, sample_python_file):
         """Test reading a valid file safely"""
@@ -155,5 +155,5 @@ def function_with_complexity():
         assert "features" in info
 
         assert info["name"] == "BaseCodeAnalyzer"
-        assert info["version"] == "1.0.0"
+        assert info["version"] == "2.0.0"
         assert len(info["features"]) > 0

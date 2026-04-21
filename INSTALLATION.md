@@ -137,4 +137,5 @@ Compare the output against the SHA256 value in `checksums.txt`.
 
 - **Issues:** [github.com/superFRANK666/CodeSentinel/issues](https://github.com/superFRANK666/CodeSentinel/issues)
 - **Documentation:** [github.com/superFRANK666/CodeSentinel](https://github.com/superFRANK666/CodeSentinel)
-- **CLI Reference:** `docs/CLI_SPEC_v1.md`
+- **CLI Reference:** `docs/CLI_SPEC_v2.md`
+

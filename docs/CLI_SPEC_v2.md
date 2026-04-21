@@ -258,7 +258,7 @@ All structured errors use:
   "message": "human readable message",
   "details": {},
   "hint": "optional remediation hint",
-  "doc_url": "docs/CLI_SPEC_v1.md"
+  "doc_url": "docs/CLI_SPEC_v2.md"
 }
 ```
 
@@ -392,3 +392,4 @@ Every normalized report includes:
 - Overlay application is deterministic and runs after normalization/dedup and before baseline/policy evaluation.
 - Overlay diagnostics are emitted in `diagnostics.policy_pack`.
 - Applied policy-pack identity is emitted in `metadata.policy_pack`.
+

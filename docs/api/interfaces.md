@@ -215,7 +215,7 @@ class CustomDetector:
     def get_detector_info(self) -> Dict[str, Any]:
         return {
             "name": "Custom Detector",
-            "version": "1.0.0",
+            "version": "2.0.0",
             "supported_languages": ["python"]
         }
 ```

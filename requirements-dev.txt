@@ -1,0 +1,14 @@
+pytest>=7
+pytest-cov>=4
+pytest-asyncio>=0.21
+black>=23
+flake8>=6
+mypy>=1
+isort>=5.12
+pre-commit>=3
+pip-audit>=2.5
+bandit>=1.7
+safety>=3
+radon>=6
+docstring-coverage>=2
+pytest-benchmark>=4

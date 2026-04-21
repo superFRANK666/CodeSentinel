@@ -118,7 +118,7 @@ Configuration follows strict precedence: **CLI args > Environment variables > Co
 -NoDefaultExcludes
 ```
 
-See [docs/CLI_SPEC_v1.md](docs/CLI_SPEC_v1.md) for the complete specification.
+See [docs/CLI_SPEC_v2.md](docs/CLI_SPEC_v2.md) for the complete specification.
 
 ## CI/CD Integration
 
@@ -141,7 +141,7 @@ CodeSentinel is designed for CI pipelines with deterministic exit codes and SARI
 
 | Document | Description |
 |----------|-------------|
-| [CLI Specification](docs/CLI_SPEC_v1.md) | Complete command and option reference |
+| [CLI Specification](docs/CLI_SPEC_v2.md) | Complete command and option reference |
 | [Architecture Direction](docs/ARCHITECTURE_DIRECTION.md) | Platform layer design |
 | [Detection Capability Model](docs/DETECTION_CAPABILITY_MODEL.md) | Analysis layers and false-positive control |
 | [Language Coverage Plan](docs/LANGUAGE_COVERAGE_PLAN.md) | Multi-language expansion roadmap |
@@ -178,3 +178,4 @@ Machine-readable JSON schemas for all data contracts are in the `schemas/` direc
 
 - [GitHub Issues](https://github.com/superFRANK666/CodeSentinel/issues)
 - [Documentation](https://github.com/superFRANK666/CodeSentinel)
+

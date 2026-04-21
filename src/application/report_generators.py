@@ -518,7 +518,7 @@ class MarkdownReportGenerator(BaseReportGenerator):
 
 ### 扫描工具信息
 - **工具名称**: AI代码安全审计CLI工具
-- **版本**: 1.0.0
+- **版本**: 2.0.0
 - **分析引擎**: 混合分析（AI + 本地规则）
 - **扫描时间**: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
 
@@ -574,7 +574,7 @@ class JsonReportGenerator(BaseReportGenerator):
         return {
             "scan_metadata": {
                 "tool_name": "AI Code Security Audit Tool",
-                "version": "1.0.0",
+                "version": "2.0.0",
                 "scan_timestamp": datetime.now().isoformat(),
                 "analysis_engine": results.get("scan_summary", {}).get(
                     "analysis_engine", "hybrid"
@@ -1016,7 +1016,7 @@ class XmlReportGenerator(BaseReportGenerator):
         # 添加元数据
         metadata = ET.SubElement(root, "Metadata")
         ET.SubElement(metadata, "ToolName").text = "AI Code Security Audit Tool"
-        ET.SubElement(metadata, "Version").text = "1.0.0"
+        ET.SubElement(metadata, "Version").text = "2.0.0"
         ET.SubElement(metadata, "AnalysisEngine").text = results.get(
             "scan_summary", {}
         ).get("analysis_engine", "hybrid")

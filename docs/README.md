@@ -1,32 +1,32 @@
-# CodeSentinel Documentation
+# CodeSentinel Documentation (v2.0.0)
 
-Welcome to the CodeSentinel documentation! This section contains comprehensive information about the project's architecture, API reference, and usage examples.
+This folder hosts v2.0.0 documentation for the wrapper contract, architecture direction, and capability model.
 
-## 📚 Documentation Structure
+## Core References
 
-### API Documentation
-- **[Core Interfaces](api/interfaces.md)** - Core interfaces and data models
-- **[Analyzers](api/analyzers.md)** - Security analyzer implementations
-- **[Infrastructure](api/infrastructure.md)** - Infrastructure components
+- [CLI Specification v2.0.0](CLI_SPEC_v2.md)
+- [Implementation Status](IMPLEMENTATION_STATUS.md)
+- [Architecture Direction](ARCHITECTURE_DIRECTION.md)
+- [Detection Capability Model](DETECTION_CAPABILITY_MODEL.md)
+- [Language Coverage Plan](LANGUAGE_COVERAGE_PLAN.md)
+- [Evolution Next Steps](EVOLUTION_NEXT_STEPS.md)
+- [Roadmap](ROADMAP.md)
+- [Examples and Golden Fixtures](EXAMPLES.md)
 
-### User Guides
-- **[Getting Started](examples/getting-started.md)** - Quick start guide
-- **[Advanced Usage](examples/advanced-usage.md)** - Advanced features and configurations
-- **[Plugin Development](examples/plugin-development.md)** - How to create custom plugins
+## API-Oriented Notes
 
-### Architecture
-- **[Architecture Overview](architecture.md)** - System architecture and design principles
-- **[Security Model](security.md)** - Security analysis approach and methodology
+- [Core Interfaces](api/interfaces.md)
+- [Analyzers](api/analyzers.md)
+- [Infrastructure](api/infrastructure.md)
 
-## 🔍 Quick Access
+## Practical Examples
 
-Looking for something specific?
-- [API Reference](api/) - Complete API documentation
-- [Examples](examples/) - Practical usage examples
-- [Contributing](../CONTRIBUTING.md) - Development guidelines
+- [Getting Started](../examples/getting-started.md)
+- [Advanced Usage](../examples/advanced-usage.md)
+- [Plugin Development](../examples/plugin-development.md)
 
-## 📖 How to Use This Documentation
+## Project-Level Entry Points
 
-1. **For Users**: Start with the [Getting Started](examples/getting-started.md) guide
-2. **For Developers**: See the [API Reference](api/) and [Plugin Development](examples/plugin-development.md) sections
-3. **For Contributors**: Review the [Contributing](../CONTRIBUTING.md) guidelines
+- [Repository README](../README.md)
+- [Installation Guide](../INSTALLATION.md)
+- [Contributing Guide](../CONTRIBUTING.md)

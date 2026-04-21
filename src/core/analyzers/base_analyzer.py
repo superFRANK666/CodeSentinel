@@ -21,7 +21,7 @@ class BaseCodeAnalyzer:
 
     def __init__(self) -> None:
         self.name = "BaseCodeAnalyzer"
-        self.version = "1.0.0"
+        self.version = "2.0.0"
 
     def _read_file_safely(self, file_path: Path) -> Optional[str]:
         """安全读取文件内容"""

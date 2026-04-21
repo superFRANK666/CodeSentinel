@@ -45,7 +45,7 @@ class MockAnalyzer:
     def get_analyzer_info(self) -> dict:
         return {
             "name": self.name,
-            "version": "1.0.0",
+            "version": "2.0.0",
             "description": "Mock analyzer"
         }
 
@@ -59,7 +59,7 @@ class TestMultiLanguageAnalyzer:
         analyzer = MultiLanguageAnalyzer(mock_python_analyzer)
 
         assert analyzer.name == "MultiLanguageAnalyzer"
-        assert analyzer.version == "1.0.0"
+        assert analyzer.version == "2.0.0"
         assert analyzer.python_analyzer == mock_python_analyzer
         assert len(analyzer.supported_extensions) > 0
 

@@ -1,5 +1,5 @@
 {
-  "spec_version": "1.0.0",
+  "spec_version": "2.0.0",
   "pinned_at": "2026-03-25T18:32:44.5725576+08:00",
-  "ruleset_version": "supply-chain-0.1.0"
+  "ruleset_version": "core-2.0.0"
 }

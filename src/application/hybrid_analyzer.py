@@ -24,7 +24,7 @@ class HybridCodeAnalyzer(BaseCodeAnalyzer, ICodeAnalyzer):
     def __init__(self, ai_analyzer: ICodeAnalyzer, local_analyzer: ICodeAnalyzer, max_concurrency: int = 5):
         super().__init__()
         self.name = "HybridCodeAnalyzer"
-        self.version = "1.0.0"
+        self.version = "2.0.0"
         self.ai_analyzer = ai_analyzer
         self.local_analyzer = local_analyzer
         self.confidence_threshold = 0.8  # 置信度阈值

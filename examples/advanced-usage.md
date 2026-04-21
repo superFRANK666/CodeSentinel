@@ -104,7 +104,7 @@ class CustomSecurityDetector(IVulnerabilityDetector):
 
     def __init__(self):
         self.name = "Custom Security Detector"
-        self.version = "1.0.0"
+        self.version = "2.0.0"
 
     def detect_vulnerabilities(self, content: str, file_path: Path) -> List[Vulnerability]:
         vulnerabilities = []
@@ -249,7 +249,7 @@ class SARIFReportGenerator(IReportGenerator):
                 "tool": {
                     "driver": {
                         "name": self.tool_info.get("name", "CodeSentinel"),
-                        "version": self.tool_info.get("version", "1.0.0"),
+                        "version": self.tool_info.get("version", "2.0.0"),
                         "informationUri": "https://github.com/your-org/codesentinel"
                     }
                 },

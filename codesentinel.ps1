@@ -54,7 +54,7 @@ param(
     [string]$DependencyAdvisoryFile,
     [string]$DependencyPolicyFile,
     [int]$DependencyMaxFileBytes = -1,
-    [string]$RulesetVersion = "core-1.0.0"
+    [string]$RulesetVersion = "core-2.0.0"
 )
 
 Set-StrictMode -Version Latest
@@ -74,7 +74,7 @@ $FingerprintVersion = "v2"
 $ConfidenceModelVersion = "ucs.v1"
 
 function New-Err([string]$Code, [string]$Message, [object]$Details = $null, [string]$Hint = "") {
-    [ordered]@{ code = $Code; message = $Message; details = $Details; hint = $Hint; doc_url = "docs/CLI_SPEC_v1.md" }
+    [ordered]@{ code = $Code; message = $Message; details = $Details; hint = $Hint; doc_url = "docs/CLI_SPEC_v2.md" }
 }
 function Exit-Err([hashtable]$Err, [int]$Code, [string]$Fmt) {
     if ($Fmt -eq "json") { $Err | ConvertTo-Json -Depth 20 | Write-Output } else { Write-Error ("[{0}] {1}" -f $Err.code, $Err.message); if ($Err.hint) { Write-Error ("Hint: {0}" -f $Err.hint) } }
@@ -297,7 +297,7 @@ function Default-Config {
         dependency_max_file_bytes = 2097152
         policy_file = $null
         baseline_file = $null
-        ruleset_version = "core-1.0.0"
+        ruleset_version = "core-2.0.0"
     }
 }
 
@@ -3998,3 +3998,4 @@ catch {
     $fmt = if ($PSBoundParameters.ContainsKey("ErrorFormat")) { $ErrorFormat } else { "text" }
     Exit-Err (New-Err "INTERNAL_UNHANDLED_EXCEPTION" "Unhandled exception in wrapper." @{ exception = $_.Exception.Message; stack = $_.ScriptStackTrace }) $ExitCodes.InternalError $fmt
 }
+

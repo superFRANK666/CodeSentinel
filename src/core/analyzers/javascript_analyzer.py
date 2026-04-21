@@ -28,7 +28,7 @@ class JavaScriptAnalyzer(BaseCodeAnalyzer, ICodeAnalyzer):
     def __init__(self):
         super().__init__()
         self.name = "JavaScriptAnalyzer"
-        self.version = "1.0.0"
+        self.version = "2.0.0"
         self.supported_extensions = [".js", ".jsx", ".mjs", ".cjs"]
         self.eslint_available = False
         self.eslint_version = None
