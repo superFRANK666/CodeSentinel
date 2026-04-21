@@ -10,5 +10,5 @@ pip-audit>=2.5
 bandit>=1.7
 safety>=3
 radon>=6
-docstring-coverage>=2
+docstring-coverage>=0.3.4
 pytest-benchmark>=4
