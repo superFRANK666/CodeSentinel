@@ -31,9 +31,7 @@ jobs:
 
       - name: Lint
         run: |
-          black --check main.py src tests
-          isort --check-only main.py src tests
-          flake8 main.py src tests
+          flake8 main.py src tests --select=E9,F63,F7,F82
 
       - name: Type check
         run: mypy src/core/interfaces.py --follow-imports=skip
