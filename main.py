@@ -105,7 +105,7 @@ class SecurityAuditCLI:
     def _create_argument_parser(self) -> argparse.ArgumentParser:
         """创建参数解析器"""
         parser = argparse.ArgumentParser(
-            description="AI代码安全审计CLI工具 v1.0 - 智能检测代码安全漏洞",
+            description="AI代码安全审计CLI工具 v2.0.0 - 智能检测代码安全漏洞",
             formatter_class=argparse.RawDescriptionHelpFormatter,
             epilog="""
 示例用法:

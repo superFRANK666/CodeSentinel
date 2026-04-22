@@ -59,6 +59,18 @@ codesentinel.cmd          CLI launcher (batch)
 
 The wrapper enforces all CLI contracts (exit codes, output schemas, scope filtering, policy evaluation) on top of the core binary. This layered design ensures deterministic, CI-safe behavior.
 
+## Repository Layout
+
+- `src/` — Application, core analyzer interfaces, and infrastructure services
+- `tests/` — Unit and integration tests
+- `test-fixtures/` — Golden fixtures and synthetic scan targets for deterministic validation
+- `docs/` — Specifications, architecture notes, roadmap, and implementation status
+- `schemas/` — JSON schemas for reports, config, policy, baseline, and batch manifests
+- `scripts/` — Release and setup scripts
+- `config/` — Default configuration templates
+- `rulepacks/` and `policies/` — Built-in ruleset index and policy packs
+- `release/` — Release artifact helper docs
+
 ## CLI Commands
 
 | Command | Description |

@@ -27,7 +27,7 @@ class LocalCodeAnalyzer(BaseCodeAnalyzer, ICodeAnalyzer):
     def __init__(self, concurrent_limit: int = 5):
         super().__init__()
         self.name = "LocalCodeAnalyzer"
-        self.version = "2.1.0"  # 版本升级，集成污点分析
+        self.version = "2.0.0"  # 与项目发布版本保持一致
         self.concurrent_limit = concurrent_limit
         self.executor = ThreadPoolExecutor(max_workers=concurrent_limit)
 

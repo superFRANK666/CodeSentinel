@@ -53,6 +53,18 @@ codesentinel.cmd
 
 `codesentinel.ps1` 负责稳定 CLI 合约、配置合并、范围过滤、策略决策和输出标准化。
 
+## 仓库目录说明
+
+- `src/`：应用层、核心分析接口与基础设施实现
+- `tests/`：单元与集成测试
+- `test-fixtures/`：golden 样例与模拟扫描目标
+- `docs/`：规范、架构说明、路线图与实现状态文档
+- `schemas/`：报告、配置、策略、baseline、batch 清单等 JSON Schema
+- `scripts/`：发布与环境初始化脚本
+- `config/`：默认配置模板
+- `rulepacks/` 与 `policies/`：内置规则索引与策略包
+- `release/`：发布产物相关说明
+
 ## 常用命令
 
 - `scan [target]`：执行扫描

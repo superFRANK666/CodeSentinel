@@ -543,7 +543,7 @@ class MarkdownReportGenerator(BaseReportGenerator):
 对于关键业务系统，建议进行专业的安全审计。
 
 ---
-*报告由 AI代码安全审计工具 v1.0 生成*
+*报告由 AI代码安全审计工具 v2.0.0 生成*
 """
 
 
