@@ -266,6 +266,15 @@ class TaintAnalyzer:
                     for target in node.targets:
                         if isinstance(target, ast.Name):
                             self.variable_taint_map[target.id] = tainted_vars
+                            source_var = sorted(tainted_vars)[0]
+                            source = self.analyzer.taint_sources[source_var]
+                            self.analyzer.taint_sources[target.id] = TaintSource(
+                                name=target.id,
+                                taint_type=source.taint_type,
+                                line=node.lineno,
+                                source_function=source.source_function,
+                                confidence=source.confidence * 0.95,
+                            )
 
             def _track_call_taint(self, node: ast.Call):
                 """追踪函数调用中的污点传播"""
