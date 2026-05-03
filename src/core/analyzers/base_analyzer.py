@@ -155,6 +155,12 @@ class BaseCodeAnalyzer:
                 self.strings: List[StringLiteral] = []
 
             def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
+                self._visit_function_def(node)
+
+            def visit_AsyncFunctionDef(self, node: ast.AsyncFunctionDef) -> None:
+                self._visit_function_def(node)
+
+            def _visit_function_def(self, node: ast.FunctionDef | ast.AsyncFunctionDef) -> None:
                 decorators = [self._get_name(d) for d in node.decorator_list]
                 self.functions.append(
                     FunctionDefinition(
@@ -230,7 +236,8 @@ class BaseCodeAnalyzer:
                 if isinstance(node, ast.Name):
                     return node.id
                 elif isinstance(node, ast.Attribute):
-                    return f"{self._get_name(node.value)}.{node.attr}"
+                    parent_name = self._get_name(node.value)
+                    return f"{parent_name}.{node.attr}" if parent_name else None
                 return None
 
         visitor = ASTVisitor()

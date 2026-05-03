@@ -171,13 +171,19 @@ class LocalCodeAnalyzer(BaseCodeAnalyzer, ICodeAnalyzer):
                 self.dangerous_nodes = []
 
             def visit_FunctionDef(self, node):
+                self._visit_function_def(node, is_async=False)
+
+            def visit_AsyncFunctionDef(self, node):
+                self._visit_function_def(node, is_async=True)
+
+            def _visit_function_def(self, node, is_async):
                 func_info = {
                     "name": node.name,
                     "line": node.lineno,
                     "args": [arg.arg for arg in node.args.args],
                     "defaults": len(node.args.defaults),
                     "decorators": [self._get_full_name(d) for d in node.decorator_list],
-                    "is_async": isinstance(node, ast.AsyncFunctionDef),
+                    "is_async": is_async,
                     "docstring": ast.get_docstring(node),
                 }
                 self.functions.append(func_info)
@@ -308,7 +314,8 @@ class LocalCodeAnalyzer(BaseCodeAnalyzer, ICodeAnalyzer):
                 if isinstance(node, ast.Name):
                     return node.id
                 elif isinstance(node, ast.Attribute):
-                    return f"{self._get_full_name(node.value)}.{node.attr}"
+                    parent_name = self._get_full_name(node.value)
+                    return f"{parent_name}.{node.attr}" if parent_name else None
                 return None
 
             def _get_node_type(self, node):

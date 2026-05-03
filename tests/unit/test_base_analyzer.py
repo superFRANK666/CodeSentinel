@@ -120,6 +120,28 @@ class TestClass:
         assert len(ast_info.classes) >= 1
         assert ast_info.complexity_score >= 0
 
+    def test_analyze_ast_handles_async_functions_and_dynamic_attributes(self):
+        """Test AST analysis handles async functions without pseudo names."""
+        analyzer = BaseCodeAnalyzer()
+        code = """
+async def fetch_data(client):
+    return await client.get("/data")
+
+def run(factory):
+    return factory().execute()
+"""
+        import ast
+
+        tree = ast.parse(code)
+        ast_info = analyzer._analyze_ast(tree)
+
+        function_names = {function.name for function in ast_info.functions}
+        call_names = {call.function for call in ast_info.calls}
+
+        assert "fetch_data" in function_names
+        assert "client.get" in call_names
+        assert all(not call_name.startswith("None.") for call_name in call_names)
+
     def test_calculate_complexity_metrics(self):
         """Test complexity metrics calculation"""
         analyzer = BaseCodeAnalyzer()

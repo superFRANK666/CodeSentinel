@@ -7,9 +7,9 @@
 
 import ast
 import logging
-from typing import Dict, List, Set, Optional, Any, Tuple
 from dataclasses import dataclass
 from enum import Enum
+from typing import Any, Dict, List, Optional, Set, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -223,7 +223,6 @@ class TaintAnalyzer:
                 if func_name in self.analyzer.user_input_functions:
                     # 处理内联函数调用的情况
                     # 这里可以处理更复杂的情况
-                    taint_type = self.analyzer.user_input_functions[func_name]
                     # TODO: 实现内联函数调用的污点源处理逻辑
                     pass
 
@@ -232,7 +231,8 @@ class TaintAnalyzer:
                 if isinstance(node, ast.Name):
                     return node.id
                 elif isinstance(node, ast.Attribute):
-                    return f"{self._get_full_name(node.value)}.{node.attr}"
+                    parent_name = self._get_full_name(node.value)
+                    return f"{parent_name}.{node.attr}" if parent_name else ""
                 return ""
 
         visitor = TaintSourceVisitor(self)
@@ -383,7 +383,8 @@ class TaintAnalyzer:
                 if isinstance(node, ast.Name):
                     return node.id
                 elif isinstance(node, ast.Attribute):
-                    return f"{self._get_full_name(node.value)}.{node.attr}"
+                    parent_name = self._get_full_name(node.value)
+                    return f"{parent_name}.{node.attr}" if parent_name else ""
                 return ""
 
         visitor = DangerousUsageVisitor(self)
