@@ -5,21 +5,24 @@
 提供文件缓存和内存缓存支持,用于增量分析
 """
 
-import json
 import hashlib
-import time
-import threading
-from pathlib import Path
-from typing import Optional, Dict, Any
-
-from ..core.interfaces import ICacheManager, AnalysisResult
+import json
 import logging
+import re
+import threading
+import time
+from pathlib import Path
+from typing import Any, Dict, Optional
+
+from ..core.interfaces import AnalysisResult, ICacheManager
 
 logger = logging.getLogger(__name__)
 
 
 class FileCacheManager(ICacheManager):
     """文件缓存管理器"""
+
+    _HASH_PATTERN = re.compile(r"^[a-fA-F0-9]{64}$")
 
     def __init__(self, cache_dir: str = "./cache", ttl: int = 3600):
         self.cache_dir = Path(cache_dir)
@@ -32,6 +35,9 @@ class FileCacheManager(ICacheManager):
 
     def get_cached_result(self, file_hash: str) -> Optional[AnalysisResult]:
         """获取缓存的分析结果"""
+        if not self._is_valid_file_hash(file_hash):
+            return None
+
         # 先检查内存缓存
         if file_hash in self._memory_cache:
             return self._memory_cache[file_hash]
@@ -73,6 +79,10 @@ class FileCacheManager(ICacheManager):
 
     def cache_result(self, file_hash: str, result: AnalysisResult) -> None:
         """缓存分析结果 - 线程安全版本"""
+        if not self._is_valid_file_hash(file_hash):
+            logger.warning(f"跳过非法缓存哈希: {file_hash}")
+            return
+
         # 存入内存缓存
         self._memory_cache[file_hash] = result
 
@@ -120,6 +130,9 @@ class FileCacheManager(ICacheManager):
 
     def is_cache_valid(self, file_path: Path, file_hash: str) -> bool:
         """检查缓存是否有效 - 基于文件内容哈希的验证"""
+        if not self._is_valid_file_hash(file_hash):
+            return False
+
         # 检查文件是否存在
         if not file_path.exists():
             return False
@@ -231,11 +244,18 @@ class FileCacheManager(ICacheManager):
 
     def _get_cache_file_path(self, file_hash: str) -> Path:
         """获取缓存文件路径"""
+        if not self._is_valid_file_hash(file_hash):
+            raise ValueError(f"Invalid cache hash: {file_hash}")
+
         # 使用哈希值的前2位作为子目录,避免单个目录文件过多
         subdir = file_hash[:2]
         cache_subdir = self.cache_dir / subdir
         cache_subdir.mkdir(exist_ok=True)
         return cache_subdir / f"{file_hash}.json"
+
+    def _is_valid_file_hash(self, file_hash: str) -> bool:
+        """Validate cache keys before using them as path components."""
+        return bool(self._HASH_PATTERN.fullmatch(file_hash))
 
     def _is_cache_expired(self, cache_file: Path) -> bool:
         """检查缓存是否过期"""
