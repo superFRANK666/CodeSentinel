@@ -4,12 +4,13 @@
 Unit tests for MultiLanguageAnalyzer
 """
 
-import pytest
-from unittest.mock import Mock, AsyncMock
 from pathlib import Path
+from unittest.mock import AsyncMock, Mock
+
+import pytest
 
 from src.application.multi_language_analyzer import MultiLanguageAnalyzer
-from src.core.interfaces import ICodeAnalyzer, AnalysisResult, SeverityLevel
+from src.core.interfaces import AnalysisResult, ICodeAnalyzer, SeverityLevel
 
 
 class MockAnalyzer:

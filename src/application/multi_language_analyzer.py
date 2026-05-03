@@ -7,10 +7,10 @@
 
 import logging
 from pathlib import Path
-from typing import Dict, Any, List, Optional
+from typing import Any, Dict, List, Optional
 
-from ..core.interfaces import ICodeAnalyzer, AnalysisResult, SeverityLevel
 from ..core.analyzers.javascript_analyzer import JavaScriptAnalyzer
+from ..core.interfaces import AnalysisResult, ICodeAnalyzer, SeverityLevel
 
 logger = logging.getLogger(__name__)
 

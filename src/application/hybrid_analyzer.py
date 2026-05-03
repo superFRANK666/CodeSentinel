@@ -6,14 +6,18 @@
 """
 
 import asyncio
-import re
 import logging
+import re
 from pathlib import Path
-from typing import Dict, Any, List
+from typing import Any, Dict, List
 
-from ..core.interfaces import ICodeAnalyzer, AnalysisResult, Vulnerability, SeverityLevel
 from ..core.analyzers.base_analyzer import BaseCodeAnalyzer
-
+from ..core.interfaces import (
+    AnalysisResult,
+    ICodeAnalyzer,
+    SeverityLevel,
+    Vulnerability,
+)
 
 logger = logging.getLogger(__name__)
 

@@ -9,19 +9,18 @@ import importlib
 import importlib.util
 import inspect
 import logging
-from pathlib import Path
-from typing import List, Dict, Any, Type, Optional, Protocol
 from abc import ABC, abstractmethod
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Protocol, Type
 
 from ..core.interfaces import (
-    IVulnerabilityDetector,
-    IReportGenerator,
-    ICodeAnalyzer,
-    Vulnerability,
-    SeverityLevel,
     AnalysisResult,
+    ICodeAnalyzer,
+    IReportGenerator,
+    IVulnerabilityDetector,
+    SeverityLevel,
+    Vulnerability,
 )
-
 
 logger = logging.getLogger(__name__)
 

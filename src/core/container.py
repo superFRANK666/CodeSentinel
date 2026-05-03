@@ -5,21 +5,21 @@
 实现轻量级的依赖注入,管理所有核心组件的生命周期
 """
 
-from typing import Dict, Any, Type, Optional
 from pathlib import Path
+from typing import Any, Dict, Optional, Type
 
 from .interfaces import (
-    ICodeAnalyzer,
-    IReportGenerator,
-    IConfigManager,
-    ICacheManager,
-    IProgressReporter,
-    IPluginManager,
-    IErrorHandler,
-    ICodePrivacyManager,
-    IAuthenticationManager,
-    AppConfig,
     AnalyzerConfig,
+    AppConfig,
+    IAuthenticationManager,
+    ICacheManager,
+    ICodeAnalyzer,
+    ICodePrivacyManager,
+    IConfigManager,
+    IErrorHandler,
+    IPluginManager,
+    IProgressReporter,
+    IReportGenerator,
     ReportConfig,
     SecurityConfig,
 )
@@ -106,7 +106,7 @@ class DependencyContainer:
                 report=report_config,
                 security=security_config,
             )
-        except Exception as e:
+        except Exception:
             # 如果转换失败，返回默认配置
             return AppConfig()
 
@@ -290,9 +290,9 @@ class DependencyContainer:
         """初始化报告生成器"""
         from ..application.report_generators import (
             ConsoleReportGenerator,
-            MarkdownReportGenerator,
-            JsonReportGenerator,
             HtmlReportGenerator,
+            JsonReportGenerator,
+            MarkdownReportGenerator,
         )
 
         # 控制台报告生成器

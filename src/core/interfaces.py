@@ -5,10 +5,10 @@ Core interface definition module
 Defines abstract interfaces for all core components in the system, implementing dependency inversion principle
 """
 
-from pathlib import Path
-from typing import Dict, Any, List, Optional, Protocol
 from dataclasses import dataclass
 from enum import Enum
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Protocol
 
 
 class SeverityLevel(Enum):

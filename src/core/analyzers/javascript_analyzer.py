@@ -8,16 +8,21 @@ JavaScript代码分析器
 import asyncio
 import logging
 from pathlib import Path
-from typing import Dict, Any, List
+from typing import Any, Dict, List
 
-from .base_analyzer import BaseCodeAnalyzer
-from ...core.interfaces import ICodeAnalyzer, AnalysisResult, SeverityLevel, Vulnerability
+from ...core.interfaces import (
+    AnalysisResult,
+    ICodeAnalyzer,
+    SeverityLevel,
+    Vulnerability,
+)
 from ...infrastructure.external_analyzers import (
-    run_eslint_analysis,
+    ExternalAnalyzerError,
     check_eslint_availability,
     get_eslint_version,
-    ExternalAnalyzerError,
+    run_eslint_analysis,
 )
+from .base_analyzer import BaseCodeAnalyzer
 
 logger = logging.getLogger(__name__)
 

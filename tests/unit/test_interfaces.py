@@ -4,12 +4,19 @@
 Unit tests for interfaces and data models
 """
 
-import pytest
 from datetime import datetime
 
+import pytest
+
 from src.core.interfaces import (
-    Vulnerability, AnalysisResult, ScanSummary, SeverityLevel,
-    AnalyzerConfig, ReportConfig, SecurityConfig, AppConfig
+    AnalysisResult,
+    AnalyzerConfig,
+    AppConfig,
+    ReportConfig,
+    ScanSummary,
+    SecurityConfig,
+    SeverityLevel,
+    Vulnerability,
 )
 
 

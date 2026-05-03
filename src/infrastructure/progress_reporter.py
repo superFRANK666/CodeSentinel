@@ -5,13 +5,13 @@
 提供多种进度显示方式,包括控制台进度条和日志进度
 """
 
-import time
-import sys
 import logging
+import sys
 import threading
-from typing import Optional, Dict, Any, List
+import time
 from abc import ABC, abstractmethod
 from datetime import datetime
+from typing import Any, Dict, List, Optional
 
 from ..core.interfaces import IProgressReporter
 
@@ -356,7 +356,7 @@ class TqdmProgressReporter(BaseProgressReporter):
 
         # 显示子任务完成情况（如果有）
         if self._subtasks:
-            print(f"\n📋 子任务完成情况:")
+            print("\n📋 子任务完成情况:")
             for subtask in self._subtasks:
                 status_icon = "✅" if subtask["status"] == "completed" else "❌"
                 print(f"   {status_icon} {subtask['name']}: {subtask['description']}")
@@ -402,7 +402,7 @@ class SimpleProgressReporter(BaseProgressReporter):
         elapsed_time = self.get_elapsed_time()
         print(f"✅ 完成: {self.description}")
         print(f"📈 总计: {self.total} 个文件, 用时: {elapsed_time:.2f}秒")
-        print(f"⚡ 平均速度：{self.total/elapsed_time:.2f} 文件/秒" if elapsed_time > 0 else "")
+        print(f"⚡ 平均速度：{self.total / elapsed_time:.2f} 文件/秒" if elapsed_time > 0 else "")
 
 
 class LogProgressReporter(BaseProgressReporter):

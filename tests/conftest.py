@@ -4,13 +4,14 @@
 Pytest configuration and fixtures
 """
 
-import pytest
-import tempfile
 import shutil
+import tempfile
 from pathlib import Path
-from typing import Dict, Any
+from typing import Any, Dict
 
-from src.core.interfaces import AnalysisResult, Vulnerability, SeverityLevel
+import pytest
+
+from src.core.interfaces import AnalysisResult, SeverityLevel, Vulnerability
 
 
 @pytest.fixture

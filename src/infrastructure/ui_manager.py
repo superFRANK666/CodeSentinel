@@ -6,9 +6,9 @@ UI界面管理器
 """
 
 import os
-import time
 import threading
-from typing import Optional, Dict, Any
+import time
+from typing import Any, Dict, Optional
 
 try:
     import colorama
@@ -230,8 +230,10 @@ class UIManager:
     def show_mini_dashboard(self, stats: Dict[str, int]) -> None:
         """显示迷你仪表板"""
         print(f"\n{COLORS['primary']}{'┌' + '─' * (self.terminal_width - 2) + '┐'}{COLORS['reset']}")
+        centered_title = self._center_text("Quick Stats", self.terminal_width - 2)
         print(
-            f"{COLORS['primary']}│{COLORS['reset']}{self._center_text('Quick Stats', self.terminal_width - 2)}{COLORS['primary']}│{COLORS['reset']}"
+            f"{COLORS['primary']}│{COLORS['reset']}{centered_title}"
+            f"{COLORS['primary']}│{COLORS['reset']}"
         )
         print(f"{COLORS['primary']}{'├' + '─' * (self.terminal_width - 2) + '┤'}{COLORS['reset']}")
 
@@ -279,7 +281,7 @@ class UIManager:
 
         for i in range(min(file_count, 20)):  # 最多显示20个文件的扫描
             scan_char = scan_chars[i % len(scan_chars)]
-            file_text = f"Scanning file {i+1}/{file_count}"
+            file_text = f"Scanning file {i + 1}/{file_count}"
 
             wave_effect = "".join(["〰️" if j % 2 == 0 else "〜" for j in range(10)])
 

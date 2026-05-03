@@ -10,9 +10,9 @@ import logging
 import subprocess
 import tempfile
 from pathlib import Path
-from typing import Dict, Any, List, Optional
+from typing import Any, Dict, List, Optional
 
-from ..core.interfaces import Vulnerability, SeverityLevel
+from ..core.interfaces import SeverityLevel, Vulnerability
 
 logger = logging.getLogger(__name__)
 
@@ -276,7 +276,7 @@ def _extract_code_snippet(file_path: Path, line_number: int, context_lines: int 
         snippet_lines = []
         for i in range(start_line, end_line):
             line_indicator = ">>> " if i == line_number - 1 else "    "
-            snippet_lines.append(f"{line_indicator}{i+1:4d}: {lines[i].rstrip()}")
+            snippet_lines.append(f"{line_indicator}{i + 1:4d}: {lines[i].rstrip()}")
 
         return "\n".join(snippet_lines)
 

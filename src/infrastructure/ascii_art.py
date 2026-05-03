@@ -266,7 +266,11 @@ def create_border(width: int, border_style: str = "double", title: str = "") -> 
 
     if title:
         title_padding = (width - len(title) - 4) // 2
-        top_line = f"{border['top_left']}{border['horizontal'] * title_padding} {title} {border['horizontal'] * (width - len(title) - 4 - title_padding)}{border['top_right']}"
+        right_padding = width - len(title) - 4 - title_padding
+        top_line = (
+            f"{border['top_left']}{border['horizontal'] * title_padding} "
+            f"{title} {border['horizontal'] * right_padding}{border['top_right']}"
+        )
     else:
         top_line = f"{border['top_left']}{border['horizontal'] * (width - 2)}{border['top_right']}"
 
@@ -313,7 +317,7 @@ class AnimationEffects:
         """波浪效果"""
         for i in range(len(text)):
             wave_char = "〰️" if i % 2 == 0 else "〜"
-            print(f"\r{text[:i]}{wave_char}{text[i+1:]}", end="", flush=True)
+            print(f"\r{text[:i]}{wave_char}{text[i + 1:]}", end="", flush=True)
             time.sleep(0.1)
         print()
 

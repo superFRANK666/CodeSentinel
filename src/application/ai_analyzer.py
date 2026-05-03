@@ -5,19 +5,18 @@
 支持多种AI模型，包括本地模型和云API
 """
 
-import os
 import json
-import re
 import logging
+import os
+import re
 from pathlib import Path
-from typing import Dict, Any, List, Optional
+from typing import Any, Dict, List, Optional
 
 import openai
 from openai import AsyncOpenAI
 
-from ..core.interfaces import AnalysisResult, Vulnerability, SeverityLevel
 from ..core.analyzers.base_analyzer import BaseCodeAnalyzer
-
+from ..core.interfaces import AnalysisResult, SeverityLevel, Vulnerability
 
 logger = logging.getLogger(__name__)
 

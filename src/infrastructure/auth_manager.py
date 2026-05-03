@@ -5,7 +5,8 @@
 提供简单的认证和授权功能
 """
 
-from typing import Optional, Dict, Any
+from typing import Any, Dict, Optional
+
 from ..core.interfaces import IAuthenticationManager
 
 

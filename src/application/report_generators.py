@@ -8,14 +8,14 @@
 import json
 import xml.etree.ElementTree as ET
 from datetime import datetime
-from typing import Dict, Any, List, Optional
+from typing import Any, Dict, List, Optional
 from xml.dom import minidom
 
 from ..core.interfaces import (
-    IReportGenerator,
-    Vulnerability,
-    SeverityLevel,
     AnalysisResult,
+    IReportGenerator,
+    SeverityLevel,
+    Vulnerability,
 )
 
 
@@ -323,11 +323,12 @@ class MarkdownReportGenerator(BaseReportGenerator):
         """构建Markdown内容"""
         file_results = results.get("file_results", [])
         current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        analysis_engine = results.get("scan_summary", {}).get("analysis_engine", "混合分析")
 
         content = f"""# 🔍 AI代码安全审计报告
 
 *生成时间: {current_time}*
-*分析引擎: {results.get('scan_summary', {}).get('analysis_engine', '混合分析')}*
+*分析引擎: {analysis_engine}*
 
 ## 📊 执行摘要
 
@@ -694,6 +695,7 @@ class HtmlReportGenerator(BaseReportGenerator):
         stats = self._calculate_statistics(results)
         file_results = results.get("file_results", [])
         current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        analysis_engine = results.get("scan_summary", {}).get("analysis_engine", "混合分析")
 
         html = f"""<!DOCTYPE html>
 <html lang="zh-CN">
@@ -827,7 +829,7 @@ class HtmlReportGenerator(BaseReportGenerator):
     <div class="container">
         <h1>🔍 AI代码安全审计报告</h1>
         <p><strong>生成时间:</strong> {current_time}</p>
-        <p><strong>分析引擎:</strong> {results.get('scan_summary', {}).get('analysis_engine', '混合分析')}</p>
+        <p><strong>分析引擎:</strong> {analysis_engine}</p>
 
         <div class="summary-grid">
             <div class="summary-card">
