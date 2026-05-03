@@ -4,7 +4,6 @@
 大文件分析器 - 支持分块分析大文件
 """
 
-import asyncio
 import logging
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -28,6 +27,8 @@ class LargeFileAnalyzer(BaseCodeAnalyzer, ICodeAnalyzer):
 
     async def analyze_file(self, file_path: Path, severity_filter: SeverityLevel = SeverityLevel.LOW) -> AnalysisResult:
         """分析大文件"""
+        import asyncio
+
         try:
             logger.info(f"开始分析大文件: {file_path}")
             start_time = asyncio.get_event_loop().time()
@@ -94,10 +95,14 @@ class LargeFileAnalyzer(BaseCodeAnalyzer, ICodeAnalyzer):
 
             chunks.append(chunk_info)
 
+            if adjusted_end >= total_lines:
+                break
+
             # 移动到下一个块（包含重叠）
-            start_line = adjusted_end - self.overlap
-            if start_line >= adjusted_end:  # 防止无限循环
-                start_line = adjusted_end
+            next_start_line = max(0, adjusted_end - self.overlap)
+            if next_start_line <= start_line:  # 防止无限循环
+                next_start_line = adjusted_end
+            start_line = next_start_line
             chunk_id += 1
 
         return chunks
@@ -128,6 +133,9 @@ class LargeFileAnalyzer(BaseCodeAnalyzer, ICodeAnalyzer):
 
     def _adjust_chunk_boundary(self, lines: List[str], start_line: int, end_line: int, boundaries: List[int]) -> int:
         """Adjust chunk boundaries to appropriate code boundaries"""
+        if end_line >= len(lines):
+            return end_line
+
         # 找到不超过end_line的最大边界
         adjusted_end = end_line
 
@@ -144,6 +152,8 @@ class LargeFileAnalyzer(BaseCodeAnalyzer, ICodeAnalyzer):
         self, chunks: List[Dict[str, Any]], file_path: Path, severity_filter: SeverityLevel
     ) -> List[AnalysisResult]:
         """并发分析各个块"""
+        import asyncio
+
         chunk_results = []
 
         # 使用信号量限制并发数
@@ -222,6 +232,8 @@ class LargeFileAnalyzer(BaseCodeAnalyzer, ICodeAnalyzer):
         self, chunk_results: List[AnalysisResult], original_file_path: Path, original_content: str, start_time: float
     ) -> AnalysisResult:
         """Merge analysis results from each chunk"""
+        import asyncio
+
         all_vulnerabilities = []
         all_recommendations = set()
         total_analysis_time = 0.0
@@ -297,6 +309,8 @@ class LargeFileAnalyzer(BaseCodeAnalyzer, ICodeAnalyzer):
         self, file_paths: List[Path], severity_filter: SeverityLevel = SeverityLevel.LOW
     ) -> List[AnalysisResult]:
         """批量分析大文件"""
+        import asyncio
+
         semaphore = asyncio.Semaphore(2)  # 限制大文件并发数
 
         async def analyze_with_semaphore(file_path: Path) -> AnalysisResult:
