@@ -8,6 +8,7 @@ from pathlib import Path
 
 import pytest
 
+from src.core.analyzers.analysis_types import pre_analysis_info_to_dict
 from src.core.analyzers.base_analyzer import BaseCodeAnalyzer
 from src.core.interfaces import AnalysisResult
 
@@ -76,6 +77,19 @@ class TestBaseCodeAnalyzer:
         assert analysis.total_lines > 0
         assert len(analysis.function_definitions) >= 2  # vulnerable_function, safe_function
         assert len(analysis.class_definitions) >= 1  # ExampleClass
+
+    def test_pre_analysis_info_converts_to_dict(self, sample_python_file):
+        """Test pre-analysis can be serialized for AnalysisResult payloads."""
+        analyzer = BaseCodeAnalyzer()
+        content = sample_python_file.read_text()
+        analysis = analyzer._pre_analyze_content(content)
+
+        payload = pre_analysis_info_to_dict(analysis)
+
+        assert payload["total_lines"] == analysis.total_lines
+        assert "complexity_metrics" in payload
+        assert "ast_info" in payload
+        assert payload["function_definitions"][0]["name"] == "vulnerable_function"
 
     def test_analyze_ast(self):
         """Test AST analysis functionality"""

@@ -6,17 +6,22 @@
 """
 
 import ast
-import re
-import logging
-from pathlib import Path
-from typing import Dict, Any, List
-from concurrent.futures import ThreadPoolExecutor
 import asyncio
+import logging
+import re
+from concurrent.futures import ThreadPoolExecutor
+from pathlib import Path
+from typing import Any, Dict, List
 
-from ..core.interfaces import ICodeAnalyzer, AnalysisResult, Vulnerability, SeverityLevel
+from ..core.analyzers.analysis_types import pre_analysis_info_to_dict
 from ..core.analyzers.base_analyzer import BaseCodeAnalyzer
 from ..core.analyzers.taint_analyzer import TaintAnalyzer
-
+from ..core.interfaces import (
+    AnalysisResult,
+    ICodeAnalyzer,
+    SeverityLevel,
+    Vulnerability,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -58,13 +63,14 @@ class LocalCodeAnalyzer(BaseCodeAnalyzer, ICodeAnalyzer):
             # 预分析
             start_time = asyncio.get_event_loop().time()
             pre_analysis = self._pre_analyze_content(content)
+            pre_analysis_dict = pre_analysis_info_to_dict(pre_analysis)
 
             # AST分析
             ast_analysis = self._analyze_ast_detailed(content)
 
             # 漏洞检测
             vulnerabilities = await self._detect_vulnerabilities(
-                content, file_path, pre_analysis, ast_analysis, severity_filter
+                content, file_path, pre_analysis_dict, ast_analysis, severity_filter
             )
 
             # 计算安全评分
@@ -85,7 +91,7 @@ class LocalCodeAnalyzer(BaseCodeAnalyzer, ICodeAnalyzer):
                 security_score=security_score,
                 recommendations=recommendations,
                 analysis_time=analysis_time,
-                pre_analysis_info={**pre_analysis, "ast_analysis": ast_analysis},
+                pre_analysis_info={**pre_analysis_dict, "ast_analysis": ast_analysis},
             )
 
         except Exception as e:
