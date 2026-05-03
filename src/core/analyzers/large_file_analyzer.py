@@ -7,10 +7,10 @@
 import asyncio
 import logging
 from pathlib import Path
-from typing import List, Optional, Dict, Any
-from ..interfaces import ICodeAnalyzer, AnalysisResult, Vulnerability, SeverityLevel
-from .base_analyzer import BaseCodeAnalyzer
+from typing import Any, Dict, List, Optional
 
+from ..interfaces import AnalysisResult, ICodeAnalyzer, SeverityLevel, Vulnerability
+from .base_analyzer import BaseCodeAnalyzer
 
 logger = logging.getLogger(__name__)
 
@@ -150,18 +150,17 @@ class LargeFileAnalyzer(BaseCodeAnalyzer, ICodeAnalyzer):
         semaphore = asyncio.Semaphore(3)
 
         async def analyze_single_chunk(chunk: Dict[str, Any]) -> AnalysisResult:
+            chunk_file_path = Path(f"{file_path}.chunk_{chunk['id']}")
             async with semaphore:
                 try:
                     # Create temporary analyzer for chunk analysis
-                    from application.local_analyzer import LocalCodeAnalyzer
-
-                    chunk_analyzer = LocalCodeAnalyzer()
-
-                    # Create virtual file path for analysis
-                    chunk_file_path = Path(f"{file_path}.chunk_{chunk['id']}")
+                    from ...application.local_analyzer import LocalCodeAnalyzer
 
                     # 分析块内容
-                    result = await chunk_analyzer.analyze_file(chunk_file_path, severity_filter)
+                    chunk_analyzer = LocalCodeAnalyzer()
+                    result = await chunk_analyzer._analyze_content(
+                        chunk["content"], chunk_file_path, severity_filter
+                    )
 
                     # Adjust line numbers (relative to original file)
                     adjusted_result = self._adjust_vulnerability_lines(result, chunk["start_line"])

@@ -60,43 +60,48 @@ class LocalCodeAnalyzer(BaseCodeAnalyzer, ICodeAnalyzer):
             if not content:
                 return self._create_error_result(file_path, "无法读取文件内容")
 
-            # 预分析
-            start_time = asyncio.get_event_loop().time()
-            pre_analysis = self._pre_analyze_content(content)
-            pre_analysis_dict = pre_analysis_info_to_dict(pre_analysis)
-
-            # AST分析
-            ast_analysis = self._analyze_ast_detailed(content)
-
-            # 漏洞检测
-            vulnerabilities = await self._detect_vulnerabilities(
-                content, file_path, pre_analysis_dict, ast_analysis, severity_filter
-            )
-
-            # 计算安全评分
-            security_score = self._calculate_security_score(vulnerabilities)
-
-            # 生成推荐建议
-            recommendations = self._generate_recommendations(vulnerabilities)
-
-            # 计算分析时间
-            end_time = asyncio.get_event_loop().time()
-            analysis_time = end_time - start_time
-
-            return AnalysisResult(
-                file_path=str(file_path),
-                file_size=len(content),
-                analysis_status="completed",
-                vulnerabilities=vulnerabilities,
-                security_score=security_score,
-                recommendations=recommendations,
-                analysis_time=analysis_time,
-                pre_analysis_info={**pre_analysis_dict, "ast_analysis": ast_analysis},
-            )
+            return await self._analyze_content(content, file_path, severity_filter)
 
         except Exception as e:
             logger.error(f"本地分析文件失败 {file_path}: {e}.")
             return self._create_error_result(file_path, f"本地分析失败: {str(e)}.")
+
+    async def _analyze_content(
+        self, content: str, file_path: Path, severity_filter: SeverityLevel = SeverityLevel.LOW
+    ) -> AnalysisResult:
+        """分析已读取的代码内容，供文件扫描和分块扫描复用。"""
+        start_time = asyncio.get_event_loop().time()
+        pre_analysis = self._pre_analyze_content(content)
+        pre_analysis_dict = pre_analysis_info_to_dict(pre_analysis)
+
+        # AST分析
+        ast_analysis = self._analyze_ast_detailed(content)
+
+        # 漏洞检测
+        vulnerabilities = await self._detect_vulnerabilities(
+            content, file_path, pre_analysis_dict, ast_analysis, severity_filter
+        )
+
+        # 计算安全评分
+        security_score = self._calculate_security_score(vulnerabilities)
+
+        # 生成推荐建议
+        recommendations = self._generate_recommendations(vulnerabilities)
+
+        # 计算分析时间
+        end_time = asyncio.get_event_loop().time()
+        analysis_time = end_time - start_time
+
+        return AnalysisResult(
+            file_path=str(file_path),
+            file_size=len(content),
+            analysis_status="completed",
+            vulnerabilities=vulnerabilities,
+            security_score=security_score,
+            recommendations=recommendations,
+            analysis_time=analysis_time,
+            pre_analysis_info={**pre_analysis_dict, "ast_analysis": ast_analysis},
+        )
 
     async def analyze_batch(
         self, file_paths: List[Path], severity_filter: SeverityLevel = SeverityLevel.LOW
