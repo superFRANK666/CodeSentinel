@@ -5,13 +5,13 @@
 提供文件验证、路径安全检查、内容过滤等功能
 """
 
-import re
-import os
-import mimetypes
-from pathlib import Path
-from typing import List, Optional, Dict, Any, Tuple
-from dataclasses import dataclass
 import logging
+import mimetypes
+import os
+import re
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -124,7 +124,7 @@ class FileValidator:
 
             # 路径遍历检查
             resolved_path = file_path.resolve()
-            if ".." in str(file_path) or not str(resolved_path).startswith(str(Path.cwd().resolve())):
+            if ".." in file_path.parts or not self._is_within_directory(resolved_path, Path.cwd().resolve()):
                 return ValidationResult(
                     is_valid=False, message=f"检测到潜在的路径遍历攻击: {file_path}", risk_level="critical"
                 )
@@ -159,6 +159,14 @@ class FileValidator:
         except Exception as e:
             logger.error(f"文件路径验证出错: {e}")
             return ValidationResult(is_valid=False, message=f"文件路径验证失败: {str(e)}", risk_level="high")
+
+    def _is_within_directory(self, file_path: Path, directory: Path) -> bool:
+        """Check path containment using filesystem path semantics."""
+        try:
+            file_path.relative_to(directory)
+            return True
+        except ValueError:
+            return False
 
     def validate_file_size(self, file_path: Path) -> ValidationResult:
         """验证文件大小"""
@@ -214,7 +222,7 @@ class FileValidator:
                 if binary_ratio > 0.1:  # 超过10%的二进制字符
                     return ValidationResult(
                         is_valid=False,
-                        message=f"文件包含大量二进制内容({binary_ratio*100:.1f}%),可能不是文本文件",
+                        message=f"文件包含大量二进制内容({binary_ratio * 100:.1f}%),可能不是文本文件",
                         risk_level="high",
                         details={"binary_ratio": binary_ratio},
                     )
