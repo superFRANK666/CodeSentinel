@@ -8,7 +8,8 @@
 import json
 import os
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Any, Dict, Optional
+
 from ..core.interfaces import IConfigManager
 
 
@@ -108,10 +109,13 @@ class JsonConfigManager(IConfigManager):
             env_config.setdefault("analyzer", {})["base_url"] = os.getenv("OPENAI_API_BASE")
 
         # 超时配置
-        if os.getenv("REQUEST_TIMEOUT"):
-            env_config.setdefault("analyzer", {})["api_timeout"] = int(os.getenv("REQUEST_TIMEOUT"))
-        if os.getenv("MAX_RETRIES"):
-            env_config.setdefault("analyzer", {})["max_retries"] = int(os.getenv("MAX_RETRIES"))
+        request_timeout = self._get_int_env("REQUEST_TIMEOUT")
+        if request_timeout is not None:
+            env_config.setdefault("analyzer", {})["api_timeout"] = request_timeout
+
+        max_retries = self._get_int_env("MAX_RETRIES")
+        if max_retries is not None:
+            env_config.setdefault("analyzer", {})["max_retries"] = max_retries
 
         # 日志配置
         if os.getenv("LOG_LEVEL"):
@@ -120,6 +124,17 @@ class JsonConfigManager(IConfigManager):
             env_config.setdefault("logging", {})["verbose"] = os.getenv("VERBOSE_LOGGING").lower() == "true"
 
         return env_config
+
+    def _get_int_env(self, name: str) -> Optional[int]:
+        """Read an integer environment variable, ignoring invalid values."""
+        value = os.getenv(name)
+        if value is None:
+            return None
+
+        try:
+            return int(value)
+        except ValueError:
+            return None
 
     def _merge_configs(self, base_config: Dict[str, Any], override_config: Dict[str, Any]) -> Dict[str, Any]:
         """合并配置"""
