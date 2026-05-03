@@ -4,8 +4,9 @@
 Unit tests for BaseCodeAnalyzer
 """
 
-import pytest
 from pathlib import Path
+
+import pytest
 
 from src.core.analyzers.base_analyzer import BaseCodeAnalyzer
 from src.core.interfaces import AnalysisResult
@@ -128,6 +129,23 @@ def function_with_complexity():
 
         assert metrics.lines_of_code > 0
         assert metrics.cyclomatic_complexity >= 0
+
+    def test_calculate_complexity_metrics_ignores_keyword_substrings(self):
+        """Test complexity metrics only count real Python keywords."""
+        analyzer = BaseCodeAnalyzer()
+        code = """
+# if for while except and or
+def format_diff(value):
+    text = "if for while except and or"
+    effort = value or 0
+    if effort and value:
+        return value
+    return None
+"""
+        lines = code.split("\n")
+        metrics = analyzer._calculate_complexity_metrics(code, lines)
+
+        assert metrics.cyclomatic_complexity == 3
 
     def test_create_error_result(self):
         """Test creation of error results"""

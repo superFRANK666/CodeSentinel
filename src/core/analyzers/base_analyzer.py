@@ -5,14 +5,24 @@
 提供通用的分析功能和工具方法
 """
 
-import re
 import ast
+import io
+import re
+import tokenize
 from pathlib import Path
-from typing import Dict, Any, Optional, List
+from typing import Any, Dict, List, Optional
+
 from ..interfaces import AnalysisResult
 from .analysis_types import (
-    ImportStatement, FunctionDefinition, ClassDefinition, CallExpression,
-    StringLiteral, ImportInfo, ComplexityMetrics, ASTInfo, PreAnalysisInfo
+    ASTInfo,
+    CallExpression,
+    ClassDefinition,
+    ComplexityMetrics,
+    FunctionDefinition,
+    ImportInfo,
+    ImportStatement,
+    PreAnalysisInfo,
+    StringLiteral,
 )
 
 
@@ -254,12 +264,22 @@ class BaseCodeAnalyzer:
             else:
                 lines_of_code += 1
 
-        # Cyclomatic complexity (simplified version)
-        complexity_keywords = ["if", "elif", "for", "while", "except", "and", "or"]
-        for line in lines:
-            line_lower = line.lower()
-            for keyword in complexity_keywords:
-                cyclomatic_complexity += line_lower.count(keyword)
+        # Cyclomatic complexity (simplified version). Tokenizing avoids counting
+        # keywords embedded in identifiers, strings, or comments.
+        complexity_keywords = {"if", "elif", "for", "while", "except", "and", "or"}
+        try:
+            tokens = tokenize.generate_tokens(io.StringIO(content).readline)
+            for token in tokens:
+                if token.type == tokenize.NAME and token.string in complexity_keywords:
+                    cyclomatic_complexity += 1
+        except tokenize.TokenError:
+            keyword_pattern = re.compile(
+                r"\b(" + "|".join(sorted(complexity_keywords)) + r")\b"
+            )
+            for line in lines:
+                line_stripped = line.strip()
+                if line_stripped and not line_stripped.startswith("#"):
+                    cyclomatic_complexity += len(keyword_pattern.findall(line_stripped))
 
         return ComplexityMetrics(
             cyclomatic_complexity=cyclomatic_complexity,
